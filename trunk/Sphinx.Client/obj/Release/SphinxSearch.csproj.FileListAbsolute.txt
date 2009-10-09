@@ -1,0 +1,5 @@
+D:\Work\www.miradasoftware.uz\External\Search\Sphinx\SphinxSearch\bin\Release\SphinxSearch.dll
+D:\Work\www.miradasoftware.uz\External\Search\Sphinx\SphinxSearch\bin\Release\SphinxSearch.pdb
+D:\Work\www.miradasoftware.uz\External\Search\Sphinx\SphinxSearch\obj\Release\ResolveAssemblyReference.cache
+D:\Work\www.miradasoftware.uz\External\Search\Sphinx\SphinxSearch\obj\Release\SphinxSearch.dll
+D:\Work\www.miradasoftware.uz\External\Search\Sphinx\SphinxSearch\obj\Release\SphinxSearch.pdb

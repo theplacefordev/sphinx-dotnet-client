@@ -1,0 +1,2 @@
+﻿- Add more XDoc comments to source code (public class/attributes/methods descriptions)
+- Implement unit tests for all classes

@@ -1,0 +1,5 @@
+C:\Documents and Settings\Rustam\My Documents\Job files\Mirada Software\Sphinx\Client\Sphinx.Client\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Rustam\My Documents\Job files\Mirada Software\Sphinx\Client\Sphinx.Client\obj\Debug\Sphinx.Client.Resources.Messages.resources
+C:\Documents and Settings\Rustam\My Documents\Job files\Mirada Software\Sphinx\Client\Sphinx.Client\obj\Debug\Sphinx.Client.csproj.GenerateResource.Cache
+C:\Documents and Settings\Rustam\My Documents\Job files\Mirada Software\Sphinx\Client\Sphinx.Client\obj\Debug\Sphinx.Client.dll
+C:\Documents and Settings\Rustam\My Documents\Job files\Mirada Software\Sphinx\Client\Sphinx.Client\obj\Debug\Sphinx.Client.pdb

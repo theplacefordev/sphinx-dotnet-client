@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Sphinx.Client.Commands;
+using Sphinx.Client.Connections;
+using Sphinx.Client.Helpers;
+using Sphinx.Client.IO;
+using Sphinx.Client.Network;
+using Sphinx.Client.UnitTests.Mock.IO;
+using Sphinx.Client.UnitTests.Mock.Network;
+
+namespace Sphinx.Client.UnitTests.Mock.Connections
+{
+    public class ConnectionMock : TcpConnection
+    {
+        #region Fields
+        private IClientSocket _socket;
+        private IBinaryFormatterFactory _factory = new BinaryFormatterFactoryMock();
+        
+        #endregion
+
+        #region Constructors
+		public ConnectionMock(): base()
+        {
+        }
+
+        public ConnectionMock(string host): base(host)
+        {
+        }
+
+        public ConnectionMock(string host, int port): base(host, port)
+        {
+        }
+
+ 
+	    #endregion        
+
+        #region Properties
+        protected override IClientSocket Socket
+        {
+            get
+            {
+                if (_socket == null)
+                {
+                    _socket = new ClientSocketMock();
+                }
+                return _socket;
+            }
+
+            set
+            {
+                _socket = value;
+            }
+        }
+
+        internal protected override IBinaryFormatterFactory FormatterFactory
+        {
+            get { return _factory; }
+            protected set { _factory = value; }
+        }
+
+        public bool SkipHandshake { get; set; }
+        public bool SkipSerializeCommand { get; set; }
+        public bool SkipDeserializeCommand { get; set; }
+
+        public Stream BaseStream
+        {
+            get { return Socket.DataStream; }
+        }
+        #endregion
+
+        #region Methods
+        internal override void PerformCommand(CommandBase command)
+        {
+            ArgumentAssert.IsNotNull(command, "command");
+            Open();
+            try 
+            {
+                if (!SkipHandshake) 
+                    base.SendHandshake();
+                if (!SkipSerializeCommand) 
+                    command.Serialize(DataStream);
+                DataStream.Flush();
+                if (!SkipDeserializeCommand) 
+                    command.Deserialize(DataStream);
+            }
+            finally {
+                Close();
+            }
+            
+        }
+
+         
+	    #endregion    
+    }
+}
