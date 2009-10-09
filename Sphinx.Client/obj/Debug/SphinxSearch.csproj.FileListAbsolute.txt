@@ -1,5 +1,0 @@
-C:\Documents and Settings\Rustam\My Documents\Job files\Mirada Software\Search\Sphinx\SphinxSearch\bin\Debug\SphinxSearch.dll
-C:\Documents and Settings\Rustam\My Documents\Job files\Mirada Software\Search\Sphinx\SphinxSearch\bin\Debug\SphinxSearch.pdb
-C:\Documents and Settings\Rustam\My Documents\Job files\Mirada Software\Search\Sphinx\SphinxSearch\obj\Debug\ResolveAssemblyReference.cache
-C:\Documents and Settings\Rustam\My Documents\Job files\Mirada Software\Search\Sphinx\SphinxSearch\obj\Debug\SphinxSearch.dll
-C:\Documents and Settings\Rustam\My Documents\Job files\Mirada Software\Search\Sphinx\SphinxSearch\obj\Debug\SphinxSearch.pdb

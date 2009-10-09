@@ -1,7 +1,0 @@
-D:\Work\www.miradasoftware.uz\External\Search\Sphinx\Client\Sphinx.Client\bin\Debug\Sphinx.Client.dll
-D:\Work\www.miradasoftware.uz\External\Search\Sphinx\Client\Sphinx.Client\bin\Debug\Sphinx.Client.pdb
-D:\Work\www.miradasoftware.uz\External\Search\Sphinx\Client\Sphinx.Client\obj\Debug\ResolveAssemblyReference.cache
-D:\Work\www.miradasoftware.uz\External\Search\Sphinx\Client\Sphinx.Client\obj\Debug\Sphinx.Client.dll
-D:\Work\www.miradasoftware.uz\External\Search\Sphinx\Client\Sphinx.Client\obj\Debug\Sphinx.Client.pdb
-D:\Work\www.miradasoftware.uz\External\Search\Sphinx\Client\Sphinx.Client\obj\Debug\Sphinx.Client.Resources.Messages.resources
-D:\Work\www.miradasoftware.uz\External\Search\Sphinx\Client\Sphinx.Client\obj\Debug\Sphinx.Client.csproj.GenerateResource.Cache
