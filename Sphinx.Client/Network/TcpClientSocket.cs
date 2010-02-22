@@ -25,10 +25,6 @@ namespace Sphinx.Client.Network
 {
     public class TcpClientSocket : IClientSocket, IDisposable
     {
-        #region Fields
-
-        #endregion
-
         #region Constructors
         public TcpClientSocket()
         {
@@ -72,7 +68,7 @@ namespace Sphinx.Client.Network
 		public void Open()
         {
             ArgumentAssert.IsNotEmpty(Host, "Host");
-            ArgumentAssert.IsInRange(Port, 1, 65535, "Port");
+            ArgumentAssert.IsInRange(Port, 1, UInt16.MaxValue, "Port");
 
             if (Socket.Connected) 
                 Socket.Close();
