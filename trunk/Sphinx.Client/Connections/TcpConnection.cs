@@ -15,9 +15,11 @@
 #region Usings
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Sphinx.Client.Commands;
 using Sphinx.Client.Common;
 using Sphinx.Client.Helpers;
@@ -33,7 +35,7 @@ namespace Sphinx.Client.Connections
     {
         #region Constants
         protected const int MAJOR_PROTOCOL_VERSION = 1;
-        protected const int DEFAULT_CLIENT_TIMEOUT_MS = 0;
+		protected const int DEFAULT_CLIENT_TIMEOUT_MS = Timeout.Infinite;
         protected const int DEFAULT_PORT = 3312;
 
         #endregion
@@ -75,7 +77,6 @@ namespace Sphinx.Client.Connections
             get { return _connectionTimeout; }
             set
             {
-                ArgumentAssert.IsNotEmpty(value, "ConnectionTimeout");
                 _connectionTimeout = value;
             }
         }
@@ -138,9 +139,11 @@ namespace Sphinx.Client.Connections
         {
             get
             {
-                if (IsConnected)
-                    return Socket.DataStream;
-                return null;
+				if (IsConnected)
+				{
+					return Socket.DataStream;
+				}
+            	return null;
             }
         }
 
