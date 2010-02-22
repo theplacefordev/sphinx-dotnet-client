@@ -16,6 +16,7 @@
 
 using System;
 using System.IO;
+using System.Threading;
 using Sphinx.Client.Common;
 using Sphinx.Client.Connections;
 using Sphinx.Client.IO;
@@ -34,6 +35,7 @@ namespace Sphinx.Client.Commands
     {
         #region Fields
         private TResult _result;
+		private ManualResetEvent _resetEvent;
 
         #endregion
 
@@ -114,11 +116,7 @@ namespace Sphinx.Client.Commands
                 throw new SphinxException(String.Format(Messages.Exception_InvalidServerResponseLength, length));
 
             // read server response body
-            byte[] body = new byte[length];
-            int bytesRead = stream.Read(body, 0, length);
-            if (bytesRead != length)
-                throw new EndOfStreamException(String.Format(Messages.Exception_CouldNotReadFromStream, length, bytesRead));
-            MemoryStream bodyStream = new MemoryStream(body);
+        	MemoryStream bodyStream = ReadResponseBody(stream, length);
             BinaryReaderBase bodyReader = Connection.FormatterFactory.CreateReader(bodyStream);
 
             // check response status
@@ -153,7 +151,51 @@ namespace Sphinx.Client.Commands
             // parse command result 
             DeserializeResponse(bodyReader);
         }
-        
+
+		/// <summary>
+		/// Read requested bytes server from response stream. The implementation will block until all requested bytes readed from source stream, or <see cref="TimeoutException"/> will be thrown.
+		/// </summary>
+		/// <param name="source">Source network stream.</param>
+		/// <param name="length">Number of bytes to be read from the source stream.</param>
+		/// <returns>Stream object, that contains server response data bytes.</returns>
+		/// <exception cref="TimeoutException">Thrown when the time allotted for data read operation has expired.</exception>
+		protected virtual MemoryStream ReadResponseBody(Stream source, int length)
+		{
+			byte[] buffer = new byte[length];
+			NetworkReadState state = new NetworkReadState { DataStream = source, BytesLeft = length };
+			_resetEvent =  new ManualResetEvent(false);
+			while (state.BytesLeft > 0)
+			{
+				_resetEvent.Reset();
+				source.BeginRead(buffer, length - state.BytesLeft, state.BytesLeft, ReadBodyCallback, state);
+				if (!_resetEvent.WaitOne(Connection.ConnectionTimeout, true))
+				{
+					source.Close();
+					throw new TimeoutException(Messages.Exception_NetworkConnectionIsUnavailable);
+				}
+			}
+
+			return new MemoryStream(buffer);
+		}
+
+		private void ReadBodyCallback(IAsyncResult asyncResult)
+		{
+			NetworkReadState state = ((NetworkReadState)asyncResult.AsyncState);
+			if (!state.DataStream.CanRead)
+				throw new EndOfStreamException(String.Format(Messages.Exception_CouldNotReadFromStream, state.BytesLeft, 0));
+			int actualBytes = state.DataStream.EndRead(asyncResult);
+			if (actualBytes == 0)
+				throw new EndOfStreamException(String.Format(Messages.Exception_CouldNotReadFromStream, state.BytesLeft, actualBytes));
+			state.BytesLeft -= actualBytes;
+			_resetEvent.Set();
+		}
+
+		private class NetworkReadState
+		{
+			public Stream DataStream;
+			public int BytesLeft;
+		}
+
         #endregion
 
         #region Abstract
