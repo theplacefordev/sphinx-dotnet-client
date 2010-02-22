@@ -55,7 +55,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         private BuildExcerptsOptions _options = BuildExcerptsOptions.RemoveSpaces;
 
         // params
-        private readonly StringList _documents = new StringList();
+		private readonly StringList _documents = new DocumentList();
         private readonly StringList _keywords = new StringList();
         private string _indexName;
 
@@ -242,8 +242,8 @@ namespace Sphinx.Client.Commands.BuildExcerpts
             writer.Write(SnippetSizeLimit);
             writer.Write(WordsAroundKeyword);
 
-            // documents content
-            Documents.Serialize(writer);
+            // serialize documents list
+			Documents.Serialize(writer);
         }
 
         /// <summary>
