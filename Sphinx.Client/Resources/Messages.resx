@@ -199,4 +199,7 @@ Server message: '{0}'.</value>
   <data name="Exception_CouldNotUpdateIndexAttributeValues" xml:space="preserve">
     <value>Could not update attribute values in specified index list. Server returned updated documents count: {0}</value>
   </data>
+  <data name="Exception_CouldNotFlushIndexAttributeValues" xml:space="preserve">
+    <value>Could not flush attribute values. Server returned negative flash tag value: {0}</value>
+  </data>
 </root>
