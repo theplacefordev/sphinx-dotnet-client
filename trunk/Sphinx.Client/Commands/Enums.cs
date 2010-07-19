@@ -20,13 +20,14 @@ namespace Sphinx.Client.Commands
     /// </summary>
     public enum ServerCommand : short
     {
-        Search   = 0,
-        Excerpt  = 1,
-        Update   = 2,
-        Keywords = 3,
-        Persist  = 4,
-        Status   = 5,
-        Query    = 6
+        Search   		= 0,
+        Excerpt  		= 1,
+        Update   		= 2,
+        Keywords 		= 3,
+        Persist  		= 4,
+        Status   		= 5,
+        Query    		= 6,
+		FlushAttributes = 7
     }
 
     /// <summary>
