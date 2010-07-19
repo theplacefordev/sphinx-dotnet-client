@@ -51,9 +51,14 @@
     <Compile Include="Commands\Attributes\Filters\Values\AttributeFilterValuesInt64.cs" />
     <Compile Include="Commands\Attributes\Filters\Values\AttributeFilterValuesBoolean.cs" />
     <Compile Include="Commands\Attributes\Filters\Values\AttributeFilterValuesDateTime.cs" />
+    <Compile Include="Commands\Attributes\Values\AttributeValueInt32.cs" />
+    <Compile Include="Commands\Attributes\Values\AttributeValuesString.cs" />
+    <Compile Include="Commands\BuildExcerpts\HtmlStripMode.cs" />
     <Compile Include="Commands\Collections\DocumentList.cs" />
     <Compile Include="Commands\Collections\StringList.cs" />
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\FlushAttributes\FlushAttributesCommand.cs" />
+    <Compile Include="Commands\FlushAttributes\FlushAttributesCommandResult.cs" />
     <Compile Include="Commands\Query\QueryCommand.cs" />
     <Compile Include="Commands\Query\QueryCommandResult.cs" />
     <Compile Include="Commands\ICommandResult.cs" />
@@ -113,7 +118,7 @@
     <Compile Include="Commands\Attributes\Override\AttributeOverrideOrdinal.cs" />
     <Compile Include="Commands\Attributes\IAttributeValuesPerDocument.cs" />
     <Compile Include="Commands\Attributes\Values\AttributeValueBase.cs" />
-    <Compile Include="Commands\Attributes\Values\AttributeValueInt32.cs" />
+    <Compile Include="Commands\Attributes\Values\AttributeValueString.cs" />
     <Compile Include="Commands\Attributes\Values\AttributeValueFloat.cs" />
     <Compile Include="Commands\Attributes\Values\AttributeValueDateTime.cs" />
     <Compile Include="Commands\Attributes\Values\AttributeValueBoolean.cs" />
