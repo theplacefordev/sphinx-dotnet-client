@@ -14,6 +14,7 @@
 #endregion
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using Sphinx.Client.Commands.Collections;
 using Sphinx.Client.Connections;
@@ -31,15 +32,18 @@ namespace Sphinx.Client.Commands.BuildExcerpts
     public class BuildExcerptsCommand : CommandWithResultBase<BuildExcerptsCommandResult>
     {
         #region Constants
-        internal const short COMMAND_VERSION = 0x100;
+        internal const short COMMAND_VERSION = 0x102;
         private const int MODE = 0; // reserved for future, ignored by server
-        private const int MAX_ENTRIES = 1024;
 
         private const string DEFAULT_BEFORE_MATCH = "<strong>";
         private const string DEFAULT_AFTER_MATCH = "</strong>";
         private const string DEFAULT_SNIPPETS_DELIMITER = " ... ";
         private const int DEFAULT_SNIPPET_SIZE_LIMIT = 256;
-        private const int DEFAULT_WORDS_AROUND_KEYWORD = 5;
+		private const int DEFAULT_SNIPPETS_COUNT_LIMIT = 0;
+		private const int DEFAULT_WORDS_AROUND_KEYWORD = 5;
+		private const int DEFAULT_WORDS_COUNT_LIMIT = 0;
+    	private const int DEFAULT_START_PASSAGE_ID = 1;
+    	private const HtmlStripMode DEFAULT_HTML_STRIP_MODE = HtmlStripMode.Index;
         
         #endregion
 
@@ -51,7 +55,11 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         private string _afterMatch = DEFAULT_AFTER_MATCH;
         private string _snippetsDelimiter = DEFAULT_SNIPPETS_DELIMITER;
         private int _snippetSizeLimit = DEFAULT_SNIPPET_SIZE_LIMIT;
+    	private int _snippetsCountLimit = DEFAULT_SNIPPETS_COUNT_LIMIT;
         private int _wordsAroundKeyword = DEFAULT_WORDS_AROUND_KEYWORD;
+    	private int _wordsCountLimit = DEFAULT_WORDS_COUNT_LIMIT;
+    	private int _startPassageId = DEFAULT_START_PASSAGE_ID;
+    	private HtmlStripMode _htmlStripMode = DEFAULT_HTML_STRIP_MODE;
         private BuildExcerptsOptions _options = BuildExcerptsOptions.RemoveSpaces;
 
         // params
@@ -110,7 +118,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         }
 
         /// <summary>
-        /// List must contain keywords to highlight. List can't be empty.
+        /// List must contain keywords to highlight. Can contain wildcards. List can't be empty.
         /// </summary>
         public StringList Keywords
         {
@@ -121,7 +129,8 @@ namespace Sphinx.Client.Commands.BuildExcerpts
 
         #region Command settings
         /// <summary>
-        /// Template part used to highlight phrase before match. Default value is "<strong>". Can't be null.
+		/// Template part used to highlight phrase before match. Starting with version 1.10-beta, a %PASSAGE_ID% macro can be used in this string. The macro is replaced with an incrementing passage number within a current snippet. Numbering starts at 1 by default but can be overridden with "start_passage_id" option. In a multi-document call, %PASSAGE_ID% would restart at every given document.
+		/// Default value is "<strong>". Can't be null.
         /// </summary>
         public string BeforeMatch
         {
@@ -134,7 +143,8 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         }
 
         /// <summary>
-        /// Template part used to highlight phrase after match. Default value is "</strong>". Can't be null.
+		/// Template part used to highlight phrase after match. Starting with version 1.10-beta, a %PASSAGE_ID% macro can be used in this string.
+        /// Default value is "</strong>". Can't be null.
         /// </summary>
         public string AfterMatch
         {
@@ -172,6 +182,19 @@ namespace Sphinx.Client.Commands.BuildExcerpts
             }
         }
 
+		/// <summary>
+		/// Added in version 1.10-beta. Limits the maximum number of passages that can be included into the snippet. Default is 0 (no limit).
+		/// </summary>
+    	public int SnippetsCountLimit
+    	{
+			get { return _snippetsCountLimit; }
+			set
+			{
+				ArgumentAssert.IsGreaterOrEqual(value, 0, "SnippetsCountLimit");
+				_snippetsCountLimit = value;
+			}
+    	}
+
         /// <summary>
         /// How much words to pick around each matching keywords block. Default values is 5. Can't be less than zero.
         /// </summary>
@@ -180,10 +203,42 @@ namespace Sphinx.Client.Commands.BuildExcerpts
             get { return _wordsAroundKeyword; }
             set
             {
-                ArgumentAssert.IsGreaterThan(value, -1, "WordsAroundKeyword");
+				ArgumentAssert.IsGreaterOrEqual(value, 0, "WordsAroundKeyword");
                 _wordsAroundKeyword = value;
             }
         }
+
+		/// <summary>
+		/// Added in version 1.10-beta. Limits the maximum number of keywords that can be included into the snippet. Default is 0 (no limit).
+		/// </summary>
+		public int WordsCountLimit
+		{
+			get { return _wordsCountLimit; }
+			set
+			{
+				ArgumentAssert.IsGreaterOrEqual(value, 0, "WordsCountLimit");
+				_wordsCountLimit = value;
+			}
+		}
+
+		/// <summary>
+		/// Added in version 1.10-beta. Specifies the starting value of %PASSAGE_ID% macro (that gets detected and expanded in <see cref="BeforeMatch"/>, <see cref="AfterMatch"/> strings).
+		/// Default is 1.
+		/// </summary>
+		public int StartPassageId
+		{
+			get { return _startPassageId; }
+			set { _startPassageId = value; }
+		}
+
+		/// <summary>
+		/// Added in version 1.10-beta. HTML stripping mode setting. Defaults to "index", which means that index settings will be used. The other values are "none" and "strip", that forcibly skip or apply stripping irregardless of index settings; and "retain", that retains HTML markup and protects it from highlighting. The "retain" mode can only be used when highlighting full documents and thus requires that no snippet size limits are set.
+		/// </summary>
+		public HtmlStripMode HtmlStripMode
+		{
+			get { return _htmlStripMode; }
+			set { _htmlStripMode = value; }
+		}
 
         /// <summary>
         /// Build excerpts flag options. Flag <see cref="BuildExcerptsOptions.RemoveSpaces"/> is set by default.
@@ -202,7 +257,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
             get { return _commandInfo; }
         }
 
-        #endregion
+    	#endregion
 
         #endregion
 
@@ -214,7 +269,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         /// </summary>
         public override void Execute()
         {
-            ArgumentAssert.IsInRange(Documents.Count, 1, MAX_ENTRIES, "Documents.Count");
+			ArgumentAssert.IsGreaterThan(Documents.Count, 0, "Documents.Count");
             ArgumentAssert.IsGreaterThan(Keywords.Count, 0, "Keywords.Count");
             ArgumentAssert.IsNotEmpty(Index, "Index");
 
@@ -241,6 +296,11 @@ namespace Sphinx.Client.Commands.BuildExcerpts
             writer.Write(SnippetsDelimiter);
             writer.Write(SnippetSizeLimit);
             writer.Write(WordsAroundKeyword);
+			// 1.10-beta
+			writer.Write(SnippetsCountLimit);
+        	writer.Write(WordsCountLimit);
+			writer.Write(StartPassageId);
+			writer.Write(Enum.GetName(typeof(HtmlStripMode), HtmlStripMode).ToLowerInvariant());
 
             // serialize documents list
 			Documents.Serialize(writer);
