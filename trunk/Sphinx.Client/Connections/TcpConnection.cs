@@ -36,7 +36,7 @@ namespace Sphinx.Client.Connections
         #region Constants
         protected const int MAJOR_PROTOCOL_VERSION = 1;
 		protected const int DEFAULT_CLIENT_TIMEOUT_MS = Timeout.Infinite;
-        protected const int DEFAULT_PORT = 3312;
+		protected const int DEFAULT_PORT = 9312;
 
         #endregion
 
