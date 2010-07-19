@@ -26,7 +26,7 @@ using Sphinx.Client.Resources;
 namespace Sphinx.Client.IO
 {
     /// <summary>
-    /// Reads primitive data types as binary values represented in big endian byte order with specific character encoding. Unicode (UTF-8) encoding used is used by default to decode strings.
+    /// Reads primitive data types as binary values represented in big endian byte order with specific character encoding. Unicode (UTF-8) encoding used by default to decode strings.
     /// </summary>
     public class BigEndianBinaryReader : BinaryReaderBase
     {
