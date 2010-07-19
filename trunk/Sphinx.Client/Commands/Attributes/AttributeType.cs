@@ -31,12 +31,14 @@ namespace Sphinx.Client.Commands.Attributes
         Boolean = 4,
         Float = 5,
         Bigint = 6,
+		String = 7,
         MultiInteger = Integer | MultiValueAttribute.MultiFlag,
         MultiTimestamp = Timestamp | MultiValueAttribute.MultiFlag,
         MultiOrdinal = Ordinal | MultiValueAttribute.MultiFlag,
         MultiBoolean = Boolean | MultiValueAttribute.MultiFlag,
         MultiFloat = Float | MultiValueAttribute.MultiFlag,
-        MultiBigint = Bigint | MultiValueAttribute.MultiFlag
+        MultiBigint = Bigint | MultiValueAttribute.MultiFlag,
+		MultiString = String | MultiValueAttribute.MultiFlag
     }
 
 
