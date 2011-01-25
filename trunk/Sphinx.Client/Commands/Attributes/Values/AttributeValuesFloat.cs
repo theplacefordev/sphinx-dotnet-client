@@ -34,6 +34,7 @@ namespace Sphinx.Client.Commands.Attributes.Values
         #region Constructors
         internal AttributeValuesFloat()
         {
+			_values = new List<float>();
         }
 
         public AttributeValuesFloat(string name, List<float> values): base(name)
