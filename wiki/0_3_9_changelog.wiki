@@ -1,0 +1,11 @@
+#summary 0.3.9 changelog
+#labels changelog
+
+= Introduction =
+
+Changelog for version 0.3.9 of Sphinx .NET client.
+
+
+= Details =
+
+* Fixed bug with reading MVA attributes [http://code.google.com/p/sphinx-dotnet-client/issues/detail?id=9]
