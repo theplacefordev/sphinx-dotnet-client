@@ -34,6 +34,7 @@ namespace Sphinx.Client.Commands.Attributes.Values
         #region Constructors
         internal AttributeValuesBoolean()
         {
+			_values = new List<bool>();
         }
 
         public AttributeValuesBoolean(string name, List<bool> values): base(name)

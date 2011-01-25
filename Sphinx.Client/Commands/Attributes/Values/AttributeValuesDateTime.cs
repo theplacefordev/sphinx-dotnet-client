@@ -35,6 +35,7 @@ namespace Sphinx.Client.Commands.Attributes.Values
         #region Constructors
         internal AttributeValuesDateTime()
         {
+			_values = new List<DateTime>();
         }
 
         public AttributeValuesDateTime(string name, List<DateTime> values): base(name)

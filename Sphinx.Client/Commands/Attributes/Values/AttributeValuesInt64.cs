@@ -34,7 +34,7 @@ namespace Sphinx.Client.Commands.Attributes.Values
         #region Constructors
         internal AttributeValuesInt64()
         {
-
+			_values = new List<long>();
         }
 
         public AttributeValuesInt64(string name, List<long> values): base(name)
