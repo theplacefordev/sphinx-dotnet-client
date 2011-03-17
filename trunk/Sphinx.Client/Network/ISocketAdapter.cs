@@ -20,7 +20,7 @@ using System.IO;
 
 namespace Sphinx.Client.Network
 {
-    public interface IClientSocket
+    public interface ISocketAdapter
     {
         /// <summary>
         /// Server socket host network address
@@ -45,7 +45,7 @@ namespace Sphinx.Client.Network
         /// <summary>
         /// Network data stream object
         /// </summary>
-        Stream DataStream { get; }
+		IStreamAdapter DataStream { get; }
 
         /// <summary>
         /// Establish new connection to specified <see cref="Host"/> and <see cref="Port"/>
