@@ -16,7 +16,7 @@
 
 using System;
 using System.Collections.Generic;
-using Sphinx.Client.Commands.Helpers;
+using Sphinx.Client.Helpers;
 
 #endregion
 

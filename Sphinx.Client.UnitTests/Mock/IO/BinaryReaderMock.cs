@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using Sphinx.Client.IO;
+using Sphinx.Client.Network;
 using Sphinx.Client.UnitTests.Helpers;
 
 namespace Sphinx.Client.UnitTests.Mock.IO
@@ -14,11 +15,11 @@ namespace Sphinx.Client.UnitTests.Mock.IO
         private static readonly Encoding _defaultEncoding = Encoding.ASCII;
 
         #region Constructors
-        public BinaryReaderMock(Stream input): base(input, _defaultEncoding)
+		public BinaryReaderMock(IStreamAdapter input): base(input, _defaultEncoding)
         {
         }
 
-        public BinaryReaderMock(Stream input, Encoding encoding): base(input, encoding)
+		public BinaryReaderMock(IStreamAdapter input, Encoding encoding): base(input, encoding)
         {
         } 
 
@@ -119,16 +120,17 @@ namespace Sphinx.Client.UnitTests.Mock.IO
         {
             byte[] bytes = new byte[charsCount];
             // 1-byte encoding is forced for mock reader/writer
-            int actuallyReaded = InputStream.Read(bytes, 0, charsCount);
+            int actuallyReaded = InputStream.ReadBytes(bytes, charsCount);
             if (actuallyReaded != charsCount) throw new EndOfStreamException();
             return Encoding.GetString(bytes);
         }
 
         private string ReadChar()
         {
-            int byteValue = InputStream.ReadByte();
-            if (byteValue == -1) throw new EndOfStreamException();
-            return Encoding.GetString(new byte[] { (byte)byteValue });
+			byte[] buffer = new byte[1];
+			int byteValue = InputStream.ReadBytes(buffer, 1);
+            if (byteValue == 0) throw new EndOfStreamException();
+            return Encoding.GetString(buffer);
         }
  
 	    #endregion    

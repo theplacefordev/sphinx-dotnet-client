@@ -18,6 +18,7 @@ using System.IO;
 using Sphinx.Client.Common;
 using Sphinx.Client.Connections;
 using Sphinx.Client.Helpers;
+using Sphinx.Client.Network;
 
 #endregion
 
@@ -86,13 +87,13 @@ namespace Sphinx.Client.Commands
         /// Serializes an command and graph of internal objects to the provided stream.
         /// </summary>
         /// <param name="stream">The stream where the command puts the serialized data.</param>
-        internal protected abstract void Serialize(Stream stream);
+		internal protected abstract void Serialize(IStreamAdapter stream);
 
         /// <summary>
         /// Deserializes the Sphinx server response data on the provided stream and reconstitutes the graph of objects.
         /// </summary>
         /// <param name="stream">The stream that contains the data to deserialize.</param>
-        internal protected abstract void Deserialize(Stream stream);
+		internal protected abstract void Deserialize(IStreamAdapter stream);
         
         
         #endregion

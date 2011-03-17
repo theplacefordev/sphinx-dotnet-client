@@ -15,12 +15,11 @@
 #region Usings
 
 using System;
-using Sphinx.Client.Helpers;
 using Sphinx.Client.Resources;
 
 #endregion
 
-namespace Sphinx.Client.Commands.Helpers
+namespace Sphinx.Client.Helpers
 {
     /// <summary>
     /// Provides a set of static methods for DateTime operations. This class cannot be inherited. 

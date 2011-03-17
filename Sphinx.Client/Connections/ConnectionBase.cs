@@ -66,6 +66,11 @@ namespace Sphinx.Client.Connections
             Host = address.Address.ToString();
             Port = address.Port;
         }
+
+		~ConnectionBase()
+		{
+			Dispose(false);
+		}
         #endregion
 
         #region Properties
@@ -94,12 +99,12 @@ namespace Sphinx.Client.Connections
         /// <summary>
         /// Returns network client socket object
         /// </summary>
-        protected abstract IClientSocket Socket { get; set; }
+        protected abstract ISocketAdapter Socket { get; set; }
 
         /// <summary>
         /// Get underlying network data stream object
         /// </summary>
-        protected abstract Stream DataStream { get; }
+		protected abstract IStreamAdapter DataStream { get; }
 
         /// <summary>
         /// Returns <see cref="BinaryFormatterFactory"/> object to create binary formmater to (de)serialize data

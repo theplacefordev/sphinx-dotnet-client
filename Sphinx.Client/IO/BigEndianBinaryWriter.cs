@@ -17,8 +17,9 @@
 using System;
 using System.IO;
 using System.Text;
-using Sphinx.Client.Commands.Helpers;
 using Sphinx.Client.Helpers;
+using Sphinx.Client.Network;
+using Sphinx.Client.Resources;
 
 #endregion
 
@@ -30,11 +31,11 @@ namespace Sphinx.Client.IO
     public class BigEndianBinaryWriter : BinaryWriterBase
     {
         #region Constructors
-        public BigEndianBinaryWriter(Stream output): base(output)
+		public BigEndianBinaryWriter(IStreamAdapter output): base(output)
         {
         }
 
-        public BigEndianBinaryWriter(Stream output, Encoding encoding): base(output, encoding)
+		public BigEndianBinaryWriter(IStreamAdapter output, Encoding encoding): base(output, encoding)
         {
         }
         #endregion
@@ -43,12 +44,17 @@ namespace Sphinx.Client.IO
         public override void Write(byte[] data)
         {
             ArgumentAssert.IsNotNull(data, "bytes");
-            OutputStream.Write(data, 0, data.Length);
+			if (OutputStream == null)
+			{
+				throw new ObjectDisposedException(null, Messages.Exception_IOStreamDisposed);
+			}
+            OutputStream.WriteBytes(data, data.Length);
         }
 
         public override void Write(byte data)
         {
-            OutputStream.WriteByte(data);
+			byte[] buffer = new[] { data };
+			Write(buffer);
         }
 
         public override void Write(short data)

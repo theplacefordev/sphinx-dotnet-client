@@ -17,8 +17,8 @@
 using System;
 using System.IO;
 using System.Text;
-using Sphinx.Client.Commands.Helpers;
 using Sphinx.Client.Helpers;
+using Sphinx.Client.Network;
 using Sphinx.Client.Resources;
 
 #endregion
@@ -35,7 +35,7 @@ namespace Sphinx.Client.IO
         /// Initializes a new instance of the <see cref="BigEndianBinaryReader"/> class based on the supplied stream and using default encoding <see cref="UTF8Encoding"/>.
         /// </summary>
         /// <param name="input">Input stream</param>
-        public BigEndianBinaryReader(Stream input): base(input)
+		public BigEndianBinaryReader(IStreamAdapter input): base(input)
         {
         }
 
@@ -44,7 +44,7 @@ namespace Sphinx.Client.IO
         /// </summary>
         /// <param name="input">Input stream</param>
         /// <param name="encoding">The character encoding object used to decode strings from stream</param>
-        public BigEndianBinaryReader(Stream input, Encoding encoding): base(input, encoding)
+		public BigEndianBinaryReader(IStreamAdapter input, Encoding encoding): base(input, encoding)
         {
         }
 
@@ -68,7 +68,7 @@ namespace Sphinx.Client.IO
                 throw new ObjectDisposedException(null, Messages.Exception_IOStreamDisposed);
             }
             byte[] data = new byte[count];
-            int actuallyRead = InputStream.Read(data, 0, count);
+            int actuallyRead = InputStream.ReadBytes(data, count);
             if (actuallyRead != count)
             {
                 throw new EndOfStreamException(String.Format(Messages.Exception_CouldNotReadFromStream, count, data.Length));
@@ -85,17 +85,8 @@ namespace Sphinx.Client.IO
         /// <exception cref="EndOfStreamException">Could not read specified count of bytes from stream (reading is attempted past the end of a stream).</exception>
         public override byte ReadByte()
         {
-            if (InputStream == null)
-            {
-                throw new ObjectDisposedException(null, Messages.Exception_IOStreamDisposed);
-            }
-            int val = InputStream.ReadByte();
-            if (val == -1)
-            {
-                throw new EndOfStreamException(String.Format(Messages.Exception_CouldNotReadFromStream, 1, 0));
-            }
-
-            return (byte)val;
+            byte[] bytes = ReadBytes(1);
+            return bytes[0];
         }
 
         /// <summary>
