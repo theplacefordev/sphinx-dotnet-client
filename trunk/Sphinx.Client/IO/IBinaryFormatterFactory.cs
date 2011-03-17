@@ -1,4 +1,5 @@
 using System.IO;
+using Sphinx.Client.Network;
 
 namespace Sphinx.Client.IO
 {
@@ -7,7 +8,7 @@ namespace Sphinx.Client.IO
     /// </summary>
     public interface IBinaryFormatterFactory
     {
-        BinaryReaderBase CreateReader(Stream stream);
-        BinaryWriterBase CreateWriter(Stream stream);
+		BinaryReaderBase CreateReader(IStreamAdapter stream);
+		BinaryWriterBase CreateWriter(IStreamAdapter stream);
     }
 }

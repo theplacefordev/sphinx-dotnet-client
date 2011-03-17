@@ -4,6 +4,7 @@ using System.Text;
 using Sphinx.Client.Commands.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sphinx.Client.IO;
+using Sphinx.Client.Network;
 using Sphinx.Client.UnitTests.Mock.IO;
 
 namespace Sphinx.Client.UnitTests.Test.Commands.Collections
@@ -87,7 +88,7 @@ namespace Sphinx.Client.UnitTests.Test.Commands.Collections
         {
             StringList target = new StringList();
             MemoryStream stream = new MemoryStream();
-            BinaryWriterBase writer = new BinaryWriterMock(stream);
+            BinaryWriterBase writer = new BinaryWriterMock(new StreamAdapter(stream));
             // empty list
             target.Serialize(writer);
             string expected = "<string></string>";

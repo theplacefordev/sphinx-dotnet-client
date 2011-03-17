@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -324,7 +325,7 @@ namespace SearchDesktopClient
                 {
                     string name = attr.Name;
                     string type = Enum.GetName(typeof(AttributeType), attr.AttributeType);
-                    string val = ((AttributeValueBase) attr).GetValue().ToString();
+                    string val = GetAttributeValueAsString(attr);
                     
                     output.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>", name, val, type);
                 }
@@ -345,6 +346,24 @@ namespace SearchDesktopClient
             output.Append(RES_FOOTER_TEMPLATE);
             return output.ToString();
         }
+
+		private string GetAttributeValueAsString(AttributeBase attr)
+		{
+			object val = ((AttributeValueBase) attr).GetValue();
+			if (val is IList)
+			{
+				StringBuilder sb = new StringBuilder();
+				IList coll = (IList)val;
+				for (int i=0; i < coll.Count; i++)
+				{
+					if (i != 0)
+						sb.Append(", ");
+					sb.Append(coll[i].ToString());
+				}
+				return sb.ToString();
+			}
+			return val.ToString();
+		}
 
         private string GetServerStatus()
         {

@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 using System.Xml;
 using Sphinx.Client.IO;
+using Sphinx.Client.Network;
 using Sphinx.Client.UnitTests.Helpers;
 
 namespace Sphinx.Client.UnitTests.Mock.IO
@@ -15,11 +16,13 @@ namespace Sphinx.Client.UnitTests.Mock.IO
         private static readonly Encoding _defaultEncoding = Encoding.ASCII;
 
         #region Constructors
-        public BinaryWriterMock(Stream output): base(output, _defaultEncoding)
+		public BinaryWriterMock(IStreamAdapter output)
+			: base(output, _defaultEncoding)
         {
         }
 
-        public BinaryWriterMock(Stream output, Encoding encoding) : base(output, encoding)
+		public BinaryWriterMock(IStreamAdapter output, Encoding encoding)
+			: base(output, encoding)
         {
         }
  
@@ -91,7 +94,7 @@ namespace Sphinx.Client.UnitTests.Mock.IO
         {
             string output = String.Format("<{0}>{1}</{0}>", tagName, data);
             byte[] bytes = Encoding.GetBytes(output);
-            OutputStream.Write(bytes, 0, bytes.Length);
+            OutputStream.WriteBytes(bytes, bytes.Length);
         }
         
         #endregion

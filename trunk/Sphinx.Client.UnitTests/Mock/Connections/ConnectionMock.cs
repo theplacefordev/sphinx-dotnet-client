@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sphinx.Client.Commands;
 using Sphinx.Client.Connections;
 using Sphinx.Client.Helpers;
@@ -16,7 +17,7 @@ namespace Sphinx.Client.UnitTests.Mock.Connections
     public class ConnectionMock : TcpConnection
     {
         #region Fields
-        private IClientSocket _socket;
+        private ISocketAdapter _socket;
         private IBinaryFormatterFactory _factory = new BinaryFormatterFactoryMock();
         
         #endregion
@@ -38,7 +39,7 @@ namespace Sphinx.Client.UnitTests.Mock.Connections
 	    #endregion        
 
         #region Properties
-        protected override IClientSocket Socket
+		protected override ISocketAdapter Socket
         {
             get
             {
@@ -67,7 +68,10 @@ namespace Sphinx.Client.UnitTests.Mock.Connections
 
         public Stream BaseStream
         {
-            get { return Socket.DataStream; }
+            get
+            {
+				return GetStream(DataStream);
+            }
         }
         #endregion
 
@@ -92,7 +96,12 @@ namespace Sphinx.Client.UnitTests.Mock.Connections
             
         }
 
-         
+		protected Stream GetStream(IStreamAdapter adapter)
+		{
+			PrivateObject po = new PrivateObject(adapter);
+			StreamAdapter_Accessor accessor = new StreamAdapter_Accessor(po);
+			return accessor.Stream;
+		}         
 	    #endregion    
     }
 }

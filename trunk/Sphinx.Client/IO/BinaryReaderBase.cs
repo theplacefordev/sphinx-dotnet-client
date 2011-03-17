@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Text;
 using Sphinx.Client.Helpers;
+using Sphinx.Client.Network;
 using Sphinx.Client.Resources;
 
 #endregion
@@ -32,7 +33,7 @@ namespace Sphinx.Client.IO
     {
         #region Fields
         private static readonly Encoding _defaultEncoding = new UTF8Encoding(false, true);
-        private readonly Stream _inputStream;
+		private readonly IStreamAdapter _inputStream;
         private readonly Encoding _encoding;
         
         #endregion
@@ -42,7 +43,8 @@ namespace Sphinx.Client.IO
         /// Initializes a new instance of the <see cref="BinaryReaderBase"/> class based on the supplied stream and using default encoding <see cref="UTF8Encoding"/>.
         /// </summary>
         /// <param name="input">Input stream</param>
-        protected BinaryReaderBase(Stream input): this(input, _defaultEncoding)
+		protected BinaryReaderBase(IStreamAdapter input)
+			: this(input, _defaultEncoding)
         {
         }
 
@@ -51,7 +53,7 @@ namespace Sphinx.Client.IO
         /// </summary>
         /// <param name="input">Input stream</param>
         /// <param name="encoding">The character encoding object used to decode strings from stream</param>
-        protected BinaryReaderBase(Stream input, Encoding encoding)
+		protected BinaryReaderBase(IStreamAdapter input, Encoding encoding)
         {
             ArgumentAssert.IsNotNull(input, "input");
             ArgumentAssert.IsNotNull(encoding, "encoding");
@@ -69,7 +71,7 @@ namespace Sphinx.Client.IO
         /// <summary>
         /// Exposes access to the underlying input stream.
         /// </summary>
-        public Stream InputStream
+		public IStreamAdapter InputStream
         {
             get { return _inputStream; }
         }

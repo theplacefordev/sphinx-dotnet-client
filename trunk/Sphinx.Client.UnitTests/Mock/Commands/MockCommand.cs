@@ -6,6 +6,7 @@ using System.Text;
 using Sphinx.Client.Commands;
 using Sphinx.Client.Connections;
 using Sphinx.Client.IO;
+using Sphinx.Client.Network;
 
 namespace Sphinx.Client.UnitTests.Mock.Commands
 {
@@ -31,13 +32,13 @@ namespace Sphinx.Client.UnitTests.Mock.Commands
             get { return new CommandInfo(_id, _ver); }
         }
 
-        protected internal override void Serialize(Stream stream)
+        protected internal override void Serialize(IStreamAdapter stream)
         {
             BinaryWriterBase writer = Connection.FormatterFactory.CreateWriter(stream);
             CommandInfo.Serialize(writer);
         }
 
-        protected internal override void Deserialize(Stream stream)
+		protected internal override void Deserialize(IStreamAdapter stream)
         {
             // do nothing
         }

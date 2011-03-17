@@ -11,7 +11,7 @@ namespace Sphinx.Client.UnitTests.Mock.Network
     /// <summary>
     /// Mock class for connection classes testing
     /// </summary>
-    public class ClientSocketMock : IClientSocket, IDisposable
+    public class ClientSocketMock : ISocketAdapter, IDisposable
     {
         private bool _connected = false;
         private MemoryStream _dummyStream = new MemoryStream();
@@ -54,9 +54,9 @@ namespace Sphinx.Client.UnitTests.Mock.Network
         /// <summary>
         /// Network data stream object
         /// </summary>
-        public Stream DataStream
+        public IStreamAdapter DataStream
         {
-            get { return _connected ? _dummyStream : null; }
+            get { return _connected ? new StreamAdapter(_dummyStream) : null; }
         }
 
         /// <summary>

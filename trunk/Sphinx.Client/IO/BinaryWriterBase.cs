@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Text;
 using Sphinx.Client.Helpers;
+using Sphinx.Client.Network;
 using Sphinx.Client.Resources;
 
 #endregion
@@ -33,17 +34,17 @@ namespace Sphinx.Client.IO
         #region Fields
         private static readonly Encoding _defaultEncoding = new UTF8Encoding(false, true);
 
-        private readonly Stream _outputStream;
+		private readonly IStreamAdapter _outputStream;
         private readonly Encoding _encoding;
         
         #endregion
 
         #region Constructors
-        protected BinaryWriterBase(Stream output): this(output, _defaultEncoding)
+		protected BinaryWriterBase(IStreamAdapter output): this(output, _defaultEncoding)
         {
         }
 
-        protected BinaryWriterBase(Stream output, Encoding encoding)
+		protected BinaryWriterBase(IStreamAdapter output, Encoding encoding)
         {
             ArgumentAssert.IsNotNull(output, "output");
             ArgumentAssert.IsNotNull(encoding, "encoding");
@@ -58,7 +59,7 @@ namespace Sphinx.Client.IO
         #endregion
 
         #region Properties
-        public virtual Stream OutputStream
+		public virtual IStreamAdapter OutputStream
         {
             get
             {

@@ -1,4 +1,6 @@
-﻿using Sphinx.Client.Network;
+﻿using System;
+using System.Net.Sockets;
+using Sphinx.Client.Network;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 
@@ -7,11 +9,11 @@ namespace Sphinx.Client.UnitTests.Test.Network
     
     
     /// <summary>
-    ///This is a test class for TcpClientSocketUnitTest and is intended
-    ///to contain all TcpClientSocketUnitTest Unit Tests
+    ///This is a test class for TcpSocketAdapterUnitTest and is intended
+    ///to contain all TcpSocketAdapterUnitTest Unit Tests
     ///</summary>
     [TestClass]
-    public class TcpClientSocketUnitTest
+    public class TcpSocketAdapterUnitTest
     {
         /// <summary>
         ///Gets or sets the test context which provides
@@ -50,25 +52,25 @@ namespace Sphinx.Client.UnitTests.Test.Network
         #endregion
 
         /// <summary>
-        ///A test for TcpClientSocket Constructor
+        ///A test for TcpSocketAdapter Constructor
         ///</summary>
         [TestMethod]
-        public void TcpClientSocketConstructorTestEmpty()
+        public void TcpSocketAdapterConstructorTestEmpty()
         {
-            using (new TcpClientSocket())
+            using (new TcpSocketAdapter())
             {
             }
         }
 
         /// <summary>
-        ///A test for TcpClientSocket Constructor
+        ///A test for TcpSocketAdapter Constructor
         ///</summary>
         [TestMethod]
-        public void TcpClientSocketConstructorTest()
+        public void TcpSocketAdapterConstructorTest()
         {
             string host = string.Empty; 
             int port = 0; 
-            new TcpClientSocket(host, port);
+            new TcpSocketAdapter(host, port);
         }
 
         /// <summary>
@@ -77,14 +79,12 @@ namespace Sphinx.Client.UnitTests.Test.Network
         [TestMethod]
         public void PortTest()
         {
-            TcpClientSocket target = new TcpClientSocket(); // TODO: Initialize to an appropriate value
-            int expected = 0; // TODO: Initialize to an appropriate value
-            int actual;
-            target.Port = expected;
-            actual = target.Port;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
+            TcpSocketAdapter target = new TcpSocketAdapter(); 
+            target.Port = 0;
+            Assert.AreEqual(0, target.Port);
+			target.Port = 10000;
+			Assert.AreEqual(10000, target.Port);
+		}
 
         /// <summary>
         ///A test for Host
@@ -92,14 +92,12 @@ namespace Sphinx.Client.UnitTests.Test.Network
         [TestMethod]
         public void HostTest()
         {
-            TcpClientSocket target = new TcpClientSocket(); // TODO: Initialize to an appropriate value
-            string expected = string.Empty; // TODO: Initialize to an appropriate value
-            string actual;
-            target.Host = expected;
-            actual = target.Host;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
+            TcpSocketAdapter target = new TcpSocketAdapter(); 
+            target.Host = string.Empty;
+			Assert.AreEqual(string.Empty, target.Host);
+			target.Host = "test";
+			Assert.AreEqual("test", target.Host);
+		}
 
         /// <summary>
         ///A test for DataStream
@@ -107,10 +105,15 @@ namespace Sphinx.Client.UnitTests.Test.Network
         [TestMethod]
         public void DataStreamTest()
         {
-            TcpClientSocket target = new TcpClientSocket(); // TODO: Initialize to an appropriate value
-            Stream actual;
-            actual = target.DataStream;
-            Assert.Inconclusive("Verify the correctness of this test method.");
+            TcpSocketAdapter target = new TcpSocketAdapter();
+        	try {
+				var val = target.DataStream;
+			}
+			catch (InvalidOperationException)
+			{
+				return;
+			}
+			Assert.Fail("DataStream getter must throw InvalidOperationException exception when socket is not connected");
         }
 
         /// <summary>
@@ -119,13 +122,12 @@ namespace Sphinx.Client.UnitTests.Test.Network
         [TestMethod]
         public void ConnectionTimeoutTest()
         {
-            TcpClientSocket target = new TcpClientSocket(); // TODO: Initialize to an appropriate value
-            int expected = 0; // TODO: Initialize to an appropriate value
+            TcpSocketAdapter target = new TcpSocketAdapter(); 
+            int expected = 0; 
             int actual;
             target.ConnectionTimeout = expected;
             actual = target.ConnectionTimeout;
             Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
         }
 
         /// <summary>
@@ -134,10 +136,8 @@ namespace Sphinx.Client.UnitTests.Test.Network
         [TestMethod]
         public void ConnectedTest()
         {
-            TcpClientSocket target = new TcpClientSocket(); // TODO: Initialize to an appropriate value
-            bool actual;
-            actual = target.Connected;
-            Assert.Inconclusive("Verify the correctness of this test method.");
+            TcpSocketAdapter target = new TcpSocketAdapter(); 
+            Assert.IsFalse(target.Connected);
         }
 
         /// <summary>
@@ -146,22 +146,25 @@ namespace Sphinx.Client.UnitTests.Test.Network
         [TestMethod]
         public void OpenTest()
         {
-            TcpClientSocket target = new TcpClientSocket(); // TODO: Initialize to an appropriate value
-            target.Open();
-            Assert.Inconclusive("A method that does not return a value cannot be verified.");
-        }
+			TcpSocketAdapter target = new TcpSocketAdapter();
+			try
+			{
+				target.Open();
+				Assert.Fail("Must throw an ArgumentException");
+			}
+			catch (ArgumentException)
+			{
+			}
 
-        /// <summary>
-        ///A test for Dispose
-        ///</summary>
-        [TestMethod]
-        [DeploymentItem("Sphinx.Client.dll")]
-        public void DisposeTest1()
-        {
-            TcpClientSocket_Accessor target = new TcpClientSocket_Accessor(); // TODO: Initialize to an appropriate value
-            bool disposing = false; // TODO: Initialize to an appropriate value
-            target.Dispose(disposing);
-            Assert.Inconclusive("A method that does not return a value cannot be verified.");
+			target = new TcpSocketAdapter("test", 123);
+			try
+			{
+				target.Open();
+				Assert.Fail("Must throw an SocketException");
+			}
+			catch (SocketException)
+			{
+			}
         }
 
         /// <summary>
@@ -170,9 +173,8 @@ namespace Sphinx.Client.UnitTests.Test.Network
         [TestMethod]
         public void DisposeTest()
         {
-            TcpClientSocket target = new TcpClientSocket(); // TODO: Initialize to an appropriate value
+            TcpSocketAdapter target = new TcpSocketAdapter();
             target.Dispose();
-            Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
 
         /// <summary>
@@ -181,9 +183,8 @@ namespace Sphinx.Client.UnitTests.Test.Network
         [TestMethod]
         public void CloseTest()
         {
-            TcpClientSocket target = new TcpClientSocket(); // TODO: Initialize to an appropriate value
+            TcpSocketAdapter target = new TcpSocketAdapter();
             target.Close();
-            Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
 
     }

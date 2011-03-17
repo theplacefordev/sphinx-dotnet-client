@@ -190,7 +190,7 @@ Server message: '{0}'.</value>
   <data name="Exception_UnsupportedAttributeType" xml:space="preserve">
     <value>Unsupported attribute type '{0}'</value>
   </data>
-  <data name="Warning_CommandVersion" xml:space="preserve">
+  <data name="Exception_CommandVersion" xml:space="preserve">
     <value>Sphinx server command version {0}.{1} older than version {2}.{3} supported by client, some features might not work as expected</value>
   </data>
   <data name="Exception_ArgumentUnixTimestampOutOfRange" xml:space="preserve">
@@ -201,5 +201,11 @@ Server message: '{0}'.</value>
   </data>
   <data name="Exception_CouldNotFlushIndexAttributeValues" xml:space="preserve">
     <value>Could not flush attribute values. Server returned negative flash tag value: {0}</value>
+  </data>
+  <data name="Exception_ClientSocketNotConnected" xml:space="preserve">
+    <value>Operation not allowed on non-connected client sockets</value>
+  </data>
+  <data name="Exception_ReadTimeoutExpired" xml:space="preserve">
+    <value>Read timeout expired</value>
   </data>
 </root>

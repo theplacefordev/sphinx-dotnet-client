@@ -1,6 +1,6 @@
-﻿using Sphinx.Client.Commands.Helpers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using Sphinx.Client.Helpers;
 
 namespace Sphinx.Client.UnitTests.Test.Helpers
 {

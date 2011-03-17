@@ -20,6 +20,7 @@ using System.Threading;
 using Sphinx.Client.Common;
 using Sphinx.Client.Connections;
 using Sphinx.Client.IO;
+using Sphinx.Client.Network;
 using Sphinx.Client.Resources;
 
 #endregion
@@ -35,7 +36,6 @@ namespace Sphinx.Client.Commands
     {
         #region Fields
         private TResult _result;
-		private ManualResetEvent _resetEvent;
 
         #endregion
 
@@ -65,7 +65,7 @@ namespace Sphinx.Client.Commands
         /// <summary>
         /// Executes Sphinx command against a connection object.
         /// </summary>
-        /// <returns><see cref="CommandResultBase<TResult>"/> based result object.</returns>
+        /// <returns><see cref="CommandResultBase"/> based result object.</returns>
         /// <exception cref="ServerErrorException"/>
         /// <exception cref="SphinxException"/>
         /// <exception cref="IOException"/>
@@ -80,7 +80,7 @@ namespace Sphinx.Client.Commands
         /// </summary>
         /// <param name="stream">The stream where the command puts the serialized data.</param>
         /// <exception cref="IOException"/>
-        internal protected override void Serialize(Stream stream)
+		internal protected override void Serialize(IStreamAdapter stream)
         {
             BinaryWriterBase writer = Connection.FormatterFactory.CreateWriter(stream);
             // send command id and version information
@@ -88,12 +88,14 @@ namespace Sphinx.Client.Commands
 
             // serialize request body to temp. buffer to get command body length
             MemoryStream buffer = new MemoryStream();
-            BinaryWriterBase bufferWriter = Connection.FormatterFactory.CreateWriter(buffer);
+			BinaryWriterBase bufferWriter = Connection.FormatterFactory.CreateWriter(new StreamAdapter(buffer));
             SerializeRequest(bufferWriter);
             // send body length first
-            writer.Write((int)buffer.Length);
-            // send buffer contents
-            buffer.WriteTo(stream);
+        	int length = (int) buffer.Length;
+			writer.Write(length);
+            // send buffer content
+        	buffer.Position = 0;
+			stream.WriteBytes(buffer.ToArray(), length);
         }
 
         /// <summary>
@@ -103,7 +105,7 @@ namespace Sphinx.Client.Commands
         /// <exception cref="ServerErrorException"/>
         /// <exception cref="SphinxException"/>
         /// <exception cref="IOException"/>
-        internal protected override void Deserialize(Stream stream)
+		internal protected override void Deserialize(IStreamAdapter stream)
         {
             BinaryReaderBase reader = Connection.FormatterFactory.CreateReader(stream);
             // read general command response header values
@@ -116,8 +118,10 @@ namespace Sphinx.Client.Commands
                 throw new SphinxException(String.Format(Messages.Exception_InvalidServerResponseLength, length));
 
             // read server response body
-        	MemoryStream bodyStream = ReadResponseBody(stream, length);
-            BinaryReaderBase bodyReader = Connection.FormatterFactory.CreateReader(bodyStream);
+			byte[] buffer = new byte[length];
+			stream.ReadBytes(buffer, length);
+        	MemoryStream bodyStream = new MemoryStream(buffer);
+            BinaryReaderBase bodyReader = Connection.FormatterFactory.CreateReader(new StreamAdapter(bodyStream));
 
             // check response status
             switch (Result.Status)
@@ -142,59 +146,12 @@ namespace Sphinx.Client.Commands
             short clientCommandVersion = CommandInfo.Version;
             if (serverCommandVersion < clientCommandVersion)
             {
-                // NOTE: little hack - changing server response status and adding own warning message, because old Sphinx server version is detected and some protocol features might not work as expected
-                if (Result.Status == CommandStatus.Ok)
-                    Result.Status = CommandStatus.Warning;
-                Result.Warnings.Add(String.Format(Messages.Warning_CommandVersion, serverCommandVersion >> 8, serverCommandVersion & 0xff, clientCommandVersion >> 8, clientCommandVersion & 0xff));
+                throw new NotSupportedException(String.Format(Messages.Exception_CommandVersion, serverCommandVersion >> 8, serverCommandVersion & 0xff, clientCommandVersion >> 8, clientCommandVersion & 0xff));
             }
 
             // parse command result 
             DeserializeResponse(bodyReader);
         }
-
-		/// <summary>
-		/// Read requested bytes server from response stream. The implementation will block until all requested bytes readed from source stream, or <see cref="TimeoutException"/> will be thrown.
-		/// </summary>
-		/// <param name="source">Source network stream.</param>
-		/// <param name="length">Number of bytes to be read from the source stream.</param>
-		/// <returns>Stream object, that contains server response data bytes.</returns>
-		/// <exception cref="TimeoutException">Thrown when the time allotted for data read operation has expired.</exception>
-		protected virtual MemoryStream ReadResponseBody(Stream source, int length)
-		{
-			byte[] buffer = new byte[length];
-			NetworkReadState state = new NetworkReadState { DataStream = source, BytesLeft = length };
-			_resetEvent =  new ManualResetEvent(false);
-			while (state.BytesLeft > 0)
-			{
-				_resetEvent.Reset();
-				source.BeginRead(buffer, length - state.BytesLeft, state.BytesLeft, ReadBodyCallback, state);
-				if (!_resetEvent.WaitOne(Connection.ConnectionTimeout, true))
-				{
-					source.Close();
-					throw new TimeoutException(Messages.Exception_NetworkConnectionIsUnavailable);
-				}
-			}
-
-			return new MemoryStream(buffer);
-		}
-
-		private void ReadBodyCallback(IAsyncResult asyncResult)
-		{
-			NetworkReadState state = ((NetworkReadState)asyncResult.AsyncState);
-			if (!state.DataStream.CanRead)
-				throw new EndOfStreamException(String.Format(Messages.Exception_CouldNotReadFromStream, state.BytesLeft, 0));
-			int actualBytes = state.DataStream.EndRead(asyncResult);
-			if (actualBytes == 0)
-				throw new EndOfStreamException(String.Format(Messages.Exception_CouldNotReadFromStream, state.BytesLeft, actualBytes));
-			state.BytesLeft -= actualBytes;
-			_resetEvent.Set();
-		}
-
-		private class NetworkReadState
-		{
-			public Stream DataStream;
-			public int BytesLeft;
-		}
 
         #endregion
 

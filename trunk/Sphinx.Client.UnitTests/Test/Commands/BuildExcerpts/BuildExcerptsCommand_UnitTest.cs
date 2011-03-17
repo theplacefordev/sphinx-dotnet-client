@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Sphinx.Client.IO;
 using Sphinx.Client.Commands;
 using Sphinx.Client.Commands.Collections;
+using Sphinx.Client.Network;
 using Sphinx.Client.UnitTests.Mock.Connections;
 using Sphinx.Client.UnitTests.Mock.IO;
 
@@ -342,7 +343,7 @@ namespace Sphinx.Client.UnitTests.Test.BuildExcerpts
                 BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
                 BuildExcerptsCommand_Accessor accessor = GetCommandAccessor(target);
                 Assert.IsNotNull(accessor.CommandInfo);
-                Assert.AreEqual(accessor.CommandInfo.Id, (short)ServerCommand.Excerpt);
+                Assert.AreEqual(accessor.CommandInfo.Id, ServerCommand.Excerpt);
                 Assert.AreEqual(accessor.CommandInfo.Version, BuildExcerptsCommand_Accessor.COMMAND_VERSION);
             }
         }
@@ -373,7 +374,7 @@ namespace Sphinx.Client.UnitTests.Test.BuildExcerpts
                 connection.Open();
                 connection.BaseStream.Seek(0, SeekOrigin.Begin);
                 BinaryFormatterFactoryMock factory = new BinaryFormatterFactoryMock();
-                BinaryReaderBase reader = factory.CreateReader(connection.BaseStream);
+                BinaryReaderBase reader = factory.CreateReader(new StreamAdapter(connection.BaseStream));
 
                 short commandId = reader.ReadInt16();
                 Assert.AreEqual((short)ServerCommand.Excerpt, commandId);
@@ -382,7 +383,7 @@ namespace Sphinx.Client.UnitTests.Test.BuildExcerpts
                 Assert.AreEqual(BuildExcerptsCommand_Accessor.COMMAND_VERSION, version);
 
                 int size = reader.ReadInt32();
-                Assert.AreEqual(248, size);
+                Assert.AreEqual(334, size);
 
                 int mode = reader.ReadInt32();
                 Assert.AreEqual(BuildExcerptsCommand_Accessor.MODE, mode);
@@ -411,6 +412,18 @@ namespace Sphinx.Client.UnitTests.Test.BuildExcerpts
 
                 int wordsAroundKeyword = reader.ReadInt32();
                 Assert.AreEqual(target.WordsAroundKeyword, wordsAroundKeyword);
+
+				int snippetsCountLimit = reader.ReadInt32();
+				Assert.AreEqual(target.SnippetsCountLimit, snippetsCountLimit);
+
+				int wordsCountLimit = reader.ReadInt32();
+				Assert.AreEqual(target.WordsCountLimit, wordsCountLimit);
+
+				int startPassageId = reader.ReadInt32();
+				Assert.AreEqual(target.StartPassageId, startPassageId);
+
+            	string htmlStripMode = reader.ReadString();
+				Assert.AreEqual(Enum.GetName(typeof(HtmlStripMode), target.HtmlStripMode).ToLowerInvariant(), htmlStripMode);
 
                 string documents = reader.ReadString();
                 string expectedDocs = String.Join(",", target.Documents.ToArray());
@@ -454,7 +467,7 @@ namespace Sphinx.Client.UnitTests.Test.BuildExcerpts
 
                 // preserialize fake server response to stream buffer using appropriate binary writer
                 BinaryFormatterFactoryMock factory = new BinaryFormatterFactoryMock();
-                BinaryWriterBase writer = factory.CreateWriter(connection.BaseStream);
+                BinaryWriterBase writer = factory.CreateWriter(new StreamAdapter(connection.BaseStream));
 
                 writer.Write((short)CommandStatus.Ok);
                 writer.Write(BuildExcerptsCommand_Accessor.COMMAND_VERSION);

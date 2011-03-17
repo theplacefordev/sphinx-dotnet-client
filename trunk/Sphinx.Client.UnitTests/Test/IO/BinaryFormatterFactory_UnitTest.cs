@@ -3,6 +3,7 @@ using Sphinx.Client.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text;
 using System.IO;
+using Sphinx.Client.Network;
 
 namespace Sphinx.Client.UnitTests.Test.IO
 {
@@ -90,7 +91,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
             BinaryFormatterFactory target = new BinaryFormatterFactory(formatType, encoding);
             using (Stream stream = new MemoryStream())
             {
-                BinaryWriterBase actual = target.CreateWriter(stream);
+				BinaryWriterBase actual = target.CreateWriter(new StreamAdapter(stream));
                 Assert.IsInstanceOfType(actual, typeof(BigEndianBinaryWriter));
                 Assert.AreEqual(encoding, actual.Encoding);
             }
@@ -131,7 +132,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
             BinaryFormatterFactory target = new BinaryFormatterFactory(formatType, encoding);
             using (Stream stream = new MemoryStream())
             {
-                BinaryReaderBase actual = target.CreateReader(stream);
+                BinaryReaderBase actual = target.CreateReader(new StreamAdapter(stream));
                 Assert.IsInstanceOfType(actual, typeof(BigEndianBinaryReader));
                 Assert.AreEqual(encoding, actual.Encoding);
             }

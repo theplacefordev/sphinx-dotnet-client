@@ -148,7 +148,7 @@ namespace Sphinx.Client.Commands.Search
             get { return _query; }
             set
             {
-                ArgumentAssert.IsNotEmpty(value, "Query");
+                ArgumentAssert.IsNotNull(value, "Query");
                 _query = value;
             }
         }

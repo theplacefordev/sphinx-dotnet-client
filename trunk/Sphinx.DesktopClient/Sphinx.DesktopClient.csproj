@@ -35,11 +35,7 @@
   <ItemGroup>
     <Reference Include="CustomValidation, Version=1.0.3450.34143, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\CustomValidation.dll</HintPath>
-    </Reference>
-    <Reference Include="Sphinx.Client, Version=0.3.3.5, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Sphinx.Client.dll</HintPath>
+      <HintPath>..\lib\CustomValidation.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -93,6 +89,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\sphinx.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sphinx.Client\Sphinx.Client.csproj">
+      <Project>{DA4B099D-BD73-4FDF-8B6F-FF690D076BC0}</Project>
+      <Name>Sphinx.Client</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

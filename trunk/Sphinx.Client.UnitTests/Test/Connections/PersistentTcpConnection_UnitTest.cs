@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sphinx.Client.Commands;
 using System.IO;
 using Sphinx.Client.IO;
+using Sphinx.Client.Network;
 using Sphinx.Client.UnitTests.Mock.Commands;
 using Sphinx.Client.UnitTests.Mock.IO;
 using Sphinx.Client.UnitTests.Test.Extensions;
@@ -313,13 +314,14 @@ namespace Sphinx.Client.UnitTests.Test.Connections
                 // preserialize server protocol version and rewind to start pos. (emulate first stage of handshake procedure)
                 int protocolVersion = TcpConnection_Accessor.MAJOR_PROTOCOL_VERSION;
                 writer.Write(protocolVersion);
-                long pos = accessor.DataStream.Position;
-                accessor.DataStream.Seek(0, SeekOrigin.Begin);
+				StreamAdapter_Accessor streamAccessor = GetStreamAccessor((StreamAdapter)accessor.DataStream);
+				long pos = streamAccessor.Stream.Position;
+				streamAccessor.Stream.Seek(0, SeekOrigin.Begin);
 
                 accessor.SendHandshake();
 
                 // restore stream pos
-                accessor.DataStream.Seek(pos, SeekOrigin.Begin);
+				streamAccessor.Stream.Seek(pos, SeekOrigin.Begin);
                 BinaryReaderBase reader = factory.CreateReader(accessor.DataStream);
                 // read client response 
                 int actual = reader.ReadInt32();
@@ -351,7 +353,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
             try
             {
                 PersistentTcpConnection_Accessor accessor = GetConnectionAccessor(conn);
-                // assign mock socket
+				// assign mock socket
                 accessor.Socket = new ClientSocketMock();
                 accessor.Socket.Open();
 
@@ -366,7 +368,8 @@ namespace Sphinx.Client.UnitTests.Test.Connections
 
                 accessor.PerformCommand(command);
 
-                accessor.DataStream.Seek(0, SeekOrigin.Begin);
+				StreamAdapter_Accessor streamAccessor = GetStreamAccessor((StreamAdapter)accessor.DataStream);
+				streamAccessor.Stream.Seek(0, SeekOrigin.Begin);
                 BinaryReaderBase reader = factory.CreateReader(accessor.DataStream);
 
                 // read & check data sent by mock command code
@@ -507,6 +510,13 @@ namespace Sphinx.Client.UnitTests.Test.Connections
             TcpConnection_Accessor accessor = new TcpConnection_Accessor(po);
             return accessor;
         }
+
+		protected StreamAdapter_Accessor GetStreamAccessor(StreamAdapter adapter)
+		{
+			PrivateObject po = new PrivateObject(adapter);
+			StreamAdapter_Accessor accessor = new StreamAdapter_Accessor(po);
+			return accessor;
+		}
         #endregion    
 
     }

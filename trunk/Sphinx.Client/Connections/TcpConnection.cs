@@ -35,6 +35,7 @@ namespace Sphinx.Client.Connections
     {
         #region Constants
         protected const int MAJOR_PROTOCOL_VERSION = 1;
+		// TODO: replace with 0 value ?
 		protected const int DEFAULT_CLIENT_TIMEOUT_MS = Timeout.Infinite;
 		protected const int DEFAULT_PORT = 9312;
 
@@ -45,7 +46,7 @@ namespace Sphinx.Client.Connections
         private string _host;
         private int _port = DEFAULT_PORT;
         private int _connectionTimeout = DEFAULT_CLIENT_TIMEOUT_MS;
-        private IClientSocket _socket;
+        private ISocketAdapter _socket;
         #endregion
 
         #region Constructors
@@ -112,19 +113,19 @@ namespace Sphinx.Client.Connections
         /// </summary>
         public override bool IsConnected
         {
-            get { return Socket.Connected; }
+			get { return Socket.Connected; }
         }
 
         /// <summary>
         /// Returns network client socket object
         /// </summary>
-        protected override IClientSocket Socket
+        protected override ISocketAdapter Socket
         {
             get 
             { 
                 if (_socket == null)
                 {
-                    _socket = new TcpClientSocket();
+                    _socket = new TcpSocketAdapter();
                 }
                 return _socket;
             }
@@ -135,7 +136,7 @@ namespace Sphinx.Client.Connections
         /// <summary>
         /// Underlying network data stream object
         /// </summary>
-        protected override Stream DataStream
+        protected override IStreamAdapter DataStream
         {
             get
             {

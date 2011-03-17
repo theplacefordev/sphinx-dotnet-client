@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sphinx.Client.Common;
 using Sphinx.Client.IO;
+using Sphinx.Client.Network;
 using Sphinx.Client.UnitTests.Test.Extensions;
 
 namespace Sphinx.Client.UnitTests.Test.IO
@@ -64,7 +65,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         {
             Stream output = new MemoryStream();
             Encoding encoding = Encoding.UTF7;
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output, encoding);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output), encoding);
             PrivateObject po = new PrivateObject(target);
             BigEndianBinaryWriter_Accessor accessor = new BigEndianBinaryWriter_Accessor(po);
             Assert.AreSame(accessor.Encoding, encoding);
@@ -79,7 +80,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
             byte[] expected = new byte[] { 0, 0, 0, 6, 97, 00, 98, 00, 99, 00 }; // "abc" string in utf16 + int string length in bytes
             MemoryStream output = new MemoryStream();
             Encoding encoding = Encoding.Unicode;
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output, encoding);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output), encoding);
             string input = "abc";
             target.Write(input);
             byte[] actual = output.ToArray();
@@ -92,18 +93,13 @@ namespace Sphinx.Client.UnitTests.Test.IO
         [TestMethod]
         public void BigEndianBinaryWriterConstructorNullStreamTest()
         {
-            Stream output = null;
             try
             {
-                BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+                new BigEndianBinaryWriter(null);
             }
             catch(ArgumentException)
             {
                 return; // test passed -ArgumentException has been thrown
-            }
-            catch(Exception ex)
-            {
-                Assert.Fail(ex.Message);
             }
             Assert.Fail("Exception must be thrown for null output stream object");
         }
@@ -117,7 +113,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         public void WriteByteTest()
         {
             MemoryStream output = new MemoryStream();
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output));
             byte expected = 255;
             target.Write(expected);
             byte actual = output.ToArray()[0];
@@ -131,7 +127,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         public void WriteShortTest()
         {
             MemoryStream output = new MemoryStream();
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output));
             short data = 12345;
             byte[] expected = new byte[] { 0x30, 0x39 }; // 12345 in Big endian representation
             target.Write(data);
@@ -146,7 +142,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         public void WriteIntTest()
         {
             MemoryStream output = new MemoryStream();
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output));
             int data = 16776960;
             byte[] expected = new byte[] { 0x00, 0xFF, 0xFF, 0x00 }; // 16776960 in Big endian representation
             target.Write(data);
@@ -162,7 +158,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         public void WriteByteArrayTest()
         {
             MemoryStream output = new MemoryStream();
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output));
             byte[] expected = new byte[] { 1, 2, 3 };
             target.Write(expected);
             byte[] actual = output.ToArray();
@@ -177,7 +173,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         public void WriteStringTest()
         {
             MemoryStream output = new MemoryStream();
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output));
             string data = "abc"; 
             target.Write(data);
             byte[] expected = new byte[] { 0, 0, 0, 3, 97, 98, 99 }; // 'abc' string in utf-8 + prefix int with string length
@@ -192,7 +188,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         public void WriteBooleanTest()
         {
             MemoryStream output = new MemoryStream();
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output));
             // false
             bool data = false; 
             target.Write(data);
@@ -215,7 +211,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         public void WriteDateTimeTest()
         {
             MemoryStream output = new MemoryStream();
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output));
             DateTime data = new DateTime(1970, 1, 1, 0, 0, 1, DateTimeKind.Utc).ToLocalTime(); // 01.01.1970 00:00:01 UTC
             target.Write(data);
             byte[] expected = new byte[] { 0, 0, 0, 1 }; // 1 sec from Unix epoch
@@ -230,7 +226,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         public void WriteLongTest()
         {
             MemoryStream output = new MemoryStream();
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output));
             long data = 1234567890123456789;
             target.Write(data);
             byte[] expected = new byte[] { 0x11, 0x22, 0x10, 0xF4, 0x7D, 0xE9, 0x81, 0x15 };
@@ -245,7 +241,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         public void WriteFloatTest()
         {
             MemoryStream output = new MemoryStream();
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output));
             float data = 1.23f; 
             target.Write(data);
             byte[] expected = new byte[] { 0x3F, 0x9D, 0x70, 0xA4 }; // 1.23 in IEEE Float in Big endian representation with single precision (32 bit)
@@ -260,7 +256,7 @@ namespace Sphinx.Client.UnitTests.Test.IO
         public void WriteDoubleTest()
         {
             MemoryStream output = new MemoryStream();
-            BigEndianBinaryWriter target = new BigEndianBinaryWriter(output);
+            BigEndianBinaryWriter target = new BigEndianBinaryWriter(new StreamAdapter(output));
             double data = 1.23123456789000002231659891549E2;
             target.Write(data);
             byte[] expected = new byte[] { 0x40, 0x5E, 0xC7, 0xE6, 0xB7, 0x4D, 0xCE, 0x59 }; // 1.23123456789000002231659891549E2 in IEEE Double in Big endian representation with double precision (64 bit)
