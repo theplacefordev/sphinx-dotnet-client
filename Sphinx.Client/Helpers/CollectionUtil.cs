@@ -43,7 +43,7 @@ namespace Sphinx.Client.Helpers
         }
 
         /// <summary>
-        /// Union two dictionaries. Dictionary items values will be merged (if item with some key from source dictionary is exists in target dictionary, value in target dictionary item will be updated).
+        /// Union two plain dictionaries. Dictionary items values will be merged (if item with some key from source dictionary is exists in target dictionary, value in target dictionary item will be updated).
         /// </summary>
         /// <typeparam name="TValue">Dictionary value generic type parameter</typeparam>
         /// <typeparam name="TKey">Dictionary key generic type parameter</typeparam>
@@ -56,7 +56,7 @@ namespace Sphinx.Client.Helpers
                 TKey key = item.Key;
                 if (!target.ContainsKey(key))
                 {
-                    //
+                    // add value
                     target.Add(item);
                 }
                 else if (Comparer.Default.Compare(target[key], source[key]) != 0)
@@ -66,5 +66,26 @@ namespace Sphinx.Client.Helpers
                 }
             }
         }
+
+		/// <summary>
+		/// Union two dictionaries with sub-collection of items. If dictionary already contains specifed key, it will be replaced by new collection items.
+		/// </summary>
+		/// <typeparam name="TValue">Dictionary value generic type parameter</typeparam>
+		/// <typeparam name="TKey">Dictionary key generic type parameter</typeparam>
+		/// <param name="target">Target dictionaries</param>
+		/// <param name="source">Source dictionaries</param>
+		public static void UnionDictionaries<TKey, TValue>(IDictionary<TKey, IList<TValue>> target, IDictionary<TKey, IEnumerable<TValue>> source)
+		{
+			foreach (KeyValuePair<TKey, IEnumerable<TValue>> item in source)
+			{
+				TKey key = item.Key;
+				if (target.ContainsKey(key))
+				{
+					target.Remove(key);
+				}
+				// add key and clone source IEnumerable collection 
+				target.Add(new KeyValuePair<TKey, IList<TValue>>(item.Key, new List<TValue>(item.Value)));
+			}
+		}
     }
 }

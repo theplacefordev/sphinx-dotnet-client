@@ -71,13 +71,13 @@ namespace Sphinx.Client.Helpers
         public static void IsNotEmpty<T>(ICollection<T> argumentValue, string argumentName)
         {
             if (argumentValue == null || argumentValue.Count == 0)
-                throw new ArgumentException(Messages.Exception_ArgumentIsEmpty, argumentName);
+				throw new ArgumentException(Messages.Exception_ArgumentCollectionIsEmpty, argumentName);
         }
 
         public static void IsNotEmpty<TKey,TValue>(IDictionary<TKey,TValue> argumentValue, string argumentName)
         {
             if (argumentValue == null || argumentValue.Count == 0)
-                throw new ArgumentException(Messages.Exception_ArgumentIsEmpty, argumentName);
+				throw new ArgumentException(Messages.Exception_ArgumentDictionaryIsEmpty, argumentName);
         }
         #endregion
 

@@ -38,9 +38,9 @@ namespace Sphinx.Client.Commands.Attributes.Values
 			_values = new List<DateTime>();
         }
 
-        public AttributeValuesDateTime(string name, List<DateTime> values): base(name)
+        public AttributeValuesDateTime(string name, IEnumerable<DateTime> values): base(name)
         {
-            _values = values;
+            _values.AddRange(values);
         }
         
         #endregion

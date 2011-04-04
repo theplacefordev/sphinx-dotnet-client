@@ -37,9 +37,9 @@ namespace Sphinx.Client.Commands.Attributes.Values
 			_values = new List<int>();
         }
 
-        public AttributeValuesInt32(string name, List<int> values): base(name)
+        public AttributeValuesInt32(string name, IEnumerable<int> values): base(name)
         {
-            _values = values;
+            _values.AddRange(values);
         }
         
         #endregion

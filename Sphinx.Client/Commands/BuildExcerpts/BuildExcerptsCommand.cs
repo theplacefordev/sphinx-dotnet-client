@@ -87,8 +87,8 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         /// <param name="index">Index name are copied to <see cref=".Index"/> property.</param>
         public BuildExcerptsCommand(ConnectionBase connection, IEnumerable<string> documents, IEnumerable<string> keywords, string index): base(connection)
         {
-            Documents.AddRange(documents);
-            Keywords.AddRange(keywords);
+            _documents.AddRange(documents);
+            _keywords.AddRange(keywords);
             Index = index;
         }
         #endregion
@@ -99,7 +99,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         /// <summary>
         /// List of strings with documents content. List can't be empty.
         /// </summary>
-        public StringList Documents
+        public IList<string> Documents
         {
             get { return _documents; }
         }
@@ -120,7 +120,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         /// <summary>
         /// List must contain keywords to highlight. Can contain wildcards. List can't be empty.
         /// </summary>
-        public StringList Keywords
+		public IList<string> Keywords
         {
             get { return _keywords; }
         }
@@ -269,8 +269,8 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         /// </summary>
         public override void Execute()
         {
-			ArgumentAssert.IsGreaterThan(Documents.Count, 0, "Documents.Count");
-            ArgumentAssert.IsGreaterThan(Keywords.Count, 0, "Keywords.Count");
+			ArgumentAssert.IsNotEmpty<string>(Documents, "Documents");
+            ArgumentAssert.IsNotEmpty<string>(Keywords, "Keywords");
             ArgumentAssert.IsNotEmpty(Index, "Index");
 
             base.Execute();
@@ -288,7 +288,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
             // parameters
             writer.Write((int)Options);
             writer.Write(Index);
-            Keywords.Serialize(writer);
+            _keywords.Serialize(writer);
 
             // options
             writer.Write(BeforeMatch);
@@ -296,14 +296,14 @@ namespace Sphinx.Client.Commands.BuildExcerpts
             writer.Write(SnippetsDelimiter);
             writer.Write(SnippetSizeLimit);
             writer.Write(WordsAroundKeyword);
-			// 1.10-beta
+			// added since 1.10-beta
 			writer.Write(SnippetsCountLimit);
         	writer.Write(WordsCountLimit);
 			writer.Write(StartPassageId);
 			writer.Write(Enum.GetName(typeof(HtmlStripMode), HtmlStripMode).ToLowerInvariant());
 
             // serialize documents list
-			Documents.Serialize(writer);
+			_documents.Serialize(writer);
         }
 
         /// <summary>

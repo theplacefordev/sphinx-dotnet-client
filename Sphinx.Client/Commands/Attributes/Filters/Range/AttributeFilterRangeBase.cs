@@ -26,7 +26,7 @@ namespace Sphinx.Client.Commands.Attributes.Filters.Range
     public abstract class AttributeFilterRangeBase<T> : AttributeFilterBase
     {
         #region Constructors
-        public AttributeFilterRangeBase(string name, T minValue, T maxValue, bool exclude): base(name, exclude)
+    	protected AttributeFilterRangeBase(string name, T minValue, T maxValue, bool exclude): base(name, exclude)
         {
             MinValue = minValue;
             MaxValue = maxValue;

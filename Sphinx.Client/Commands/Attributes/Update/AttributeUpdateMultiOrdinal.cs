@@ -26,10 +26,10 @@ namespace Sphinx.Client.Commands.Attributes.Update
     /// <summary>
     /// Represents attribute multi-ordinal values and document IDs set to update.
     /// </summary>
-    public class AttributeUpdateMultiOrdinal : AttributeUpdateBase, IAttributeValuesPerDocument<List<int>>
+    public class AttributeUpdateMultiOrdinal : AttributeUpdateBase, IAttributeValuesPerDocument<IList<int>>
     {
         #region Fields
-        private readonly Dictionary<long, List<int>> _values;
+        private readonly Dictionary<long, IList<int>> _values = new Dictionary<long, IList<int>>();
         
         #endregion
 
@@ -39,11 +39,10 @@ namespace Sphinx.Client.Commands.Attributes.Update
 
         }
 
-        public AttributeUpdateMultiOrdinal(string name, Dictionary<long, List<int>> values): base(name)
+        public AttributeUpdateMultiOrdinal(string name, IDictionary<long, IList<int>> values): base(name)
         {
-            ArgumentAssert.IsNotNull(values, "values");
-            ArgumentAssert.IsNotEmpty(values.Count, "values");
-            _values = values;
+            ArgumentAssert.IsNotEmpty(values, "values");
+            CollectionUtil.UnionDictionaries(_values, values);
         }
         
         #endregion
@@ -55,7 +54,7 @@ namespace Sphinx.Client.Commands.Attributes.Update
         }
 
         #region Implementation of IAttributeValuesPerDocument
-        public IDictionary<long, List<int>> Values
+        public IDictionary<long, IList<int>> Values
         {
             get { return _values; }
         }
@@ -72,7 +71,7 @@ namespace Sphinx.Client.Commands.Attributes.Update
 
         internal override void Serialize(BinaryWriterBase writer, long id)
         {
-            List<int> values = Values[id];
+            IList<int> values = Values[id];
             writer.Write(values.Count);
             foreach (int val in values)
             {

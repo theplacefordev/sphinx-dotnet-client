@@ -37,8 +37,6 @@ namespace Sphinx.Client.Commands.Attributes
         MultiOrdinal = Ordinal | MultiValueAttribute.MultiFlag,
         MultiBoolean = Boolean | MultiValueAttribute.MultiFlag,
         MultiFloat = Float | MultiValueAttribute.MultiFlag,
-        MultiBigint = Bigint | MultiValueAttribute.MultiFlag,
-		MultiString = String | MultiValueAttribute.MultiFlag
     }
 
 

@@ -59,7 +59,7 @@ namespace Sphinx.Client.Commands.Search
         /// <summary>
         /// Retrieved matches.
         /// </summary>
-        public MatchList Matches
+		public IList<Match> Matches
         {
             get { return _matches; }
         }
@@ -67,7 +67,7 @@ namespace Sphinx.Client.Commands.Search
         /// <summary>
         /// Per-word statistics.
         /// </summary>
-        public WordsInfoList Words
+		public IList<WordInfo> Words
         {
             get { return _words; }
         }

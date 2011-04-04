@@ -26,10 +26,10 @@ namespace Sphinx.Client.Commands.Attributes.Update
     /// <summary>
     /// Represents attribute multi-float values and document IDs set to update.
     /// </summary>
-    public class AttributeUpdateMultiFloat : AttributeUpdateBase, IAttributeValuesPerDocument<List<float>>
+    public class AttributeUpdateMultiFloat : AttributeUpdateBase, IAttributeValuesPerDocument<IList<float>>
     {
         #region Fields
-        private readonly Dictionary<long, List<float>> _values = new Dictionary<long, List<float>>();
+		private readonly Dictionary<long, IList<float>> _values = new Dictionary<long, IList<float>>();
 
         #endregion
 
@@ -38,7 +38,7 @@ namespace Sphinx.Client.Commands.Attributes.Update
         {
         }
 
-        public AttributeUpdateMultiFloat(string name, IDictionary<long, List<float>> values): base(name)
+		public AttributeUpdateMultiFloat(string name, IDictionary<long, IEnumerable<float>> values): base(name)
         {
             ArgumentAssert.IsNotNull(values, "values");
             ArgumentAssert.IsNotEmpty(values.Count, "values.Count");
@@ -54,7 +54,7 @@ namespace Sphinx.Client.Commands.Attributes.Update
         }
 
         #region Implementation of IAttributeValuesPerDocument
-        public IDictionary<long, List<float>> Values
+		public IDictionary<long, IList<float>> Values
         {
             get { return _values; }
         }
@@ -71,7 +71,7 @@ namespace Sphinx.Client.Commands.Attributes.Update
 
         internal override void Serialize(BinaryWriterBase writer, long id)
         {
-            List<float> values = Values[id];
+			IList<float> values = Values[id];
             writer.Write(values.Count);
             foreach (float val in values)
             {

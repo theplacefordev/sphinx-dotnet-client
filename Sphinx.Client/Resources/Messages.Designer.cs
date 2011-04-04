@@ -61,11 +61,29 @@ namespace Sphinx.Client.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Argument collection is empty.
+        /// </summary>
+        internal static string Exception_ArgumentCollectionIsEmpty {
+            get {
+                return ResourceManager.GetString("Exception_ArgumentCollectionIsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DateTime value can&apos;t be before Unix Epoch (1 Jan 1970 00:00:00 UTC) and after Unix Millenium (19 January 2038 03:14:07 UTC) .
         /// </summary>
         internal static string Exception_ArgumentDateTimeOutOfRangeUnixTimestamp {
             get {
                 return ResourceManager.GetString("Exception_ArgumentDateTimeOutOfRangeUnixTimestamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument dictionary collection is empty.
+        /// </summary>
+        internal static string Exception_ArgumentDictionaryIsEmpty {
+            get {
+                return ResourceManager.GetString("Exception_ArgumentDictionaryIsEmpty", resourceCulture);
             }
         }
         

@@ -65,16 +65,12 @@ namespace Sphinx.Client.Commands.Attributes.Values
             		return new AttributeValueString();
                 case AttributeType.MultiInteger:
                     return new AttributeValuesInt32();
-                case AttributeType.MultiBigint:
-                    return new AttributeValueInt64();
                 case AttributeType.MultiFloat:
                     return new AttributeValuesFloat();
                 case AttributeType.MultiTimestamp:
                     return new AttributeValuesDateTime();
                 case AttributeType.MultiBoolean:
                     return new AttributeValuesBoolean();
-				case AttributeType.MultiString:
-            		return new AttributeValuesString();
             }
             throw new NotSupportedException(String.Format(Messages.Exception_UnsupportedAttributeType, Enum.GetName(typeof(AttributeType), type)));
         }

@@ -50,7 +50,7 @@ namespace Sphinx.Client.Commands.BuildKeywords
 
         public BuildKeywordsCommand(ConnectionBase connection, IEnumerable<string> indexes, string query): base(connection)
         {
-            Indexes.UnionWith(indexes);
+			_indexNames.UnionWith(indexes);
             Query = query;
         }
 
@@ -66,7 +66,7 @@ namespace Sphinx.Client.Commands.BuildKeywords
         /// <summary>
         /// List of index names
         /// </summary>
-        public StringList Indexes
+        public IList<string> Indexes
         {
             get { return _indexNames; }
         }
@@ -105,7 +105,7 @@ namespace Sphinx.Client.Commands.BuildKeywords
         #region Overrides of CommandWithResultBase
         public override void Execute()
         {
-            ArgumentAssert.IsGreaterThan(Indexes.Count, 0, "Indexes.Count");
+            ArgumentAssert.IsNotEmpty<string>(Indexes, "Indexes");
             ArgumentAssert.IsNotEmpty(Query, "Query");
 
             base.Execute();
@@ -114,7 +114,7 @@ namespace Sphinx.Client.Commands.BuildKeywords
         protected override void SerializeRequest(BinaryWriterBase writer)
         {
             writer.Write(Query);
-            Indexes.Serialize(writer);
+			_indexNames.Serialize(writer);
             writer.Write(CalculateStatistics);
         }
 
