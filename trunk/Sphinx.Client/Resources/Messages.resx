@@ -208,4 +208,10 @@ Server message: '{0}'.</value>
   <data name="Exception_ReadTimeoutExpired" xml:space="preserve">
     <value>Read timeout expired</value>
   </data>
+  <data name="Exception_ArgumentCollectionIsEmpty" xml:space="preserve">
+    <value>Argument collection is empty</value>
+  </data>
+  <data name="Exception_ArgumentDictionaryIsEmpty" xml:space="preserve">
+    <value>Argument dictionary collection is empty</value>
+  </data>
 </root>

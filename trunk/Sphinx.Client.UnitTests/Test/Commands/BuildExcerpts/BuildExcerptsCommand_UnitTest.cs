@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Sphinx.Client.Commands.BuildExcerpts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

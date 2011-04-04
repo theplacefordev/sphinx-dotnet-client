@@ -50,8 +50,8 @@ namespace Sphinx.Client.Commands.UpdateAttributes
 
         public UpdateAttributesCommand(ConnectionBase connection, IEnumerable<string> indexes, IEnumerable<AttributeUpdateBase> attributesValues): base(connection)
         {
-            Indexes.UnionWith(indexes);
-            AttributesValues.UnionWith(attributesValues);
+            _indexNames.UnionWith(indexes);
+			_attributesValues.UnionWith(attributesValues);
         }
         #endregion
 
@@ -61,7 +61,7 @@ namespace Sphinx.Client.Commands.UpdateAttributes
         /// <summary>
         /// List of index names to be updated
         /// </summary>
-        public StringList Indexes
+        public IList<string> Indexes
         {
             get { return _indexNames; }
         }
@@ -94,8 +94,8 @@ namespace Sphinx.Client.Commands.UpdateAttributes
         /// </summary>
         public override void Execute()
         {
-            ArgumentAssert.IsGreaterThan(Indexes.Count, 0, "Indexes.Count");
-            ArgumentAssert.IsGreaterThan(AttributesValues.Count, 0, "AttributesValues.Count");
+			ArgumentAssert.IsNotEmpty<string>(Indexes, "Indexes");
+			ArgumentAssert.IsNotEmpty<AttributeUpdateBase>(AttributesValues, "AttributesValues");
 
             base.Execute();
         }
@@ -106,8 +106,8 @@ namespace Sphinx.Client.Commands.UpdateAttributes
         /// <param name="writer">Binary stream writer object</param>
         protected override void SerializeRequest(BinaryWriterBase writer)
         {
-            Indexes.Serialize(writer);
-            AttributesValues.Serialize(writer);
+            _indexNames.Serialize(writer);
+            _attributesValues.Serialize(writer);
         }
 
         /// <summary>

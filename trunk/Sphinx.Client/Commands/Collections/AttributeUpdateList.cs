@@ -41,7 +41,7 @@ namespace Sphinx.Client.Commands.Collections
         /// <param name="name">Attribute name</param>
         /// <param name="id">Document ID</param>
         /// <param name="value">New value</param>
-        /// <returns>New attribute override object</returns>
+        /// <returns>New object</returns>
         public AttributeUpdateBoolean Add(string name, long id, bool value)
         {
             Dictionary<long, bool> dict = new Dictionary<long, bool>();
@@ -56,7 +56,7 @@ namespace Sphinx.Client.Commands.Collections
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="values">Document id and override values map to override</param>
-        /// <returns>New attribute override object</returns>
+        /// <returns>New object</returns>
         public AttributeUpdateBoolean Add(string name, IDictionary<long, bool> values)
         {
             AttributeUpdateBoolean item = new AttributeUpdateBoolean(name, values);
@@ -71,7 +71,7 @@ namespace Sphinx.Client.Commands.Collections
         /// <param name="name">Attribute name</param>
         /// <param name="id">Document ID</param>
         /// <param name="value">New value</param>
-        /// <returns>New attribute override object</returns>
+        /// <returns>New object</returns>
         public AttributeUpdateDateTime Add(string name, long id, DateTime value)
         {
             Dictionary<long, DateTime> dict = new Dictionary<long, DateTime>();
@@ -86,7 +86,7 @@ namespace Sphinx.Client.Commands.Collections
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="values">Document id and override values map to override</param>
-        /// <returns>New attribute override object</returns>
+        /// <returns>New object</returns>
         public AttributeUpdateDateTime Add(string name, IDictionary<long, DateTime> values)
         {
             AttributeUpdateDateTime item = new AttributeUpdateDateTime(name, values);
@@ -101,7 +101,7 @@ namespace Sphinx.Client.Commands.Collections
         /// <param name="name">Attribute name</param>
         /// <param name="id">Document ID</param>
         /// <param name="value">New value</param>
-        /// <returns>New attribute override object</returns>
+        /// <returns>New object</returns>
         public AttributeUpdateFloat Add(string name, long id, float value)
         {
             Dictionary<long, float> dict = new Dictionary<long, float>();
@@ -116,7 +116,7 @@ namespace Sphinx.Client.Commands.Collections
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="values">Document id and override values map to override</param>
-        /// <returns>New attribute override object</returns>
+        /// <returns>New object</returns>
         public AttributeUpdateFloat Add(string name, IDictionary<long, float> values)
         {
             AttributeUpdateFloat item = new AttributeUpdateFloat(name, values);
@@ -131,7 +131,7 @@ namespace Sphinx.Client.Commands.Collections
         /// <param name="name">Attribute name</param>
         /// <param name="id">Document ID</param>
         /// <param name="value">New value</param>
-        /// <returns>New attribute override object</returns>
+        /// <returns>New object</returns>
         public AttributeUpdateInt32 Add(string name, long id, int value)
         {
             Dictionary<long, int> dict = new Dictionary<long, int>();
@@ -146,7 +146,7 @@ namespace Sphinx.Client.Commands.Collections
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="values">Document id and override values map to override</param>
-        /// <returns>New attribute override object</returns>
+        /// <returns>New object</returns>
         public AttributeUpdateInt32 Add(string name, IDictionary<long, int> values)
         {
             AttributeUpdateInt32 item = new AttributeUpdateInt32(name, values);
@@ -154,17 +154,47 @@ namespace Sphinx.Client.Commands.Collections
             return item;
         }
 
+		/// <summary>
+		/// Add new string value to update attribute value stored in Sphinx index by document ID.
+		/// </summary>
+		/// <param name="name">Attribute name</param>
+		/// <param name="id">Document ID</param>
+		/// <param name="value">New value</param>
+		/// <returns>New object</returns>
+		public AttributeUpdateString Add(string name, long id, string value)
+		{
+			Dictionary<long, string> dict = new Dictionary<long, string>();
+			dict.Add(id, value);
+			AttributeUpdateString item = new AttributeUpdateString(name, dict);
+			Add(item);
+			return item;
+		}
+
+		/// <summary>
+		/// Add new float values to update attribute values stored in Sphinx index by document IDs.
+		/// </summary>
+		/// <param name="name">Attribute name</param>
+		/// <param name="values">Document id and override values map to override</param>
+		/// <returns>New object</returns>
+		public AttributeUpdateString Add(string name, IDictionary<long, string> values)
+		{
+			AttributeUpdateString item = new AttributeUpdateString(name, values);
+			Add(item);
+			return item;
+		}
+
+
         /// <summary>
         /// Add new boolean multi-value to update attribute value stored in Sphinx index by document ID.
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="id">Document ID</param>
         /// <param name="value">New value</param>
-        /// <returns>New attribute override object</returns>
-        public AttributeUpdateMultiBoolean Add(string name, long id, List<bool> value)
+        /// <returns>New object</returns>
+		public AttributeUpdateMultiBoolean Add(string name, long id, IEnumerable<bool> value)
         {
-            Dictionary<long, List<bool>> dict = new Dictionary<long, List<bool>>();
-            dict.Add(id, value);
+			Dictionary<long, IEnumerable<bool>> dict = new Dictionary<long, IEnumerable<bool>>();
+            dict.Add(id, new List<bool>(value));
             AttributeUpdateMultiBoolean item = new AttributeUpdateMultiBoolean(name, dict);
             Add(item);
             return item;
@@ -175,8 +205,8 @@ namespace Sphinx.Client.Commands.Collections
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="values">Document id and override values map to override</param>
-        /// <returns>New attribute override object</returns>
-        public AttributeUpdateMultiBoolean Add(string name, IDictionary<long, List<bool>> values)
+        /// <returns>New object</returns>
+        public AttributeUpdateMultiBoolean Add(string name, IDictionary<long, IEnumerable<bool>> values)
         {
             AttributeUpdateMultiBoolean item = new AttributeUpdateMultiBoolean(name, values);
             Add(item);
@@ -190,10 +220,10 @@ namespace Sphinx.Client.Commands.Collections
         /// <param name="name">Attribute name</param>
         /// <param name="id">Document ID</param>
         /// <param name="value">New value</param>
-        /// <returns>New attribute override object</returns>
-        public AttributeUpdateMultiDateTime Add(string name, long id, List<DateTime> value)
+        /// <returns>New object</returns>
+		public AttributeUpdateMultiDateTime Add(string name, long id, IEnumerable<DateTime> value)
         {
-            IDictionary<long, List<DateTime>> dict = new Dictionary<long, List<DateTime>>();
+			IDictionary<long, IEnumerable<DateTime>> dict = new Dictionary<long, IEnumerable<DateTime>>();
             dict.Add(id, value);
             AttributeUpdateMultiDateTime item = new AttributeUpdateMultiDateTime(name, dict);
             Add(item);
@@ -205,8 +235,8 @@ namespace Sphinx.Client.Commands.Collections
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="values">Document id and override values map to override</param>
-        /// <returns>New attribute override object</returns>
-        public AttributeUpdateMultiDateTime Add(string name, IDictionary<long, List<DateTime>> values)
+        /// <returns>New object</returns>
+		public AttributeUpdateMultiDateTime Add(string name, IDictionary<long, IEnumerable<DateTime>> values)
         {
             AttributeUpdateMultiDateTime item = new AttributeUpdateMultiDateTime(name, values);
             Add(item);
@@ -220,10 +250,10 @@ namespace Sphinx.Client.Commands.Collections
         /// <param name="name">Attribute name</param>
         /// <param name="id">Document ID</param>
         /// <param name="value">New value</param>
-        /// <returns>New attribute override object</returns>
-        public AttributeUpdateMultiFloat Add(string name, long id, List<float> value)
+        /// <returns>New object</returns>
+		public AttributeUpdateMultiFloat Add(string name, long id, IEnumerable<float> value)
         {
-            Dictionary<long, List<float>> dict = new Dictionary<long, List<float>>();
+			Dictionary<long, IEnumerable<float>> dict = new Dictionary<long, IEnumerable<float>>();
             dict.Add(id, value);
             AttributeUpdateMultiFloat item = new AttributeUpdateMultiFloat(name, dict);
             Add(item);
@@ -235,8 +265,8 @@ namespace Sphinx.Client.Commands.Collections
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="values">Document id and override values map to override</param>
-        /// <returns>New attribute override object</returns>
-        public AttributeUpdateMultiFloat Add(string name, IDictionary<long, List<float>> values)
+        /// <returns>New object</returns>
+		public AttributeUpdateMultiFloat Add(string name, IDictionary<long, IEnumerable<float>> values)
         {
             AttributeUpdateMultiFloat item = new AttributeUpdateMultiFloat(name, values);
             Add(item);
@@ -250,10 +280,10 @@ namespace Sphinx.Client.Commands.Collections
         /// <param name="name">Attribute name</param>
         /// <param name="id">Document ID</param>
         /// <param name="value">New value</param>
-        /// <returns>New attribute override object</returns>
-        public AttributeUpdateMultiInt32 Add(string name, long id, List<int> value)
+        /// <returns>New object</returns>
+		public AttributeUpdateMultiInt32 Add(string name, long id, IEnumerable<int> value)
         {
-            Dictionary<long, List<int>> dict = new Dictionary<long, List<int>>();
+			Dictionary<long, IEnumerable<int>> dict = new Dictionary<long, IEnumerable<int>>();
             dict.Add(id, value);
             AttributeUpdateMultiInt32 item = new AttributeUpdateMultiInt32(name, dict);
             Add(item);
@@ -265,8 +295,8 @@ namespace Sphinx.Client.Commands.Collections
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="values">Document id and override values map to override</param>
-        /// <returns>New attribute override object</returns>
-        public AttributeUpdateMultiInt32 Add(string name, IDictionary<long, List<int>> values)
+        /// <returns>New object</returns>
+		public AttributeUpdateMultiInt32 Add(string name, IDictionary<long, IEnumerable<int>> values)
         {
             AttributeUpdateMultiInt32 item = new AttributeUpdateMultiInt32(name, values);
             Add(item);
@@ -298,7 +328,7 @@ namespace Sphinx.Client.Commands.Collections
         /// <param name="writer">Binary writer (output formatter) object</param>
         internal void Serialize(BinaryWriterBase writer)
         {
-            // NOTE: class hierarchy differs from the internal Sphinx binary protocol data format model, requires split attribute names and document id/value sets.
+            // NOTE: class hierarchy differs from the internal Sphinx binary protocol data format representation, requires split attribute names and document id/value sets.
             List<long> documentIds = new List<long>();
             // pre-serialize attribute names first
             writer.Write(Count);

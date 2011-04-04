@@ -26,10 +26,10 @@ namespace Sphinx.Client.Commands.Attributes.Update
     /// <summary>
     /// Represents attribute multi-boolean values and document IDs set to update.
     /// </summary>
-    public class AttributeUpdateMultiBoolean : AttributeUpdateBase, IAttributeValuesPerDocument<List<bool>>
+    public class AttributeUpdateMultiBoolean : AttributeUpdateBase, IAttributeValuesPerDocument<IList<bool>>
     {
         #region Fields
-        private readonly Dictionary<long, List<bool>> _values = new Dictionary<long, List<bool>>();
+        private readonly Dictionary<long, IList<bool>> _values = new Dictionary<long, IList<bool>>();
         
         #endregion
 
@@ -38,11 +38,11 @@ namespace Sphinx.Client.Commands.Attributes.Update
         {
         }
 
-        public AttributeUpdateMultiBoolean(string name, IDictionary<long, List<bool>> values): base(name)
+        public AttributeUpdateMultiBoolean(string name, IDictionary<long, IEnumerable<bool>> values): base(name)
         {
             ArgumentAssert.IsNotNull(values, "values");
             ArgumentAssert.IsNotEmpty(values.Count, "values.Count");
-            CollectionUtil.UnionDictionaries(_values, values);
+			CollectionUtil.UnionDictionaries(_values, values);
         }
         
         #endregion
@@ -54,7 +54,7 @@ namespace Sphinx.Client.Commands.Attributes.Update
         }
 
         #region Implementation of IAttributeValuesPerDocument
-        public IDictionary<long, List<bool>> Values
+        public IDictionary<long, IList<bool>> Values
         {
             get { return _values; }
         }
@@ -66,12 +66,12 @@ namespace Sphinx.Client.Commands.Attributes.Update
         #region Methods
         internal override IEnumerable<long> GetDocumentsIdSet()
         {
-            return new List<long>(Values.Keys);
+            return Values.Keys;
         }
 
         internal override void Serialize(BinaryWriterBase writer, long id)
         {
-            List<bool> values = Values[id];
+            IList<bool> values = Values[id];
             writer.Write(values.Count);
             foreach (bool val in values)
             {

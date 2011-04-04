@@ -26,10 +26,10 @@ namespace Sphinx.Client.Commands.Attributes.Update
     /// <summary>
     /// Represents attribute multi-DateTime values and document IDs set to update.
     /// </summary>
-    public class AttributeUpdateMultiDateTime : AttributeUpdateBase, IAttributeValuesPerDocument<List<DateTime>>
+    public class AttributeUpdateMultiDateTime : AttributeUpdateBase, IAttributeValuesPerDocument<IList<DateTime>>
     {
         #region Fields
-        private readonly Dictionary<long, List<DateTime>> _values = new Dictionary<long, List<DateTime>>();
+		private readonly Dictionary<long, IList<DateTime>> _values = new Dictionary<long, IList<DateTime>>();
         
         #endregion
 
@@ -38,7 +38,7 @@ namespace Sphinx.Client.Commands.Attributes.Update
         {
         }
 
-        public AttributeUpdateMultiDateTime(string name, IDictionary<long, List<DateTime>> values): base(name)
+		public AttributeUpdateMultiDateTime(string name, IDictionary<long, IEnumerable<DateTime>> values): base(name)
         {
             ArgumentAssert.IsNotNull(values, "values");
             ArgumentAssert.IsNotEmpty(values.Count, "values.Count");
@@ -54,7 +54,7 @@ namespace Sphinx.Client.Commands.Attributes.Update
         }
 
         #region Implementation of IAttributeValuesPerDocument
-        public IDictionary<long, List<DateTime>> Values
+        public IDictionary<long, IList<DateTime>> Values
         {
             get { return _values; }
         }
