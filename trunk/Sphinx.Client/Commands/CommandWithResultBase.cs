@@ -130,7 +130,7 @@ namespace Sphinx.Client.Commands
                     break;
                 case CommandStatus.Warning:
                     // cut warning message from response stream
-                    _result.Warnings.Add(bodyReader.ReadString());
+                    _result.DeserializeWarning(bodyReader);
                     break;
                 case CommandStatus.Error:
                     string errorMessage = bodyReader.ReadString();

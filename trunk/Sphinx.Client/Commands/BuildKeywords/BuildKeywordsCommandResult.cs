@@ -15,13 +15,13 @@
 #region Usings
 
 using System.Collections.Generic;
-using Sphinx.Client.Commands.BuildKeywords;
+using System.Collections.ObjectModel;
 using Sphinx.Client.Commands.Collections;
 using Sphinx.Client.IO;
 
 #endregion
 
-namespace Sphinx.Client.Commands
+namespace Sphinx.Client.Commands.BuildKeywords
 {
     public class BuildKeywordsCommandResult : CommandResultBase
     {
@@ -31,11 +31,11 @@ namespace Sphinx.Client.Commands
         #endregion
 
         #region Properties
-        public IList<KeywordInfo> Keywords
+		public ReadOnlyCollection<KeywordInfo> Keywords
         {
             get
             {
-                return _keywordInfoList;
+                return _keywordInfoList.AsReadOnly();
             }
         }
         

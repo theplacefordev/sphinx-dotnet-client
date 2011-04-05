@@ -41,8 +41,7 @@ namespace Sphinx.Client.Commands.Attributes.Override
 
         public AttributeOverrideInt32(string name, IDictionary<long, int> values): base(name)
         {
-            ArgumentAssert.IsNotNull(values, "values");
-            ArgumentAssert.IsNotEmpty(values.Count, "values");
+            ArgumentAssert.IsNotEmpty(values, "values");
             CollectionUtil.UnionDictionaries(_values, values);
         }
         

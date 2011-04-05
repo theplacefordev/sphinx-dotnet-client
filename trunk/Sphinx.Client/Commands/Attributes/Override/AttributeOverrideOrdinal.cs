@@ -29,7 +29,7 @@ namespace Sphinx.Client.Commands.Attributes.Override
     public class AttributeOverrideOrdinal : AttributeOverrideBase, IAttributeValuesPerDocument<int>
     {
         #region Fields
-        private readonly Dictionary<long, int> _values;
+        private readonly Dictionary<long, int> _values = new Dictionary<long, int>();
         
         #endregion
 
@@ -39,11 +39,10 @@ namespace Sphinx.Client.Commands.Attributes.Override
 
         }
 
-        public AttributeOverrideOrdinal(string name, Dictionary<long, int> values): base(name)
+        public AttributeOverrideOrdinal(string name, IDictionary<long, int> values): base(name)
         {
-            ArgumentAssert.IsNotNull(values, "values");
-            ArgumentAssert.IsNotEmpty(values.Count, "values");
-            _values = values;
+            ArgumentAssert.IsNotEmpty(values, "values");
+            CollectionUtil.UnionDictionaries(_values, values);
         }
         
         #endregion

@@ -15,6 +15,7 @@
 #region Usings
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Sphinx.Client.IO;
 
 #endregion
@@ -35,11 +36,11 @@ namespace Sphinx.Client.Commands.Search
         /// <summary>
         /// Search query results list. Results item index are indentical to original <see cref="SearchQuery"/> object index in <see cref="Search"/> command list parameters.
         /// </summary>
-        public IList<SearchQueryResult> QueryResults
+		public ReadOnlyCollection<SearchQueryResult> QueryResults
         {
             get
             {
-                return _queryResults;
+                return _queryResults.AsReadOnly();
             }
         }
         
@@ -52,7 +53,7 @@ namespace Sphinx.Client.Commands.Search
             {
                 SearchQueryResult result = new SearchQueryResult();
                 result.Deserialize(reader);
-                QueryResults.Add(result);
+				_queryResults.Add(result);
             }
         }
 

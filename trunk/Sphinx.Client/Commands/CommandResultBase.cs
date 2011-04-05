@@ -15,6 +15,8 @@
 #region Usings
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Sphinx.Client.IO;
 
 #endregion
 
@@ -24,7 +26,7 @@ namespace Sphinx.Client.Commands
     {
         #region Fields
         // reported warnings list
-        private readonly List<string> _warnings = new List<string>();
+        private readonly List<string> _warningsList = new List<string>();
 
         // command execution status
         private CommandStatus _status = CommandStatus.Unknown;
@@ -52,12 +54,18 @@ namespace Sphinx.Client.Commands
         /// <summary>
         /// Warning messages, if any
         /// </summary>
-        public virtual IList<string> Warnings
+		public virtual ReadOnlyCollection<string> Warnings
         {
-            get { return _warnings; }
+			get { return _warningsList.AsReadOnly(); }
         }
  
         #endregion
 
-    }
+		#region Methods
+		internal void DeserializeWarning(BinaryReaderBase reader)
+		{
+			_warningsList.Add(reader.ReadString());
+		}
+		#endregion
+	}
 }

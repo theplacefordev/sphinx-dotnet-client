@@ -51,13 +51,14 @@ namespace Sphinx.Client.Commands.BuildKeywords
         public BuildKeywordsCommand(ConnectionBase connection, IEnumerable<string> indexes, string query): base(connection)
         {
 			_indexNames.UnionWith(indexes);
-            Query = query;
+			_queryText = query;
         }
 
         public BuildKeywordsCommand(ConnectionBase connection, IEnumerable<string> indexes, string query, bool calculateStatistics): this(connection, indexes, query)
         {
-            CalculateStatistics = calculateStatistics;
+			_calcStatistics = calculateStatistics;
         }
+
         #endregion
 
         #region Properties

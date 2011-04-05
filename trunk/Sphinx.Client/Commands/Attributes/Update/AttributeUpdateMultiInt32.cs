@@ -25,12 +25,8 @@ namespace Sphinx.Client.Commands.Attributes.Update
     /// <summary>
     /// Represents attribute multi-int values and document IDs set to update.
     /// </summary>
-	public class AttributeUpdateMultiInt32 : AttributeUpdateBase, IAttributeValuesPerDocument<IList<int>>
+	public class AttributeUpdateMultiInt32 : AttributeUpdateMultiPerDocumentBase<int>
     {
-        #region Fields
-		private readonly Dictionary<long, IList<int>> _values = new Dictionary<long, IList<int>>();
-        
-        #endregion
 
         #region Constructors
         internal AttributeUpdateMultiInt32()
@@ -38,11 +34,8 @@ namespace Sphinx.Client.Commands.Attributes.Update
 
         }
 
-		public AttributeUpdateMultiInt32(string name, IDictionary<long, IEnumerable<int>> values): base(name)
+		public AttributeUpdateMultiInt32(string name, IDictionary<long, IEnumerable<int>> values): base(name, values)
         {
-            ArgumentAssert.IsNotNull(values, "values");
-            ArgumentAssert.IsNotEmpty(values.Count, "values");
-            CollectionUtil.UnionDictionaries(_values, values);
         }
         
         #endregion
@@ -53,22 +46,10 @@ namespace Sphinx.Client.Commands.Attributes.Update
             get { return AttributeType.MultiInteger; }
         }
 
-        #region Implementation of IAttributeValuesPerDocument
-		public IDictionary<long, IList<int>> Values
-        {
-            get { return _values; }
-        }
-        
-        #endregion
         
         #endregion
 
         #region Methods
-        internal override IEnumerable<long> GetDocumentsIdSet()
-        {
-            return new List<long>(Values.Keys);
-        }
-
         internal override void Serialize(BinaryWriterBase writer, long id)
         {
 			IList<int> values = Values[id];

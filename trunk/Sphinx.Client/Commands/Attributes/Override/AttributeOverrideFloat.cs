@@ -40,8 +40,7 @@ namespace Sphinx.Client.Commands.Attributes.Override
 
         public AttributeOverrideFloat(string name, IDictionary<long, float> values): base(name)
         {
-            ArgumentAssert.IsNotNull(values, "values");
-            ArgumentAssert.IsNotEmpty(values.Count, "values.Count");
+            ArgumentAssert.IsNotEmpty(values, "values");
             CollectionUtil.UnionDictionaries(_values, values);
         }
         

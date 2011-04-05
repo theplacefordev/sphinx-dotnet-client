@@ -15,6 +15,7 @@
 #region Usings
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Sphinx.Client.IO;
 
 #endregion
@@ -35,11 +36,11 @@ namespace Sphinx.Client.Commands.BuildExcerpts
 		/// <summary>
         /// Builded documents excerpts list with highlighted keywords.
         /// </summary>
-        public IList<string> Excerpts
+		public ReadOnlyCollection<string> Excerpts
         {
             get
             {
-                return _excerpts;
+                return _excerpts.AsReadOnly();
             }
         }
 
@@ -50,7 +51,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         {
             for (int i = 0; i < count; i++)
             {
-                Excerpts.Add(reader.ReadString());
+				_excerpts.Add(reader.ReadString());
             }
         }
 
