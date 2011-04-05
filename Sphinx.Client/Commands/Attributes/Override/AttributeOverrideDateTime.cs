@@ -40,8 +40,7 @@ namespace Sphinx.Client.Commands.Attributes.Override
 
         public AttributeOverrideDateTime(string name, IDictionary<long, DateTime> values): base(name)
         {
-            ArgumentAssert.IsNotNull(values, "values");
-            ArgumentAssert.IsNotEmpty(values.Count, "values.Count");
+            ArgumentAssert.IsNotEmpty(values, "values");
             CollectionUtil.UnionDictionaries(_values, values);
         }
         

@@ -52,6 +52,8 @@
     <Compile Include="Commands\Attributes\Filters\Values\AttributeFilterValuesBoolean.cs" />
     <Compile Include="Commands\Attributes\Filters\Values\AttributeFilterValuesDateTime.cs" />
     <Compile Include="Commands\Attributes\Update\AttributeUpdateString.cs" />
+    <Compile Include="Commands\Attributes\Update\AttributeUpdateSinglePerDocumentBase.cs" />
+    <Compile Include="Commands\Attributes\Update\AttributeUpdateMultiPerDocumentBase.cs" />
     <Compile Include="Commands\Attributes\Values\AttributeValueInt32.cs" />
     <Compile Include="Commands\BuildExcerpts\HtmlStripMode.cs" />
     <Compile Include="Commands\Collections\DocumentList.cs" />

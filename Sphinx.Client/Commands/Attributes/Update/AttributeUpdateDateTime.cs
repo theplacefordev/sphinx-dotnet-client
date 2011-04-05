@@ -26,23 +26,15 @@ namespace Sphinx.Client.Commands.Attributes.Update
     /// <summary>
     /// Represents attribute DateTime values and document IDs set to update.
     /// </summary>
-    public class AttributeUpdateDateTime : AttributeUpdateBase, IAttributeValuesPerDocument<DateTime>
+	public class AttributeUpdateDateTime : AttributeUpdateSinglePerDocumentBase<DateTime>
     {
-        #region Fields
-        private readonly Dictionary<long, DateTime> _values = new Dictionary<long, DateTime>();
-        
-        #endregion
-
         #region Constructors
         internal AttributeUpdateDateTime()
         {
         }
 
-        public AttributeUpdateDateTime(string name, IDictionary<long, DateTime> values): base(name)
+        public AttributeUpdateDateTime(string name, IDictionary<long, DateTime> values): base(name, values)
         {
-            ArgumentAssert.IsNotNull(values, "values");
-            ArgumentAssert.IsNotEmpty(values.Count, "values.Count");
-            CollectionUtil.UnionDictionaries(_values, values);
         }
         
         #endregion
@@ -53,22 +45,9 @@ namespace Sphinx.Client.Commands.Attributes.Update
             get { return AttributeType.Timestamp; }
         }
 
-        #region Implementation of IAttributeValuesPerDocument
-        public IDictionary<long, DateTime> Values
-        {
-            get { return _values; }
-        }
-        
-        #endregion
-
         #endregion
 
         #region Methods
-        internal override IEnumerable<long> GetDocumentsIdSet()
-        {
-            return new List<long>(Values.Keys);
-        }
-
         internal override void Serialize(BinaryWriterBase writer, long id)
         {
             writer.Write(Values[id]);

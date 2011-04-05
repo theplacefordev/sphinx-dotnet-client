@@ -25,24 +25,16 @@ namespace Sphinx.Client.Commands.Attributes.Update
     /// <summary>
     /// Represents attribute ordinal values and document IDs set to update.
     /// </summary>
-    public class AttributeUpdateOrdinal : AttributeUpdateBase, IAttributeValuesPerDocument<int>
+	public class AttributeUpdateOrdinal : AttributeUpdateSinglePerDocumentBase<int>
     {
-        #region Fields
-        private readonly Dictionary<long, int> _values;
-        
-        #endregion
-
         #region Constructors
         internal AttributeUpdateOrdinal()
         {
 
         }
 
-        public AttributeUpdateOrdinal(string name, Dictionary<long, int> values): base(name)
+        public AttributeUpdateOrdinal(string name, IDictionary<long, int> values): base(name, values)
         {
-            ArgumentAssert.IsNotNull(values, "values");
-            ArgumentAssert.IsNotEmpty(values.Count, "values");
-            _values = values;
         }
         
         #endregion
@@ -53,22 +45,9 @@ namespace Sphinx.Client.Commands.Attributes.Update
             get { return AttributeType.Ordinal; }
         }
 
-        #region Implementation of IAttributeValuesPerDocument
-        public IDictionary<long, int> Values
-        {
-            get { return _values; }
-        }
-        
-        #endregion
-        
         #endregion
 
         #region Methods
-        internal override IEnumerable<long> GetDocumentsIdSet()
-        {
-            return new List<long>(Values.Keys);
-        }
-
         internal override void Serialize(BinaryWriterBase writer, long id)
         {
             writer.Write(Values[id]);

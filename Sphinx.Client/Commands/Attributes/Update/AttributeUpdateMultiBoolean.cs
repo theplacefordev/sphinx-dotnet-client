@@ -26,23 +26,15 @@ namespace Sphinx.Client.Commands.Attributes.Update
     /// <summary>
     /// Represents attribute multi-boolean values and document IDs set to update.
     /// </summary>
-    public class AttributeUpdateMultiBoolean : AttributeUpdateBase, IAttributeValuesPerDocument<IList<bool>>
+    public class AttributeUpdateMultiBoolean : AttributeUpdateMultiPerDocumentBase<bool>
     {
-        #region Fields
-        private readonly Dictionary<long, IList<bool>> _values = new Dictionary<long, IList<bool>>();
-        
-        #endregion
-
         #region Constructors
         internal AttributeUpdateMultiBoolean()
         {
         }
 
-        public AttributeUpdateMultiBoolean(string name, IDictionary<long, IEnumerable<bool>> values): base(name)
+        public AttributeUpdateMultiBoolean(string name, IDictionary<long, IEnumerable<bool>> values): base(name, values)
         {
-            ArgumentAssert.IsNotNull(values, "values");
-            ArgumentAssert.IsNotEmpty(values.Count, "values.Count");
-			CollectionUtil.UnionDictionaries(_values, values);
         }
         
         #endregion
@@ -53,21 +45,9 @@ namespace Sphinx.Client.Commands.Attributes.Update
             get { return AttributeType.MultiBoolean; }
         }
 
-        #region Implementation of IAttributeValuesPerDocument
-        public IDictionary<long, IList<bool>> Values
-        {
-            get { return _values; }
-        }
-        
-        #endregion
-
         #endregion
 
         #region Methods
-        internal override IEnumerable<long> GetDocumentsIdSet()
-        {
-            return Values.Keys;
-        }
 
         internal override void Serialize(BinaryWriterBase writer, long id)
         {

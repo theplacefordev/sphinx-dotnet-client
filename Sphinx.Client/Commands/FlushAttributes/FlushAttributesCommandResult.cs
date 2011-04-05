@@ -34,7 +34,7 @@ namespace Sphinx.Client.Commands.FlushAttributes
 		/// Contains a non-negative internal "flush tag" on success.
 		/// Flush tag should be treated as an ever growing magic number that does not mean anything. It's guaranteed to be non-negative. It is guaranteed to grow over time, though not necessarily in a sequential fashion; for instance, two calls that return 10 and then 1000 respectively are a valid situation. If two calls to FlushAttrs() return the same tag, it means that there were no actual attribute updates in between them, and therefore current flushed state remained the same (for all indexes).
 		/// </summary>
-		public int FlushTag { get; set; }
+		public int FlushTag { get; protected set; }
         
 		#endregion
 

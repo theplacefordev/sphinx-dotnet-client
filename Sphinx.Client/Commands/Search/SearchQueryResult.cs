@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Sphinx.Client.Commands.Collections;
 using Sphinx.Client.Common;
 using Sphinx.Client.IO;
@@ -51,25 +52,25 @@ namespace Sphinx.Client.Commands.Search
         /// <summary>
         /// Full-text field names.
         /// </summary>
-        public List<string> Fields
+        public ReadOnlyCollection<string> Fields
         {
-            get { return _fields; }
+            get { return _fields.AsReadOnly(); }
         }
 
         /// <summary>
         /// Retrieved matches.
         /// </summary>
-		public IList<Match> Matches
+		public ReadOnlyCollection<Match> Matches
         {
-            get { return _matches; }
+            get { return _matches.AsReadOnly(); }
         }
 
         /// <summary>
         /// Per-word statistics.
         /// </summary>
-		public IList<WordInfo> Words
+		public ReadOnlyCollection<WordInfo> Words
         {
-            get { return _words; }
+            get { return _words.AsReadOnly(); }
         }
 
         /// <summary>

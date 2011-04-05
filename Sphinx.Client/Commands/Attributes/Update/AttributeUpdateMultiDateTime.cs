@@ -26,23 +26,16 @@ namespace Sphinx.Client.Commands.Attributes.Update
     /// <summary>
     /// Represents attribute multi-DateTime values and document IDs set to update.
     /// </summary>
-    public class AttributeUpdateMultiDateTime : AttributeUpdateBase, IAttributeValuesPerDocument<IList<DateTime>>
+    public class AttributeUpdateMultiDateTime : AttributeUpdateMultiPerDocumentBase<DateTime>
     {
-        #region Fields
-		private readonly Dictionary<long, IList<DateTime>> _values = new Dictionary<long, IList<DateTime>>();
-        
-        #endregion
 
         #region Constructors
         internal AttributeUpdateMultiDateTime()
         {
         }
 
-		public AttributeUpdateMultiDateTime(string name, IDictionary<long, IEnumerable<DateTime>> values): base(name)
+		public AttributeUpdateMultiDateTime(string name, IDictionary<long, IEnumerable<DateTime>> values): base(name, values)
         {
-            ArgumentAssert.IsNotNull(values, "values");
-            ArgumentAssert.IsNotEmpty(values.Count, "values.Count");
-            CollectionUtil.UnionDictionaries(Values, values);
         }
         
         #endregion
@@ -53,22 +46,9 @@ namespace Sphinx.Client.Commands.Attributes.Update
             get { return AttributeType.MultiTimestamp; }
         }
 
-        #region Implementation of IAttributeValuesPerDocument
-        public IDictionary<long, IList<DateTime>> Values
-        {
-            get { return _values; }
-        }
-        
-        #endregion
-
         #endregion
 
         #region Methods
-        internal override IEnumerable<long> GetDocumentsIdSet()
-        {
-            return new List<long>(Values.Keys);
-        }
-
         internal override void Serialize(BinaryWriterBase writer, long id)
         {
             IList<DateTime> values = Values[id];
