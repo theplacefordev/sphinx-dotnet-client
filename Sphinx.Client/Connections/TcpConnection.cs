@@ -42,10 +42,9 @@ namespace Sphinx.Client.Connections
         #endregion
 
         #region Fields
-        private IBinaryFormatterFactory _formatterFactory = new BinaryFormatterFactory(BinaryFormatType.BigEndian, new UTF8Encoding(false, true));
-        private string _host;
-        private int _port = DEFAULT_PORT;
+        private IBinaryFormatterFactory _formatterFactory;
         private int _connectionTimeout = DEFAULT_CLIENT_TIMEOUT_MS;
+    	private Encoding _encoding = Encoding.UTF8;
         private ISocketAdapter _socket;
         #endregion
 
@@ -54,7 +53,7 @@ namespace Sphinx.Client.Connections
         {
         }
 
-        public TcpConnection(string host): base(host)
+        public TcpConnection(string host): base(host, DEFAULT_PORT)
         {
         }
 
@@ -83,32 +82,6 @@ namespace Sphinx.Client.Connections
         }
 
         /// <summary>
-        /// Sphinx server host address.
-        /// </summary>
-        public override string Host
-        {
-            get { return _host; }
-            set
-            {
-                ArgumentAssert.IsNotEmpty(value, "Host");
-                _host = value;
-            }
-        }
-
-        /// <summary>
-        /// Sphinx server port number.
-        /// </summary>
-        public override int Port
-        {
-            get { return _port; }
-            set
-            {
-                ArgumentAssert.IsGreaterThan(value, 0, "Port");
-                _port = value;
-            }
-        }
-
-        /// <summary>
         /// Gets a value indicating whether the underlying socket is connected to a remote host.
         /// </summary>
         public override bool IsConnected
@@ -116,7 +89,20 @@ namespace Sphinx.Client.Connections
 			get { return Socket.Connected; }
         }
 
-        /// <summary>
+		/// <summary>
+		/// Character encoding used to encode and decode strings. Default value is UTF-8.
+		/// </summary>
+    	public override Encoding Encoding
+    	{
+			get { return _encoding; }
+			set
+			{
+				ArgumentAssert.IsNotNull(value, "Encoding");
+				_encoding = value;
+			}
+    	}
+
+    	/// <summary>
         /// Returns network client socket object
         /// </summary>
         protected override ISocketAdapter Socket
@@ -154,8 +140,14 @@ namespace Sphinx.Client.Connections
         /// </summary>
         internal protected override IBinaryFormatterFactory FormatterFactory
         {
-            get { return _formatterFactory; }
-            protected set { _formatterFactory = value; }
+            get
+            {
+				if (_formatterFactory == null)
+				{
+					_formatterFactory = new BinaryFormatterFactory(BinaryFormatType.BigEndian, Encoding);
+				}
+            	return _formatterFactory;
+            }
         }
 
         #endregion
@@ -183,7 +175,8 @@ namespace Sphinx.Client.Connections
         {
             if (IsConnected) {
                 Socket.Close();
-            }
+				_formatterFactory = null;
+			}
         }
 
         /// <summary>

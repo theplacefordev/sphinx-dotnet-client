@@ -124,36 +124,41 @@ namespace Sphinx.Client.Commands
             BinaryReaderBase bodyReader = Connection.FormatterFactory.CreateReader(new StreamAdapter(bodyStream));
 
             // check response status
-            switch (Result.Status)
-            {
-                case CommandStatus.Ok:
-                    break;
-                case CommandStatus.Warning:
-                    // cut warning message from response stream
-                    _result.DeserializeWarning(bodyReader);
-                    break;
-                case CommandStatus.Error:
-                    string errorMessage = bodyReader.ReadString();
-                    throw new ServerErrorException(String.Format(Messages.Exception_ServerError, errorMessage));
-                case CommandStatus.Retry:
-                    string tempErrorMessage = bodyReader.ReadString();
-                    throw new ServerErrorException(String.Format(Messages.Exception_TemproraryServerError, tempErrorMessage));
-                default:
-                    throw new SphinxException(String.Format(Messages.Exception_UnknowStatusCode, (int)Result.Status));
-            }
+            ValidateResponse(bodyReader, serverCommandVersion);
 
-            // check server command version
-            short clientCommandVersion = CommandInfo.Version;
-            if (serverCommandVersion < clientCommandVersion)
-            {
-                throw new NotSupportedException(String.Format(Messages.Exception_CommandVersion, serverCommandVersion >> 8, serverCommandVersion & 0xff, clientCommandVersion >> 8, clientCommandVersion & 0xff));
-            }
-
-            // parse command result 
+        	// parse command result 
             DeserializeResponse(bodyReader);
         }
 
-        #endregion
+    	protected virtual void ValidateResponse(BinaryReaderBase bodyReader, short serverCommandVersion)
+    	{
+    		switch (Result.Status)
+    		{
+    			case CommandStatus.Ok:
+    				break;
+    			case CommandStatus.Warning:
+    				// read warning message from response stream
+    				Result.DeserializeWarning(bodyReader);
+    				break;
+    			case CommandStatus.Error:
+    				string errorMessage = bodyReader.ReadString();
+    				throw new ServerErrorException(String.Format(Messages.Exception_ServerError, errorMessage));
+    			case CommandStatus.Retry:
+    				string tempErrorMessage = bodyReader.ReadString();
+    				throw new ServerErrorException(String.Format(Messages.Exception_TemproraryServerError, tempErrorMessage));
+    			default:
+    				throw new SphinxException(String.Format(Messages.Exception_UnknowStatusCode, (int)Result.Status));
+    		}
+
+    		// check server command version
+    		short clientCommandVersion = CommandInfo.Version;
+    		if (serverCommandVersion < clientCommandVersion)
+    		{
+    			throw new NotSupportedException(String.Format(Messages.Exception_CommandVersion, serverCommandVersion >> 8, serverCommandVersion & 0xff, clientCommandVersion >> 8, clientCommandVersion & 0xff));
+    		}
+    	}
+
+    	#endregion
 
         #region Abstract
         /// <summary>

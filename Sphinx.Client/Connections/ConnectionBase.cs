@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using Sphinx.Client.Commands;
 using Sphinx.Client.Helpers;
 using Sphinx.Client.IO;
@@ -27,10 +28,15 @@ using Sphinx.Client.Network;
 namespace Sphinx.Client.Connections
 {
     public abstract class ConnectionBase: IDisposable
-    {
+	{
+		#region Fields
+		private string _host;
+		private int _port;
 
-        #region Constructors
-        /// <summary>
+		#endregion
+
+		#region Constructors
+		/// <summary>
         /// Initializes a new instance of the class. <see cref="Host"/> property must be specified before invoking <see cref="Open()"/> method.
         /// </summary>
         protected ConnectionBase()
@@ -75,6 +81,32 @@ namespace Sphinx.Client.Connections
 
         #region Properties
 
+		/// <summary>
+		/// Sphinx server host address.
+		/// </summary>
+		public string Host
+		{
+			get { return _host; }
+			set
+			{
+				ArgumentAssert.IsNotEmpty(value, "Host");
+				_host = value;
+			}
+		}
+
+		/// <summary>
+		/// Sphinx server port number.
+		/// </summary>
+		public int Port
+		{
+			get { return _port; }
+			set
+			{
+				ArgumentAssert.IsGreaterThan(value, 0, "Port");
+				_port = value;
+			}
+		}
+
         #region Abstract
         /// <summary>
         /// Gets or sets the socket connection timeout. Specified in milliseconds.
@@ -82,21 +114,16 @@ namespace Sphinx.Client.Connections
         public abstract int ConnectionTimeout { get; set; }
 
         /// <summary>
-        /// Sphinx server host
-        /// </summary>
-        public abstract string Host { get; set; }
-
-        /// <summary>
-        /// Sphinx server port
-        /// </summary>
-        public abstract int Port { get; set; }
-
-        /// <summary>
         /// Gets a value indicating whether the underlying socket is connected to a remote host.
         /// </summary>
         public abstract bool IsConnected { get; }
 
-        /// <summary>
+		/// <summary>
+		/// Character encoding used to encode and decode strings
+		/// </summary>
+		public abstract Encoding Encoding { get; set; }
+        
+		/// <summary>
         /// Returns network client socket object
         /// </summary>
         protected abstract ISocketAdapter Socket { get; set; }
@@ -109,7 +136,7 @@ namespace Sphinx.Client.Connections
         /// <summary>
         /// Returns <see cref="BinaryFormatterFactory"/> object to create binary formmater to (de)serialize data
         /// </summary>
-        internal protected abstract IBinaryFormatterFactory FormatterFactory { get; protected set; }
+        internal protected abstract IBinaryFormatterFactory FormatterFactory { get; }
 
         #endregion
 
