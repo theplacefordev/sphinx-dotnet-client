@@ -59,12 +59,12 @@ namespace Sphinx.Client.UnitTests.Mock.Connections
         internal protected override IBinaryFormatterFactory FormatterFactory
         {
             get { return _factory; }
-            protected set { _factory = value; }
         }
 
         public bool SkipHandshake { get; set; }
         public bool SkipSerializeCommand { get; set; }
         public bool SkipDeserializeCommand { get; set; }
+
 
         public Stream BaseStream
         {
@@ -76,6 +76,11 @@ namespace Sphinx.Client.UnitTests.Mock.Connections
         #endregion
 
         #region Methods
+		public void SetFormatterFactory(IBinaryFormatterFactory factory)
+		{
+			_factory = factory;
+		}
+
         internal override void PerformCommand(CommandBase command)
         {
             ArgumentAssert.IsNotNull(command, "command");

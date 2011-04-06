@@ -308,7 +308,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
                 accessor.Socket.Open();
                 // assign mock binary formatter factory
                 BinaryFormatterFactoryMock factory = new BinaryFormatterFactoryMock();
-                accessor.FormatterFactory = factory;
+                accessor._formatterFactory = factory;
                 BinaryWriterBase writer = factory.CreateWriter(accessor.DataStream);
 
                 // preserialize server protocol version and rewind to start pos. (emulate first stage of handshake procedure)
@@ -358,7 +358,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
                 accessor.Socket.Open();
 
                 BinaryFormatterFactoryMock factory = new BinaryFormatterFactoryMock();
-                accessor.FormatterFactory = factory;
+                accessor._formatterFactory = factory;
                 BinaryWriterBase writer = factory.CreateWriter(accessor.DataStream);
 
                 // command id and version
