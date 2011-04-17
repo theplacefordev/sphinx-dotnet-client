@@ -28,7 +28,7 @@ namespace Sphinx.Client.Commands.Collections
     public class MatchList : List<Match>
     {
         #region Methods
-        internal void Deserialize(BinaryReaderBase reader)
+        internal void Deserialize(IBinaryReader reader)
         {
             Clear();
             AttributesInfoList attributes = new AttributesInfoList();

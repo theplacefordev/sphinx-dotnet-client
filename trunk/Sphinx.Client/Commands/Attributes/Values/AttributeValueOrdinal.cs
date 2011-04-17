@@ -66,7 +66,7 @@ namespace Sphinx.Client.Commands.Attributes.Values
             return Value;
         }
 
-        internal override void Deserialize(BinaryReaderBase reader, AttributeInfo attributeInfo)
+        internal override void Deserialize(IBinaryReader reader, AttributeInfo attributeInfo)
         {
             base.Deserialize(reader, attributeInfo);
             _value = reader.ReadInt32();

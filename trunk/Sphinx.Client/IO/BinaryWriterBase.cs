@@ -29,7 +29,7 @@ namespace Sphinx.Client.IO
     /// Writes primitive types in binary to a stream and supports writing strings in a specific encoding. Provides a base class for more specific classes.
     /// An abstract class, it cannot be instantiated.
     /// </summary>
-    public abstract class BinaryWriterBase
+    public abstract class BinaryWriterBase : IBinaryWriter
     {
         #region Fields
         private static readonly Encoding _defaultEncoding = new UTF8Encoding(false, true);

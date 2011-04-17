@@ -72,7 +72,7 @@ namespace Sphinx.Client.Commands
         /// <summary>
         /// Executes Sphinx command against a connection object.
         /// </summary>
-        /// <returns><see cref="CommandResultBase<TResult>"/> based result object.</returns>
+        /// <returns><see cref="CommandResultBase{TResult}"/> based result object.</returns>
         /// <exception cref="ServerErrorException"/>
         /// <exception cref="SphinxException"/>
         /// <exception cref="IOException"/>

@@ -79,7 +79,7 @@ namespace Sphinx.Client.Commands.Attributes.Values
 
         #region Methods
         #region Implemented
-        internal virtual void Deserialize(BinaryReaderBase reader, AttributeInfo attributeInfo)
+        internal virtual void Deserialize(IBinaryReader reader, AttributeInfo attributeInfo)
         {
             Name = attributeInfo.Name;
         }

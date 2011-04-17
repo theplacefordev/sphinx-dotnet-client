@@ -46,7 +46,7 @@ namespace Sphinx.Client.Commands.Query
         #endregion
 
         #region Methods
-        internal void Deserialize(BinaryReaderBase reader)
+        internal void Deserialize(IBinaryReader reader)
         {
             _queryResult = new SearchQueryResult();
             _queryResult.Deserialize(reader);

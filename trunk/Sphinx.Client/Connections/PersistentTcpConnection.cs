@@ -81,7 +81,7 @@ namespace Sphinx.Client.Connections
         {
             base.SendHandshake();
             // send 'persistent connection' command
-            BinaryWriterBase writer = FormatterFactory.CreateWriter(DataStream);
+            IBinaryWriter writer = FormatterFactory.CreateWriter(DataStream);
             _persistCommandInfo.Serialize(writer);
             
             // command body length

@@ -112,14 +112,14 @@ namespace Sphinx.Client.Commands.BuildKeywords
             base.Execute();
         }
 
-        protected override void SerializeRequest(BinaryWriterBase writer)
+        protected override void SerializeRequest(IBinaryWriter writer)
         {
             writer.Write(Query);
 			_indexNames.Serialize(writer);
             writer.Write(CalculateStatistics);
         }
 
-        protected override void DeserializeResponse(BinaryReaderBase reader)
+        protected override void DeserializeResponse(IBinaryReader reader)
         {
             Result.Deserialize(reader, CalculateStatistics);
         }

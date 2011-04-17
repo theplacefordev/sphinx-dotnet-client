@@ -206,7 +206,7 @@ namespace Sphinx.Client.Connections
         protected virtual void SendHandshake()
         {
             // check protocol version supported by remote Sphinx server
-            BinaryReaderBase reader = FormatterFactory.CreateReader(DataStream);
+            IBinaryReader reader = FormatterFactory.CreateReader(DataStream);
             int protocolVersion = reader.ReadInt32();
             if (protocolVersion < MAJOR_PROTOCOL_VERSION) 
             {
@@ -214,7 +214,7 @@ namespace Sphinx.Client.Connections
             }
 
             // send protocol version supported by client
-            BinaryWriterBase writer = FormatterFactory.CreateWriter(DataStream);
+            IBinaryWriter writer = FormatterFactory.CreateWriter(DataStream);
             writer.Write(MAJOR_PROTOCOL_VERSION);
             DataStream.Flush();
         }

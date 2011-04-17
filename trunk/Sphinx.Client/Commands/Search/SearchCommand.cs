@@ -91,12 +91,12 @@ namespace Sphinx.Client.Commands.Search
             base.Execute();
         }
 
-        protected override void SerializeRequest(BinaryWriterBase writer)
+        protected override void SerializeRequest(IBinaryWriter writer)
         {
             QueryList.Serialize(writer);
         }
 
-        protected override void DeserializeResponse(BinaryReaderBase reader)
+        protected override void DeserializeResponse(IBinaryReader reader)
         {
             Result.Deserialize(reader, QueryList.Count);
         }

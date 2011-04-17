@@ -120,7 +120,7 @@ namespace Sphinx.Client.Commands.Search
         #endregion
 
         #region Methods
-        internal void Serialize(BinaryWriterBase writer)
+        internal void Serialize(IBinaryWriter writer)
         {
             writer.Write(IsNotEmpty);
             if (IsNotEmpty)

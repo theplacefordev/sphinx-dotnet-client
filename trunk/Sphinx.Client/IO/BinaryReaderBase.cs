@@ -29,7 +29,7 @@ namespace Sphinx.Client.IO
     /// Reads primitive data types as binary values in a specific encoding. Provides a base class for more specific classes.
     /// An abstract class, it cannot be instantiated.
     /// </summary>
-    public abstract class BinaryReaderBase
+    public abstract class BinaryReaderBase : IBinaryReader
     {
         #region Fields
         private static readonly Encoding _defaultEncoding = new UTF8Encoding(false, true);
@@ -43,8 +43,7 @@ namespace Sphinx.Client.IO
         /// Initializes a new instance of the <see cref="BinaryReaderBase"/> class based on the supplied stream and using default encoding <see cref="UTF8Encoding"/>.
         /// </summary>
         /// <param name="input">Input stream</param>
-		protected BinaryReaderBase(IStreamAdapter input)
-			: this(input, _defaultEncoding)
+		protected BinaryReaderBase(IStreamAdapter input): this(input, _defaultEncoding)
         {
         }
 

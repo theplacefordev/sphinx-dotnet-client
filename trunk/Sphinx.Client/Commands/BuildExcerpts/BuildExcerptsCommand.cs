@@ -14,7 +14,6 @@
 #endregion
 #region Usings
 
-using System;
 using System.Collections.Generic;
 using Sphinx.Client.Commands.Collections;
 using Sphinx.Client.Connections;
@@ -44,7 +43,8 @@ namespace Sphinx.Client.Commands.BuildExcerpts
 		private const int DEFAULT_WORDS_COUNT_LIMIT = 0;
     	private const int DEFAULT_START_PASSAGE_ID = 1;
     	private const HtmlStripMode DEFAULT_HTML_STRIP_MODE = HtmlStripMode.Index;
-        
+    	private const BuildExcerptsOptions DEFAULT_OPTIONS = BuildExcerptsOptions.RemoveSpaces;
+
         #endregion
 
         #region Fields
@@ -60,7 +60,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
     	private int _wordsCountLimit = DEFAULT_WORDS_COUNT_LIMIT;
     	private int _startPassageId = DEFAULT_START_PASSAGE_ID;
     	private HtmlStripMode _htmlStripMode = DEFAULT_HTML_STRIP_MODE;
-        private BuildExcerptsOptions _options = BuildExcerptsOptions.RemoveSpaces;
+		private BuildExcerptsOptions _options = DEFAULT_OPTIONS;
 
         // params
 		private readonly StringList _documents = new DocumentList();
@@ -82,9 +82,9 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         /// Initializes a new instance of the <see cref="BuildExcerptsCommand"/> class that initializes main command parameters with specified arguments values.
         /// </summary>
         /// <param name="connection">Connection to Sphinx are used to execute command.</param>
-        /// <param name="documents">Documents text content list are copied to <see cref=".Documents"/> property.</param>
-        /// <param name="keywords">Keywords list are copied to <see cref=".Keywords"/> property.</param>
-        /// <param name="index">Index name are copied to <see cref=".Index"/> property.</param>
+        /// <param name="documents">Documents text content list are copied to <see cref="Documents"/> property.</param>
+        /// <param name="keywords">Keywords list are copied to <see cref="Keywords"/> property.</param>
+        /// <param name="index">Index name are copied to <see cref="Index"/> property.</param>
         public BuildExcerptsCommand(ConnectionBase connection, IEnumerable<string> documents, IEnumerable<string> keywords, string index): base(connection)
         {
             _documents.AddRange(documents);
@@ -130,7 +130,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         #region Command settings
         /// <summary>
 		/// Template part used to highlight phrase before match. Starting with version 1.10-beta, a %PASSAGE_ID% macro can be used in this string. The macro is replaced with an incrementing passage number within a current snippet. Numbering starts at 1 by default but can be overridden with "start_passage_id" option. In a multi-document call, %PASSAGE_ID% would restart at every given document.
-		/// Default value is "<strong>". Can't be null.
+		/// Default value is "&lt;strong&gt;". Can't be null.
         /// </summary>
         public string BeforeMatch
         {
@@ -144,7 +144,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
 
         /// <summary>
 		/// Template part used to highlight phrase after match. Starting with version 1.10-beta, a %PASSAGE_ID% macro can be used in this string.
-        /// Default value is "</strong>". Can't be null.
+		/// Default value is "&lt;/strong&gt;". Can't be null.
         /// </summary>
         public string AfterMatch
         {
@@ -280,7 +280,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         /// Serialize command parameters using specified binary stream writer.
         /// </summary>
         /// <param name="writer">Binary stream writer object</param>
-        protected override void SerializeRequest(BinaryWriterBase writer)
+        protected override void SerializeRequest(IBinaryWriter writer)
         {
             // build mode
             writer.Write(MODE);
@@ -290,7 +290,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
             writer.Write(Index);
             _keywords.Serialize(writer);
 
-            // options
+            // additional options
             writer.Write(BeforeMatch);
             writer.Write(AfterMatch);
             writer.Write(SnippetsDelimiter);
@@ -300,7 +300,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
 			writer.Write(SnippetsCountLimit);
         	writer.Write(WordsCountLimit);
 			writer.Write(StartPassageId);
-			writer.Write(Enum.GetName(typeof(HtmlStripMode), HtmlStripMode).ToLowerInvariant());
+			writer.Write(HtmlStripMode.ToString().ToLowerInvariant());
 
             // serialize documents list
 			_documents.Serialize(writer);
@@ -310,7 +310,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         /// Deserialize server response body using specified binary stream reader.
         /// </summary>
         /// <param name="reader">Binary stream reader object</param>
-        protected override void DeserializeResponse(BinaryReaderBase reader)
+        protected override void DeserializeResponse(IBinaryReader reader)
         {
             Result.Deserialize(reader, Documents.Count);
         }

@@ -1,512 +1,439 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
-using System.Linq;
-using System.Text;
+using SharpTestsEx;
 using Sphinx.Client.Commands.BuildExcerpts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Sphinx.Client.Commands.BuildExcerpts.Moles;
 using Sphinx.Client.Connections;
 using System.Collections.Generic;
 using Sphinx.Client.IO;
 using Sphinx.Client.Commands;
-using Sphinx.Client.Commands.Collections;
+using Sphinx.Client.IO.Moles;
 using Sphinx.Client.Network;
 using Sphinx.Client.UnitTests.Mock.Connections;
 using Sphinx.Client.UnitTests.Mock.IO;
+using Sphinx.Client.UnitTests.Mock.Network;
 
-namespace Sphinx.Client.UnitTests.Test.BuildExcerpts
+namespace Sphinx.Client.UnitTests.Test.Commands.BuildExcerpts
 {
-    
-    
-    /// <summary>
-    /// This is a test class for BuildExcerptsCommandUnitTest and is intended
-    /// to contain all BuildExcerptsCommand Unit Tests
-    ///</summary>
-    [TestClass]
-    public class BuildExcerptsCommandUnitTest
-    {
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
-        public TestContext TestContext { get; set; }
+	[TestClass]
+	public class BuildExcerptsCommand_UnitTest
+	{
+		public TestContext TestContext { get; set; }
 
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
+		#region Additional test attributes
+		// 
+		//You can use the following additional attributes as you write your tests:
+		//
+		//Use ClassInitialize to run code before running the first test in the class
+		//[ClassInitialize()]
+		//public static void MyClassInitialize(TestContext testContext)
+		//{
+		//}
+		//
+		//Use ClassCleanup to run code after all tests in a class have run
+		//[ClassCleanup()]
+		//public static void MyClassCleanup()
+		//{
+		//}
+		//
+		//Use TestInitialize to run code before running each test
+		//[TestInitialize()]
+		//public void MyTestInitialize()
+		//{
+		//}
+		//
+		//Use TestCleanup to run code after each test has run
+		//[TestCleanup()]
+		//public void MyTestCleanup()
+		//{
+		//}
+		//
+		#endregion
 
 
-        #region Tests
+		#region Tests
 
-        /// <summary>
-        ///A test for BuildExcerptsCommand Constructor
-        ///</summary>
-        [TestMethod]
-        public void BuildExcerptsCommandDefaultConstructorTest()
-        {
-            // null value
-            try
-            {
-                new BuildExcerptsCommand(null);
-                Assert.Fail("ArgumentException exception must thrown for invalid argument value");
-            }
-            catch (ArgumentException)
-            {
-                // test passed
-            }
-        }
+		#region Constructors
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException), "ArgumentNullException must be thrown for null argument")]
+		public void Constructor_NullConnection_ThrowsArgumentNullException()
+		{
+			new BuildExcerptsCommand(null);
+		}
 
-        /// <summary>
-        ///A test for BuildExcerptsCommand Constructor
-        ///</summary>
-        [TestMethod]
-        public void BuildExcerptsCommandConstructorTest()
-        {
-            using (ConnectionBase connection = new ConnectionMock())
-            {
-                string[] documents = new string[] { "doc 1", "doc 2", "doc 3" };
-                string[] keywords = new string[] { "keyword1", "keyword2" };
-                string index = "test";
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection, documents, keywords, index);
-                Assert.AreEqual(target.Documents.Count, documents.Length);
-                Assert.AreEqual(target.Documents[0], documents[0]);
-                Assert.AreEqual(target.Documents[1], documents[1]);
-                Assert.AreEqual(target.Documents[2], documents[2]);
-                Assert.AreEqual(target.Keywords.Count, keywords.Length);
-                Assert.AreEqual(target.Keywords[0], keywords[0]);
-                Assert.AreEqual(target.Keywords[1], keywords[1]);
-                Assert.AreEqual(target.Index, index);
-            }
-        }
+		[TestMethod]
+		public void Constructor_PassValidArguments_CopyValues()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				string[] documents = new string[] { "doc 1", "doc 2", "doc 3" };
+				string[] keywords = new string[] { "keyword1", "keyword2" };
+				string index = "test";
 
-        /// <summary>
-        ///A test for BeforeMatch
-        ///</summary>
-        [TestMethod]
-        public void BeforeMatchTest()
-        {
-            using (ConnectionBase connection = new ConnectionMock())
-            {
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                // valid value
-                string expected = "<pre>";
-                target.BeforeMatch = expected;
-                string actual = target.BeforeMatch;
-                Assert.AreEqual(expected, actual);
-                // invalid value
-                try
-                {
-                    target.BeforeMatch = null;
-                    Assert.Fail("ArgumentException exception must thrown for invalid argument value");
-                }
-                catch (ArgumentException)
-                {
-                    // test passed
-                }
-            }
-        }
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection, documents, keywords, index);
 
-        /// <summary>
-        ///A test for AfterMatch
-        ///</summary>
-        [TestMethod]
-        public void AfterMatchTest()
-        {
-            using (ConnectionBase connection = new ConnectionMock())
-            {
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                // valid value
-                string expected = "</pre>";
-                target.AfterMatch = expected;
-                string actual = target.AfterMatch;
-                Assert.AreEqual(expected, actual);
-                // invalid value
-                try
-                {
-                    target.AfterMatch = null;
-                    Assert.Fail("ArgumentException exception must thrown for invalid argument value");
-                }
-                catch (ArgumentException)
-                {
-                    // test passed
-                }
-            }
-        }
+				target.Documents.Should().Have.SameValuesAs(documents);
+				target.Keywords.Should().Have.SameValuesAs(keywords);
+				target.Index.Should().Be.EqualTo(index);
+			}
+		}
+		
+		#endregion
 
-		/// <summary>
-        ///A test for WordsAroundKeyword
-        ///</summary>
-        [TestMethod]
-        public void WordsAroundKeywordTest()
-        {
-            using (ConnectionBase connection = new ConnectionMock())
-            {
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                // valid value
-                int expected = 0;
-                target.WordsAroundKeyword = expected;
-                int actual = target.WordsAroundKeyword;
-                Assert.AreEqual(expected, actual);
-                // invalid value
-                try
-                {
-                    target.WordsAroundKeyword = -1;
-                    Assert.Fail("ArgumentException exception must thrown for invalid argument value");
-                }
-                catch (ArgumentException)
-                {
-                    // test passed
-                }
-            }
-        }
+		#region Properties and fields
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException), "ArgumentException must be thrown for null value")]
+		public void BeforeMatchTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.BeforeMatch, BuildExcerptsCommand_Accessor.DEFAULT_BEFORE_MATCH);
+				// valid value
+				string expected = "<pre>";
+				target.BeforeMatch = expected;
+				Assert.AreEqual(expected, target.BeforeMatch);
+				// invalid value
+				target.BeforeMatch = null;
+			}
+		}
 
-        /// <summary>
-        ///A test for SnippetSizeLimit
-        ///</summary>
-        [TestMethod]
-        public void SnippetSizeLimitTest()
-        {
-            using (ConnectionBase connection = new ConnectionMock())
-            {
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                // valid value
-                int expected = 1;
-                target.SnippetSizeLimit = expected;
-                int actual = target.SnippetSizeLimit;
-                Assert.AreEqual(expected, actual);
-                // invalid value
-                try
-                {
-                    target.SnippetSizeLimit = 0;
-                    Assert.Fail("ArgumentException exception must thrown for invalid argument value");
-                }
-                catch (ArgumentException)
-                {
-                    // test passed
-                }
-            }
-        }
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException), "ArgumentException must be thrown for null value")]
+		public void AfterMatchTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.AfterMatch, BuildExcerptsCommand_Accessor.DEFAULT_AFTER_MATCH);
+				// valid value
+				string expected = "</pre>";
+				target.AfterMatch = expected;
+				string actual = target.AfterMatch;
+				Assert.AreEqual(expected, actual);
+				// invalid value
+				target.AfterMatch = null;
+			}
+		}
 
-        /// <summary>
-        ///A test for SnippetsDelimiter
-        ///</summary>
-        [TestMethod]
-        public void SnippetsDelimiterTest()
-        {
-            using (ConnectionBase connection = new ConnectionMock())
-            {
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                // valid value
-                string expected = String.Empty;
-                target.SnippetsDelimiter = expected;
-                string actual = target.SnippetsDelimiter;
-                Assert.AreEqual(expected, actual);
-                // invalid value
-                try
-                {
-                    target.SnippetsDelimiter = null;
-                    Assert.Fail("ArgumentException exception must thrown for invalid argument value");
-                }
-                catch (ArgumentException)
-                {
-                    // test passed
-                }
-            }
-        }
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException), "ArgumentOutOfRangeException must be thrown for negative value")]
+		public void WordsAroundKeywordTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.WordsAroundKeyword, BuildExcerptsCommand_Accessor.DEFAULT_WORDS_AROUND_KEYWORD);
+				// valid value
+				int expected = 0;
+				target.WordsAroundKeyword = expected;
+				Assert.AreEqual(expected, target.WordsAroundKeyword);
+				// invalid value
+				target.WordsAroundKeyword = -1;
+			}
+		}
 
-        /// <summary>
-        /// A test for Keywords
-        ///</summary>
-        [TestMethod]
-        public void KeywordsTest()
-        {
-            using (ConnectionMock connection = new ConnectionMock("test"))
-            {
-                connection.SkipHandshake = true;
-                connection.SkipSerializeCommand = true;
-                connection.SkipDeserializeCommand = true;
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException), "ArgumentOutOfRangeException must be thrown for zero value")]
+		public void SnippetSizeLimitTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.SnippetSizeLimit, BuildExcerptsCommand_Accessor.DEFAULT_SNIPPET_SIZE_LIMIT);
+				// valid value
+				int expected = 1;
+				target.SnippetSizeLimit = expected;
+				Assert.AreEqual(expected, target.SnippetSizeLimit);
+				// invalid value
+				target.SnippetSizeLimit = 0;
+			}
+		}
 
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                target.Documents.Add("test doc content");
-                target.Index = "test";
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException), "ArgumentNullException must be thrown for null value")]
+		public void SnippetsDelimiterTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.SnippetsDelimiter, BuildExcerptsCommand_Accessor.DEFAULT_SNIPPETS_DELIMITER);
+				// valid value
+				string expected = String.Empty;
+				target.SnippetsDelimiter = expected;
+				Assert.AreEqual(expected, target.SnippetsDelimiter);
+				// invalid value
+				target.SnippetsDelimiter = null;
+			}
+		}
 
-                // empty list
-                try
-                {
-                    target.Execute();
-                    Assert.Fail("ArgumentException exception must thrown for invalid argument value");
-                }
-                catch (ArgumentException)
-                {
-                    // test passed
-                }
-                // not empty
-                target.Keywords.Add("test");
-                target.Execute();
-                Assert.AreEqual(1, target.Keywords.Count);
-            }
-        }
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException), "ArgumentOutOfRangeException must be thrown for null value")]
+		public void SnippetsCountLimitTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.SnippetsCountLimit, BuildExcerptsCommand_Accessor.DEFAULT_SNIPPETS_COUNT_LIMIT);
+				// valid value
+				int expected = 1;
+				target.SnippetsCountLimit = expected;
+				Assert.AreEqual(expected, target.SnippetsCountLimit);
+				// invalid value
+				target.SnippetsCountLimit = -1;
+			}
+		}
 
-        /// <summary>
-        /// A test for Index
-        ///</summary>
-        [TestMethod]
-        public void IndexTest()
-        {
-            using (ConnectionBase connection = new ConnectionMock())
-            {
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                // valid value
-                string expected = "test";
-                target.Index = expected;
-                string actual = target.Index;
-                Assert.AreEqual(expected, actual);
-                // invalid value
-                try
-                {
-                    target.Index = null;
-                    Assert.Fail("ArgumentException exception must thrown for invalid argument value");
-                }
-                catch (ArgumentException)
-                {
-                    // test passed
-                }
-            }
-        }
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException), "ArgumentOutOfRangeException must be thrown for null value")]
+		public void WordsCountLimitTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.WordsCountLimit, BuildExcerptsCommand_Accessor.DEFAULT_WORDS_COUNT_LIMIT);
+				// valid value
+				int expected = 1;
+				target.WordsCountLimit = expected;
+				Assert.AreEqual(expected, target.WordsCountLimit);
+				// invalid value
+				target.WordsCountLimit = -1;
+			}
+		}
 
-        /// <summary>
-        ///A test for Documents
-        ///</summary>
-        [TestMethod]
-        public void DocumentsTest()
-        {
-            using (ConnectionMock connection = new ConnectionMock("test"))
-            {
-                connection.SkipHandshake = true;
-                connection.SkipSerializeCommand = true;
-                connection.SkipDeserializeCommand = true;
+		[TestMethod]
+		public void StartPassageIdTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.StartPassageId, BuildExcerptsCommand_Accessor.DEFAULT_START_PASSAGE_ID);
+				// valid value
+				int expected = 1;
+				target.StartPassageId = expected;
+				Assert.AreEqual(expected, target.StartPassageId);
+				// valid value
+				target.StartPassageId = -1;
+			}
+		}
 
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                target.Keywords.Add("keyword");
-                target.Index = "test";
+		[TestMethod]
+		public void HtmlStripModeTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.HtmlStripMode, BuildExcerptsCommand_Accessor.DEFAULT_HTML_STRIP_MODE);
+				// valid value
+				HtmlStripMode expected = HtmlStripMode.Retain;
+				target.HtmlStripMode = expected;
+				Assert.AreEqual(expected, target.HtmlStripMode);
+			}
+		}
 
-                // empty list
-                try
-                {
-                    target.Execute();
-                    Assert.Fail("ArgumentException exception must thrown for invalid argument value");
-                }
-                catch (ArgumentException)
-                {
-                    // test passed
-                }
-                // not empty
-                target.Documents.Add("test doc");
-                target.Execute();
-                Assert.AreEqual(1, target.Documents.Count);
-            }
-        }
+		[TestMethod]
+		public void OptionsTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.Options, BuildExcerptsCommand_Accessor.DEFAULT_OPTIONS);
+				// valid value
+				BuildExcerptsOptions expected = BuildExcerptsOptions.OrderByWeight;
+				target.Options = expected;
+				Assert.AreEqual(expected, target.Options);
+			}
+		}
 
-        /// <summary>
-        ///A test for CommandInfo
-        ///</summary>
-        [TestMethod]
-        [DeploymentItem("Sphinx.Client.dll")]
-        public void CommandInfoTest()
-        {
-            using (ConnectionMock connection = new ConnectionMock("test"))
-            {
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                BuildExcerptsCommand_Accessor accessor = GetCommandAccessor(target);
-                Assert.IsNotNull(accessor.CommandInfo);
-                Assert.AreEqual(accessor.CommandInfo.Id, ServerCommand.Excerpt);
-                Assert.AreEqual(accessor.CommandInfo.Version, BuildExcerptsCommand_Accessor.COMMAND_VERSION);
-            }
-        }
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException), "ArgumentException must be thrown for null value")]
+		public void IndexTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.Index, null);
+				// valid value
+				string expected = "test";
+				target.Index = expected;
+				Assert.AreEqual(expected, target.Index);
+				// invalid value
+				target.Index = null;
+			}
+		}
 
-        /// <summary>
-        ///A test for SerializeRequest
-        ///</summary>
-        [TestMethod]
-        [DeploymentItem("Sphinx.Client.dll")]
-        public void SerializeRequestTest()
-        {
-            using (ConnectionMock connection = new ConnectionMock("test"))
-            {
-                connection.SkipHandshake = true;
-                connection.SkipDeserializeCommand = true;
-                connection.Open();
+		[TestMethod]
+		public void KeywordsTest()
+		{
+			using (ConnectionMock connection = new ConnectionMock("test"))
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				Assert.IsNotNull(target.Keywords);
+				Assert.IsInstanceOfType(target.Keywords, typeof(IList<string>));
+			}
+		}
 
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                target.Keywords.Add("test 1");
-                target.Keywords.Add("test 2");
-                target.Documents.Add("test doc content 1");
-                target.Documents.Add("another test doc content 2");
-                target.Index = "test";
+		[TestMethod]
+		public void DocumentsTest()
+		{
+			using (ConnectionMock connection = new ConnectionMock("test"))
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				Assert.IsNotNull(target.Documents);
+				Assert.IsInstanceOfType(target.Documents, typeof (IList<string>));
+			}
+		}
 
-                target.Execute();
+		[TestMethod]
+		public void CommandInfoTest()
+		{
+			using (ConnectionMock connection = new ConnectionMock("test"))
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				BuildExcerptsCommand_Accessor accessor = GetCommandAccessor(target);
+				Assert.IsNotNull(accessor.CommandInfo);
+				Assert.AreEqual(accessor.CommandInfo.Id, ServerCommand.Excerpt);
+				Assert.AreEqual(accessor.CommandInfo.Version, BuildExcerptsCommand_Accessor.COMMAND_VERSION);
+			}
+		} 
+		#endregion
 
-                // read stream buffer using appropriate binary reader and test
-                connection.Open();
-                connection.BaseStream.Seek(0, SeekOrigin.Begin);
-                BinaryFormatterFactoryMock factory = new BinaryFormatterFactoryMock();
-                BinaryReaderBase reader = factory.CreateReader(new StreamAdapter(connection.BaseStream));
+		#region Methods
+		[TestMethod]
+		public void ExecuteTest_EmptyDocuments_ThrowsException()
+		{
+			using (ConnectionMock connection = new ConnectionMock("test"))
+			{
+				connection.SkipHandshake = true;
+				connection.SkipDeserializeCommand = true;
+				connection.SkipSerializeCommand = true;
 
-                short commandId = reader.ReadInt16();
-                Assert.AreEqual((short)ServerCommand.Excerpt, commandId);
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				target.Index = "test";
+				target.Keywords.Add("test");
+				Executing.This(target.Execute).Should().Throw<ArgumentException>();
+				
+				target.Documents.Add("test doc content");
+				Executing.This(target.Execute).Should().NotThrow();
+			}
+		}
 
-                short version = reader.ReadInt16();
-                Assert.AreEqual(BuildExcerptsCommand_Accessor.COMMAND_VERSION, version);
+		[TestMethod]
+		public void ExecuteTest_EmptyKeywords_ThrowsException()
+		{
+			using (ConnectionMock connection = new ConnectionMock("test"))
+			{
+				connection.SkipHandshake = true;
+				connection.SkipDeserializeCommand = true;
+				connection.SkipSerializeCommand = true;
 
-                int size = reader.ReadInt32();
-                Assert.AreEqual(334, size);
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				target.Documents.Add("test doc content");
+				target.Index = "test";
+				Executing.This(target.Execute).Should().Throw<ArgumentException>();
 
-                int mode = reader.ReadInt32();
-                Assert.AreEqual(BuildExcerptsCommand_Accessor.MODE, mode);
+				target.Keywords.Add("test");
+				Executing.This(target.Execute).Should().NotThrow();
+			}
+		}
 
-                int options = reader.ReadInt32();
-                Assert.AreEqual((int)target.Options, options);
+		[TestMethod]
+		public void ExecuteTest_EmptyIndex_ThrowsException()
+		{
+			using (ConnectionMock connection = new ConnectionMock("test"))
+			{
+				connection.SkipHandshake = true;
+				connection.SkipDeserializeCommand = true;
+				connection.SkipSerializeCommand = true;
 
-                string index = reader.ReadString();
-                Assert.AreEqual(target.Index, index);
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				target.Documents.Add("test doc content");
+				target.Keywords.Add("test");
+				Executing.This(target.Execute).Should().Throw<ArgumentException>();
 
-                string keywords = reader.ReadString();
-                string expectedKeywords = String.Join(",", target.Keywords.ToArray());
-                Assert.AreEqual(expectedKeywords, keywords);
-
-                string beforeMatch = reader.ReadString();
-                Assert.AreEqual(target.BeforeMatch, beforeMatch);
-
-                string afterMatch = reader.ReadString();
-                Assert.AreEqual(target.AfterMatch, afterMatch);
-
-                string snipDelim = reader.ReadString();
-                Assert.AreEqual(target.SnippetsDelimiter, snipDelim);
-
-                int sizeLimit = reader.ReadInt32();
-                Assert.AreEqual(target.SnippetSizeLimit, sizeLimit);
-
-                int wordsAroundKeyword = reader.ReadInt32();
-                Assert.AreEqual(target.WordsAroundKeyword, wordsAroundKeyword);
-
-				int snippetsCountLimit = reader.ReadInt32();
-				Assert.AreEqual(target.SnippetsCountLimit, snippetsCountLimit);
-
-				int wordsCountLimit = reader.ReadInt32();
-				Assert.AreEqual(target.WordsCountLimit, wordsCountLimit);
-
-				int startPassageId = reader.ReadInt32();
-				Assert.AreEqual(target.StartPassageId, startPassageId);
-
-            	string htmlStripMode = reader.ReadString();
-				Assert.AreEqual(Enum.GetName(typeof(HtmlStripMode), target.HtmlStripMode).ToLowerInvariant(), htmlStripMode);
-
-                string documents = reader.ReadString();
-                string expectedDocs = String.Join(",", target.Documents.ToArray());
-                Assert.AreEqual(expectedDocs, documents);
-                
-            }
-        }
-
-        /// <summary>
-        ///A test for Execute
-        ///</summary>
-        [TestMethod]
-        public void ExecuteTest()
-        {
-            using (ConnectionMock connection = new ConnectionMock("test"))
-            {
-                connection.SkipHandshake = true;
-                connection.SkipDeserializeCommand = true;
-                connection.SkipSerializeCommand = true;
-
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                target.Documents.Add("test doc content");
-                target.Index = "test";
-                target.Keywords.Add("test");
-                target.Execute();
-            }
-        }
-
-        /// <summary>
-        ///A test for DeserializeResponse
-        ///</summary>
-        [TestMethod]
-        [DeploymentItem("Sphinx.Client.dll")]
-        public void DeserializeResponseTest()
-        {
-            using (ConnectionMock connection = new ConnectionMock("test"))
-            {
-                connection.SkipHandshake = true;
-                connection.SkipSerializeCommand = true;
-                connection.Open();
-
-                // preserialize fake server response to stream buffer using appropriate binary writer
-                BinaryFormatterFactoryMock factory = new BinaryFormatterFactoryMock();
-                BinaryWriterBase writer = factory.CreateWriter(new StreamAdapter(connection.BaseStream));
-
-                writer.Write((short)CommandStatus.Ok);
-                writer.Write(BuildExcerptsCommand_Accessor.COMMAND_VERSION);
-
-                writer.Write(21);
-                string expectedExcerpt = "test";
-                writer.Write(expectedExcerpt);
-                connection.BaseStream.Seek(0, SeekOrigin.Begin);
-
-                BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
-                target.Keywords.Add("test");
-                target.Documents.Add("test");
-                target.Index = "test";
-
-                target.Execute();
-
-                Assert.IsTrue(target.Result.Success);
-                Assert.AreEqual(CommandStatus.Ok, target.Result.Status);
-                Assert.AreEqual(1, target.Result.Excerpts.Count);
-                Assert.AreEqual(expectedExcerpt, target.Result.Excerpts[0]);
-            }
-        }
+				target.Index = "test";
+				Executing.This(target.Execute).Should().NotThrow();
+			}
+		}
 
 
-	    #endregion
-    
-        #region Helper methods
-        /// <summary>
-        /// Returns <see cref="BuildExcerptsCommand_Accessor"/> object accessor for given <see cref="BuildExcerptsCommand"/> object.
-        /// </summary>
-        /// <param name="command"><see cref="BuildExcerptsCommand"/> object</param>
-        /// <returns><see cref="BuildExcerptsCommand"/> object</returns>
-        protected BuildExcerptsCommand_Accessor GetCommandAccessor(BuildExcerptsCommand command)
-        {
-            PrivateObject po = new PrivateObject(command);
-            BuildExcerptsCommand_Accessor accessor = new BuildExcerptsCommand_Accessor(po);
-            return accessor;
-        }
-        #endregion
-    }
+		[TestMethod]
+		public void SerializeRequestTest()
+		{
+			using (ConnectionMock connection = new ConnectionMock("test"))
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				var accessor = GetCommandAccessor(target);
+				ArrayList values = new ArrayList();
+
+				IBinaryWriter writer = new ArrayListWriterMock(values);
+				accessor.SerializeRequest(writer);
+
+				Assert.AreEqual(values.Count, 14);
+				Assert.AreEqual(values[0], BuildExcerptsCommand_Accessor.MODE);
+				Assert.AreEqual(values[1], (int)target.Options);
+				Assert.AreEqual(values[2], target.Index);
+				// Keywords skipped, will be tested in unit-test for StringList class
+				Assert.AreEqual(values[4], target.BeforeMatch);
+				Assert.AreEqual(values[5], target.AfterMatch);
+				Assert.AreEqual(values[6], target.SnippetsDelimiter);
+				Assert.AreEqual(values[7], target.SnippetSizeLimit);
+				Assert.AreEqual(values[8], target.WordsAroundKeyword);
+				Assert.AreEqual(values[9], target.SnippetsCountLimit);
+				Assert.AreEqual(values[10], target.WordsCountLimit);
+				Assert.AreEqual(values[11], target.StartPassageId);
+				Assert.AreEqual(values[12], target.HtmlStripMode.ToString().ToLowerInvariant());
+				// Documents skipped, for same reason
+			}
+		}
+
+		[TestMethod]
+		[HostType("Moles")]
+		public void DeserializeResponseTest()
+		{
+			using (ConnectionMock connection = new ConnectionMock("test"))
+			{
+				bool deserializeCalled = false;
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				var accessor = GetCommandAccessor(target);
+				IBinaryReader arrayReader = new ArrayListReaderMock(new ArrayList());
+				accessor.Result = new MBuildExcerptsCommandResult
+                  	{
+                  		DeserializeIBinaryReaderInt32 = (reader, count) => { deserializeCalled = (reader == arrayReader && count == 1); }
+                  	};
+				target.Documents.Add("test");
+
+				accessor.DeserializeResponse(arrayReader);
+
+				Assert.IsTrue(deserializeCalled);
+			}
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Helper methods
+		protected BuildExcerptsCommand_Accessor GetCommandAccessor(BuildExcerptsCommand command)
+		{
+			PrivateObject po = new PrivateObject(command);
+			BuildExcerptsCommand_Accessor accessor = new BuildExcerptsCommand_Accessor(po);
+			return accessor;
+		}
+
+		#endregion
+	}
 }

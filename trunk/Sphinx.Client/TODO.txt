@@ -1,4 +1,1 @@
-﻿- Add more XDoc comments to source code (public class/attributes/methods descriptions)
-- Implement unit tests for all classes
-
-- implement support for SPH_MATCH_FULLSCAN match mode (constraints)
+﻿

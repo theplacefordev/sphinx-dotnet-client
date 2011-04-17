@@ -62,7 +62,7 @@ namespace Sphinx.Client.Commands
         #endregion
 
 		#region Methods
-		internal void DeserializeWarning(BinaryReaderBase reader)
+		internal void DeserializeWarning(IBinaryReader reader)
 		{
 			_warningsList.Add(reader.ReadString());
 		}

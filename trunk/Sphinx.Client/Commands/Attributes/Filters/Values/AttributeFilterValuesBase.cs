@@ -64,7 +64,7 @@ namespace Sphinx.Client.Commands.Attributes.Filters.Values
 
         #region Methods
         #region Implemented
-        protected override void WriteBody(BinaryWriterBase writer)
+        protected override void WriteBody(IBinaryWriter writer)
         {
             writer.Write(Values.Count);
             foreach (T value in Values)

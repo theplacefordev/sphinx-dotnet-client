@@ -85,13 +85,13 @@ namespace Sphinx.Client.Commands.Query
             base.Execute();
         }
 
-        protected override void SerializeRequest(BinaryWriterBase writer)
+        protected override void SerializeRequest(IBinaryWriter writer)
         {
             writer.Write(RESPONSE_VERSION);
             writer.Write(Query);
         }
 
-        protected override void DeserializeResponse(BinaryReaderBase reader)
+        protected override void DeserializeResponse(IBinaryReader reader)
         {
             Result.Deserialize(reader);
         }
