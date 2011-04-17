@@ -65,7 +65,7 @@ namespace Sphinx.Client.Commands.Attributes.Override
         #endregion
 
         #region Implemented
-        internal virtual void Serialize(BinaryWriterBase writer)
+        internal virtual void Serialize(IBinaryWriter writer)
         {
             // attribute name
             writer.Write(Name);

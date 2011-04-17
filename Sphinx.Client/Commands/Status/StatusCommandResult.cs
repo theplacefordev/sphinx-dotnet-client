@@ -44,7 +44,7 @@ namespace Sphinx.Client.Commands.Status
         #endregion
 
         #region Methods
-        internal void Deserialize(BinaryReaderBase reader)
+        internal void Deserialize(IBinaryReader reader)
         {
             _statusList.Deserialize(reader);
         }

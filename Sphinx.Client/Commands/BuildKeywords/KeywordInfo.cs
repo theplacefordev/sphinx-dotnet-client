@@ -66,7 +66,7 @@ namespace Sphinx.Client.Commands.BuildKeywords
         #endregion
 
         #region Methods
-        internal void Deserialize(BinaryReaderBase reader, bool deserializeAdditionalStatistics)
+        internal void Deserialize(IBinaryReader reader, bool deserializeAdditionalStatistics)
         {
             TokenizedForm = reader.ReadString();
             NormalizedForm = reader.ReadString();

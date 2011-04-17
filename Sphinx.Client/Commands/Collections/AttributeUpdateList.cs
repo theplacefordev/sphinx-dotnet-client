@@ -326,7 +326,7 @@ namespace Sphinx.Client.Commands.Collections
         /// Serialize object to stream using specified binary writer.
         /// </summary>
         /// <param name="writer">Binary writer (output formatter) object</param>
-        internal void Serialize(BinaryWriterBase writer)
+        internal void Serialize(IBinaryWriter writer)
         {
             // NOTE: class hierarchy differs from the internal Sphinx binary protocol data format representation, requires split attribute names and document id/value sets.
             List<long> documentIds = new List<long>();

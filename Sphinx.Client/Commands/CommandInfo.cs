@@ -57,7 +57,7 @@ namespace Sphinx.Client.Commands
 
 
         #region Methods 
-        public void Serialize(BinaryWriterBase writer)
+        public void Serialize(IBinaryWriter writer)
         {
             writer.Write((short) Id);
             writer.Write(Version);

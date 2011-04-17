@@ -34,7 +34,7 @@ namespace Sphinx.Client.UnitTests.Mock.Commands
 
         protected internal override void Serialize(IStreamAdapter stream)
         {
-            BinaryWriterBase writer = Connection.FormatterFactory.CreateWriter(stream);
+            IBinaryWriter writer = Connection.FormatterFactory.CreateWriter(stream);
             CommandInfo.Serialize(writer);
         }
 

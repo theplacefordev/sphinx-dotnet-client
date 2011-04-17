@@ -35,9 +35,8 @@ namespace Sphinx.Client.Commands
                     where TResult : CommandResultBase, new()
     {
         #region Fields
-        private TResult _result;
 
-        #endregion
+    	#endregion
 
         #region Constructors
         protected CommandWithResultBase(ConnectionBase connection) : base(connection)
@@ -48,15 +47,13 @@ namespace Sphinx.Client.Commands
 
         #region Properties
         #region Implemented
-        /// <summary>
-        /// Command execution result object. Holds all information returned by server, including command execution state and Sphinx server warnings.
-        /// </summary>
-        public virtual TResult Result
-        {
-            get { return _result; }
-            protected set { _result = value; }
-        }
-        #endregion
+
+    	/// <summary>
+    	/// Command execution result object. Holds all information returned by server, including command execution state and Sphinx server warnings.
+    	/// </summary>
+    	public virtual TResult Result { get; protected set; }
+
+    	#endregion
 
         #endregion
 
@@ -82,13 +79,13 @@ namespace Sphinx.Client.Commands
         /// <exception cref="IOException"/>
 		internal protected override void Serialize(IStreamAdapter stream)
         {
-            BinaryWriterBase writer = Connection.FormatterFactory.CreateWriter(stream);
+            IBinaryWriter writer = Connection.FormatterFactory.CreateWriter(stream);
             // send command id and version information
             CommandInfo.Serialize(writer);
 
             // serialize request body to temp. buffer to get command body length
             MemoryStream buffer = new MemoryStream();
-			BinaryWriterBase bufferWriter = Connection.FormatterFactory.CreateWriter(new StreamAdapter(buffer));
+			IBinaryWriter bufferWriter = Connection.FormatterFactory.CreateWriter(new StreamAdapter(buffer));
             SerializeRequest(bufferWriter);
             // send body length first
         	int length = (int) buffer.Length;
@@ -107,7 +104,7 @@ namespace Sphinx.Client.Commands
         /// <exception cref="IOException"/>
 		internal protected override void Deserialize(IStreamAdapter stream)
         {
-            BinaryReaderBase reader = Connection.FormatterFactory.CreateReader(stream);
+            IBinaryReader reader = Connection.FormatterFactory.CreateReader(stream);
             // read general command response header values
             Result.Status = (CommandStatus)reader.ReadInt16();
             short serverCommandVersion = reader.ReadInt16();
@@ -121,7 +118,7 @@ namespace Sphinx.Client.Commands
 			byte[] buffer = new byte[length];
 			stream.ReadBytes(buffer, length);
         	MemoryStream bodyStream = new MemoryStream(buffer);
-            BinaryReaderBase bodyReader = Connection.FormatterFactory.CreateReader(new StreamAdapter(bodyStream));
+            IBinaryReader bodyReader = Connection.FormatterFactory.CreateReader(new StreamAdapter(bodyStream));
 
             // check response status
             ValidateResponse(bodyReader, serverCommandVersion);
@@ -130,7 +127,7 @@ namespace Sphinx.Client.Commands
             DeserializeResponse(bodyReader);
         }
 
-    	protected virtual void ValidateResponse(BinaryReaderBase bodyReader, short serverCommandVersion)
+    	protected virtual void ValidateResponse(IBinaryReader bodyReader, short serverCommandVersion)
     	{
     		switch (Result.Status)
     		{
@@ -166,14 +163,14 @@ namespace Sphinx.Client.Commands
         /// An abstract method, must be implemented in derived class.
         /// </summary>
         /// <param name="writer">Data stream object</param>
-        protected abstract void SerializeRequest(BinaryWriterBase writer);
+        protected abstract void SerializeRequest(IBinaryWriter writer);
 
         /// <summary>
         /// Deserialize server response body.
         /// An abstract method, must be implemented in derived class.
         /// </summary>
         /// <param name="reader">Data stream object</param>
-        protected abstract void DeserializeResponse(BinaryReaderBase reader);
+        protected abstract void DeserializeResponse(IBinaryReader reader);
         
         #endregion
 

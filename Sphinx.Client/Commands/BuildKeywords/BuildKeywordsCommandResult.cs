@@ -42,7 +42,7 @@ namespace Sphinx.Client.Commands.BuildKeywords
         #endregion
 
         #region Methods
-        internal void Deserialize(BinaryReaderBase reader, bool calcStatistics)
+        internal void Deserialize(IBinaryReader reader, bool calcStatistics)
         {
             _keywordInfoList.Deserialize(reader, calcStatistics);
         }

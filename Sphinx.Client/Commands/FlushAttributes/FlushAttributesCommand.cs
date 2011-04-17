@@ -64,7 +64,7 @@ namespace Sphinx.Client.Commands.FlushAttributes
 		/// Serialize command parameters using specified binary stream writer.
 		/// </summary>
 		/// <param name="writer">Binary stream writer object</param>
-		protected override void SerializeRequest(BinaryWriterBase writer)
+		protected override void SerializeRequest(IBinaryWriter writer)
 		{
 		}
 
@@ -72,7 +72,7 @@ namespace Sphinx.Client.Commands.FlushAttributes
 		/// Deserialize server response body using specified binary stream reader.
 		/// </summary>
 		/// <param name="reader">Binary stream reader object</param>
-		protected override void DeserializeResponse(BinaryReaderBase reader)
+		protected override void DeserializeResponse(IBinaryReader reader)
 		{
 			Result.Deserialize(reader); 
 		}

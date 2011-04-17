@@ -18,12 +18,12 @@ namespace Sphinx.Client.UnitTests.Mock.Connections
     {
         #region Fields
         private ISocketAdapter _socket;
-        private IBinaryFormatterFactory _factory = new BinaryFormatterFactoryMock();
+        private IBinaryFormatterFactory _factory = new XmlFormatterFactoryMock();
         
         #endregion
 
         #region Constructors
-		public ConnectionMock(): base()
+		public ConnectionMock()
         {
         }
 

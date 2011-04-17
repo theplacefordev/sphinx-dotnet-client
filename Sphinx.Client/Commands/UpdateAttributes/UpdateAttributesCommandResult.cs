@@ -37,7 +37,7 @@ namespace Sphinx.Client.Commands.UpdateAttributes
         #endregion
 
         #region Methods
-		internal void Deserialize(BinaryReaderBase reader)
+		internal void Deserialize(IBinaryReader reader)
         {
             DocumentsUpdated = reader.ReadInt32();
             if (DocumentsUpdated == -1)

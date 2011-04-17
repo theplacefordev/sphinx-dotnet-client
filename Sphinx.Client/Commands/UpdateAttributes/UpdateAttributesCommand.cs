@@ -104,7 +104,7 @@ namespace Sphinx.Client.Commands.UpdateAttributes
         /// Serialize command parameters using specified binary stream writer.
         /// </summary>
         /// <param name="writer">Binary stream writer object</param>
-        protected override void SerializeRequest(BinaryWriterBase writer)
+        protected override void SerializeRequest(IBinaryWriter writer)
         {
             _indexNames.Serialize(writer);
             _attributesValues.Serialize(writer);
@@ -114,7 +114,7 @@ namespace Sphinx.Client.Commands.UpdateAttributes
         /// Deserialize server response body using specified binary stream reader.
         /// </summary>
         /// <param name="reader">Binary stream reader object</param>
-        protected override void DeserializeResponse(BinaryReaderBase reader)
+        protected override void DeserializeResponse(IBinaryReader reader)
         {
             Result.Deserialize(reader); 
         }

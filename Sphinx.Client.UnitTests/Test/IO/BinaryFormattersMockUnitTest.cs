@@ -68,7 +68,7 @@ namespace Sphinx.Client.UnitTests.Test
         {
             MemoryStream ms = new MemoryStream();
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(new StreamAdapter(ms));
+            XmlWriterMock writer = new XmlWriterMock(new StreamAdapter(ms));
             byte[] arr = new byte[] {1, 2, 3, 5, 6, 7, 8, 9, 0};
             writer.Write(arr);
             ms.Position = 0;
@@ -77,7 +77,7 @@ namespace Sphinx.Client.UnitTests.Test
             Assert.AreEqual(actual, expected);
 
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(new StreamAdapter(ms));
+            XmlReaderMock reader = new XmlReaderMock(new StreamAdapter(ms));
             byte[] res = reader.ReadBytes(arr.Length);
             MyAssert.AreEqual(arr, res);
         }
@@ -87,7 +87,7 @@ namespace Sphinx.Client.UnitTests.Test
         {
             MemoryStream ms = new MemoryStream();
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(new StreamAdapter(ms));
+            XmlWriterMock writer = new XmlWriterMock(new StreamAdapter(ms));
             byte a = 123;
             writer.Write(a);
             ms.Position = 0;
@@ -96,7 +96,7 @@ namespace Sphinx.Client.UnitTests.Test
             Assert.AreEqual(actual, expected);
 
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(new StreamAdapter(ms));
+            XmlReaderMock reader = new XmlReaderMock(new StreamAdapter(ms));
             byte b = reader.ReadByte();
             Assert.AreEqual(a, b);
 
@@ -107,7 +107,7 @@ namespace Sphinx.Client.UnitTests.Test
         {
             MemoryStream ms = new MemoryStream();
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(new StreamAdapter(ms));
+            XmlWriterMock writer = new XmlWriterMock(new StreamAdapter(ms));
             short a = 12345;
             writer.Write(a);
             ms.Position = 0;
@@ -116,7 +116,7 @@ namespace Sphinx.Client.UnitTests.Test
             Assert.AreEqual(actual, expected);
 
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(new StreamAdapter(ms));
+            XmlReaderMock reader = new XmlReaderMock(new StreamAdapter(ms));
             short b = reader.ReadInt16();
             Assert.AreEqual(a, b);
         }
@@ -127,7 +127,7 @@ namespace Sphinx.Client.UnitTests.Test
             MemoryStream ms = new MemoryStream();
         	IStreamAdapter adapter = new StreamAdapter(ms);
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(adapter);
+            XmlWriterMock writer = new XmlWriterMock(adapter);
             int a = 1234567890;
             writer.Write(a);
             ms.Position = 0;
@@ -136,7 +136,7 @@ namespace Sphinx.Client.UnitTests.Test
             Assert.AreEqual(actual, expected);
 
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(adapter);
+            XmlReaderMock reader = new XmlReaderMock(adapter);
             int b = reader.ReadInt32();
             Assert.AreEqual(a, b);
         }
@@ -146,7 +146,7 @@ namespace Sphinx.Client.UnitTests.Test
         {
             MemoryStream ms = new MemoryStream();
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(new StreamAdapter(ms));
+            XmlWriterMock writer = new XmlWriterMock(new StreamAdapter(ms));
             long a = 1234567890123456789;
             writer.Write(a);
             ms.Position = 0;
@@ -155,7 +155,7 @@ namespace Sphinx.Client.UnitTests.Test
             Assert.AreEqual(actual, expected);
 
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(new StreamAdapter(ms));
+            XmlReaderMock reader = new XmlReaderMock(new StreamAdapter(ms));
             long b = reader.ReadInt64();
             Assert.AreEqual(a, b);
         }
@@ -165,7 +165,7 @@ namespace Sphinx.Client.UnitTests.Test
         {
             MemoryStream ms = new MemoryStream();
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(new StreamAdapter(ms));
+            XmlWriterMock writer = new XmlWriterMock(new StreamAdapter(ms));
             float a = 1.2345f;
             writer.Write(a);
             ms.Position = 0;
@@ -174,7 +174,7 @@ namespace Sphinx.Client.UnitTests.Test
             Assert.AreEqual(actual, expected);
 
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(new StreamAdapter(ms));
+            XmlReaderMock reader = new XmlReaderMock(new StreamAdapter(ms));
             float b = reader.ReadSingle();
             Assert.AreEqual(a, b);
         }
@@ -184,7 +184,7 @@ namespace Sphinx.Client.UnitTests.Test
         {
             MemoryStream ms = new MemoryStream();
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(new StreamAdapter(ms));
+            XmlWriterMock writer = new XmlWriterMock(new StreamAdapter(ms));
             double a = 1234567890.123456789f;
             writer.Write(a);
             ms.Position = 0;
@@ -193,7 +193,7 @@ namespace Sphinx.Client.UnitTests.Test
             Assert.AreEqual(actual, expected);
 
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(new StreamAdapter(ms));
+            XmlReaderMock reader = new XmlReaderMock(new StreamAdapter(ms));
             double b = reader.ReadDouble();
             Assert.AreEqual(a, b);
         }
@@ -203,7 +203,7 @@ namespace Sphinx.Client.UnitTests.Test
         {
             MemoryStream ms = new MemoryStream();
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(new StreamAdapter(ms));
+            XmlWriterMock writer = new XmlWriterMock(new StreamAdapter(ms));
             string a = "abcdef<test&escaping>";
             writer.Write(a);
             ms.Position = 0;
@@ -212,7 +212,7 @@ namespace Sphinx.Client.UnitTests.Test
             Assert.AreEqual(actual, expected);
 
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(new StreamAdapter(ms));
+            XmlReaderMock reader = new XmlReaderMock(new StreamAdapter(ms));
             string b = reader.ReadString();
             Assert.AreEqual(a, b);
         }
@@ -222,7 +222,7 @@ namespace Sphinx.Client.UnitTests.Test
         {
             MemoryStream ms = new MemoryStream();
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(new StreamAdapter(ms));
+            XmlWriterMock writer = new XmlWriterMock(new StreamAdapter(ms));
             DateTime a = new DateTime(2000, 1, 1, 1, 1, 1); // 01.01.2000 01:01:01
             writer.Write(a);
             ms.Position = 0;
@@ -231,7 +231,7 @@ namespace Sphinx.Client.UnitTests.Test
             Assert.AreEqual(actual, expected);
 
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(new StreamAdapter(ms));
+            XmlReaderMock reader = new XmlReaderMock(new StreamAdapter(ms));
             DateTime b = reader.ReadDateTime();
             Assert.AreEqual(a, b);
         }
@@ -241,7 +241,7 @@ namespace Sphinx.Client.UnitTests.Test
         {
             MemoryStream ms = new MemoryStream();
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(new StreamAdapter(ms));
+            XmlWriterMock writer = new XmlWriterMock(new StreamAdapter(ms));
             DateTime dat = new DateTime(2002, 2, 2, 2, 2, 2); // 02.02.2002 02:02:02
             writer.Write(dat);
             string str = "test string";
@@ -258,7 +258,7 @@ namespace Sphinx.Client.UnitTests.Test
             ms.Position = 0;
 
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(new StreamAdapter(ms));
+            XmlReaderMock reader = new XmlReaderMock(new StreamAdapter(ms));
             DateTime adat = reader.ReadDateTime();
             Assert.AreEqual(dat, adat);
             string astr = reader.ReadString();
@@ -278,7 +278,7 @@ namespace Sphinx.Client.UnitTests.Test
         {
             MemoryStream ms = new MemoryStream();
             // serialize some data
-            BinaryWriterMock writer = new BinaryWriterMock(new StreamAdapter(ms));
+            XmlWriterMock writer = new XmlWriterMock(new StreamAdapter(ms));
 
             int integer = 123;
             writer.Write(integer);
@@ -287,7 +287,7 @@ namespace Sphinx.Client.UnitTests.Test
 
             ms.Position = 0;
             // deserialize serialized data
-            BinaryReaderMock reader = new BinaryReaderMock(new StreamAdapter(ms));
+            XmlReaderMock reader = new XmlReaderMock(new StreamAdapter(ms));
             try
             {
                 // current reader position at <date> tag 

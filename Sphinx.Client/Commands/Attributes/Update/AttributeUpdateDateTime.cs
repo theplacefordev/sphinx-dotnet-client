@@ -48,7 +48,7 @@ namespace Sphinx.Client.Commands.Attributes.Update
         #endregion
 
         #region Methods
-        internal override void Serialize(BinaryWriterBase writer, long id)
+        internal override void Serialize(IBinaryWriter writer, long id)
         {
             writer.Write(Values[id]);
         }

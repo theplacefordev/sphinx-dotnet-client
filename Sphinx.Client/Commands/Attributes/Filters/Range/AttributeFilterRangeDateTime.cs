@@ -34,7 +34,7 @@ namespace Sphinx.Client.Commands.Attributes.Filters.Range
         #endregion
 
         #region Methods
-        protected override void WriteBody(BinaryWriterBase writer)
+        protected override void WriteBody(IBinaryWriter writer)
         {
             writer.Write(MinValue);
             writer.Write(MaxValue);

@@ -82,23 +82,23 @@ namespace Sphinx.Client.Commands.Attributes.Filters
         #region Methods
         
         #region Abstract
-        protected abstract void WriteBody(BinaryWriterBase writer);
+        protected abstract void WriteBody(IBinaryWriter writer);
         
         #endregion
 
         #region Implemented
-        protected virtual void WriteHead(BinaryWriterBase writer)
+        protected virtual void WriteHead(IBinaryWriter writer)
         {
             writer.Write(Name);
             writer.Write((int)FilterType);
         }
 
-        protected virtual void WriteTail(BinaryWriterBase writer)
+        protected virtual void WriteTail(IBinaryWriter writer)
         {
             writer.Write(Exclude);
         }
 
-        internal protected virtual void Serialize(BinaryWriterBase writer)
+        internal protected virtual void Serialize(IBinaryWriter writer)
         {
             WriteHead(writer);
             WriteBody(writer);

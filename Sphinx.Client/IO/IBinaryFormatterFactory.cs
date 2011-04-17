@@ -8,7 +8,7 @@ namespace Sphinx.Client.IO
     /// </summary>
     public interface IBinaryFormatterFactory
     {
-		BinaryReaderBase CreateReader(IStreamAdapter stream);
-		BinaryWriterBase CreateWriter(IStreamAdapter stream);
+		IBinaryReader CreateReader(IStreamAdapter stream);
+		IBinaryWriter CreateWriter(IStreamAdapter stream);
     }
 }

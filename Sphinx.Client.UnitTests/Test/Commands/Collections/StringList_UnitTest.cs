@@ -88,7 +88,7 @@ namespace Sphinx.Client.UnitTests.Test.Commands.Collections
         {
             StringList target = new StringList();
             MemoryStream stream = new MemoryStream();
-            BinaryWriterBase writer = new BinaryWriterMock(new StreamAdapter(stream));
+            IBinaryWriter writer = new XmlWriterMock(new StreamAdapter(stream));
             // empty list
             target.Serialize(writer);
             string expected = "<string></string>";

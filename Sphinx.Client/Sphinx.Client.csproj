@@ -70,6 +70,8 @@
     <Compile Include="IO\BinaryFormatterFactory.cs" />
     <Compile Include="IO\Enums.cs" />
     <Compile Include="IO\IBinaryFormatterFactory.cs" />
+    <Compile Include="IO\IBinaryReader.cs" />
+    <Compile Include="IO\IBinaryWriter.cs" />
     <Compile Include="Network\IStreamAdapter.cs" />
     <Compile Include="Network\StreamAdapter.cs" />
     <Compile Include="Network\TcpStreamAdapter.cs" />

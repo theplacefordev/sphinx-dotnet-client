@@ -59,7 +59,7 @@ namespace Sphinx.Client.Commands.Search
         #endregion
 
         #region Methods
-        internal void Deserialize(BinaryReaderBase reader, MatchParseContext context)
+        internal void Deserialize(IBinaryReader reader, MatchParseContext context)
         {
             _docId = (context.LongIdentifiers) ? reader.ReadInt64() : reader.ReadInt32();
             _weight = reader.ReadInt32();

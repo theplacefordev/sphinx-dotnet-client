@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -60,3 +61,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("0.4.0.0")]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Sphinx.Client.UnitTests")]
+[assembly: InternalsVisibleTo("Sphinx.Client1.UnitTests")]
+[assembly: InternalsVisibleTo("Sphinx.Client.Explorables")]

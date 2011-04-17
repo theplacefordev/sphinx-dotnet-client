@@ -34,7 +34,7 @@ namespace Sphinx.Client.Commands.Attributes
         #endregion
 
         #region Methods
-        internal void Deserialize(BinaryReaderBase reader)
+        internal void Deserialize(IBinaryReader reader)
         {
             Name = reader.ReadString();
             AttributeType = (AttributeType)reader.ReadInt32();

@@ -305,9 +305,9 @@ namespace Sphinx.Client.UnitTests.Test.Connections
                 // underlying socket sholud be already opened
                 accessor.Socket.Open();
                 // assign mock binary formatter factory
-                BinaryFormatterFactoryMock factory = new BinaryFormatterFactoryMock();
+                XmlFormatterFactoryMock factory = new XmlFormatterFactoryMock();
                 accessor._formatterFactory = factory;
-                BinaryWriterBase writer = factory.CreateWriter(accessor.DataStream);
+                IBinaryWriter writer = factory.CreateWriter(accessor.DataStream);
 
                 // preserialize server reponse (protocol version) and rewind to start pos. (emulate first stage of handshake procedure)
                 int protocolVersion = TcpConnection_Accessor.MAJOR_PROTOCOL_VERSION; 
@@ -320,7 +320,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
 
                 // restore stream pos
 				streamAccessor.Stream.Seek(pos, SeekOrigin.Begin);
-                BinaryReaderBase reader = factory.CreateReader(accessor.DataStream);
+                IBinaryReader reader = factory.CreateReader(accessor.DataStream);
                 // read client response 
                 int actual = reader.ReadInt32();
                 Assert.AreEqual(actual, protocolVersion);
@@ -345,9 +345,9 @@ namespace Sphinx.Client.UnitTests.Test.Connections
                 accessor.Socket = new ClientSocketMock();
                 accessor.Socket.Open();
 
-                BinaryFormatterFactoryMock factory = new BinaryFormatterFactoryMock();
+                XmlFormatterFactoryMock factory = new XmlFormatterFactoryMock();
                 accessor._formatterFactory = factory;
-                BinaryWriterBase writer = factory.CreateWriter(accessor.DataStream);
+                IBinaryWriter writer = factory.CreateWriter(accessor.DataStream);
 
                 // preserialize server protocol version and rewind to start pos. (emulate first stage of handshake procedure)
                 int protocolVersion = TcpConnection_Accessor.MAJOR_PROTOCOL_VERSION; 
@@ -364,7 +364,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
 
                 accessor.Socket.Open();
 				streamAccessor.Stream.Seek(pos, SeekOrigin.Begin);
-                BinaryReaderBase reader = factory.CreateReader(accessor.DataStream);
+                IBinaryReader reader = factory.CreateReader(accessor.DataStream);
                 // skip protocol version sent by hadshake method
                 int clientProtocol = reader.ReadInt32();
 

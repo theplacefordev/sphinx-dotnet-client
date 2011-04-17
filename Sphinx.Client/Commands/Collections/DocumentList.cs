@@ -27,7 +27,7 @@ namespace Sphinx.Client.Commands.Collections
         /// Serialize object to stream using specified binary writer.
         /// </summary>
         /// <param name="writer">Binary writer (output formatter) object</param>
-		internal override void Serialize(BinaryWriterBase writer)
+		internal override void Serialize(IBinaryWriter writer)
         {
 			// documents count & content
 			writer.Write(Count);

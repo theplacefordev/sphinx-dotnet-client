@@ -33,7 +33,7 @@ namespace Sphinx.Client.Commands.Collections
         /// </summary>
         /// <param name="reader">Binary stream reader object</param>
         /// <param name="deserializeAdditionalStatistics">Deserialize additional hits statistics</param>
-        internal void Deserialize(BinaryReaderBase reader, bool deserializeAdditionalStatistics)
+        internal void Deserialize(IBinaryReader reader, bool deserializeAdditionalStatistics)
         {
             Clear();
             int count = reader.ReadInt32();

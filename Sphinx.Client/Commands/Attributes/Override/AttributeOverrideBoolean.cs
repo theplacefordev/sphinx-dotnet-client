@@ -63,7 +63,7 @@ namespace Sphinx.Client.Commands.Attributes.Override
         #endregion
 
         #region Methods
-        internal override void Serialize(BinaryWriterBase writer)
+        internal override void Serialize(IBinaryWriter writer)
         {
             base.Serialize(writer);
             // filter type

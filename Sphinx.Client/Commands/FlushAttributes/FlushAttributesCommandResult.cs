@@ -39,7 +39,7 @@ namespace Sphinx.Client.Commands.FlushAttributes
 		#endregion
 
 		#region Methods
-		internal void Deserialize(BinaryReaderBase reader)
+		internal void Deserialize(IBinaryReader reader)
 		{
 			FlushTag = reader.ReadInt32();
 			if (FlushTag < 0)

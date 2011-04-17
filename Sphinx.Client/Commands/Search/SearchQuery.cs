@@ -434,7 +434,7 @@ namespace Sphinx.Client.Commands.Search
         #endregion
 
         #region Methods
-        internal void Serialize(BinaryWriterBase writer)
+        internal void Serialize(IBinaryWriter writer)
         {
             ArgumentAssert.IsTrue(SortMode == ResultsSortMode.Relevance || (!String.IsNullOrEmpty(SortBy)), String.Format(Messages.Exception_ArgumentResultsSortModeNotValid, Enum.GetName(typeof(ResultsSortMode), SortMode)));
             ArgumentAssert.IsTrue(MinDocumentId <= MaxDocumentId, Messages.Exception_ArgumentMinIdGreaterThanMaxId);

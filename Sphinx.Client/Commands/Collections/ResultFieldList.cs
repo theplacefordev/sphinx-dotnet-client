@@ -31,7 +31,7 @@ namespace Sphinx.Client.Commands.Collections
         /// Deserialize object state from stream using specified binary stream reader.
         /// </summary>
         /// <param name="reader">Binary stream reader object</param>
-        internal void Deserialize(BinaryReaderBase reader)
+        internal void Deserialize(IBinaryReader reader)
         {
             Clear();
             int count = reader.ReadInt32();

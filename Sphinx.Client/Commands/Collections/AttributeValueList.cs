@@ -48,7 +48,7 @@ namespace Sphinx.Client.Commands.Collections
         /// </summary>
         /// <param name="reader">Binary stream reader object</param>
         /// <param name="context">Match parse context object</param>
-        internal void Deserialize(BinaryReaderBase reader, MatchParseContext context)
+        internal void Deserialize(IBinaryReader reader, MatchParseContext context)
         {
             foreach (AttributeInfo attributeInfo in context.Attributes)
             {

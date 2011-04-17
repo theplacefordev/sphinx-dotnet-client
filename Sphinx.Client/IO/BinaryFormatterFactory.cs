@@ -48,7 +48,7 @@ namespace Sphinx.Client.IO
         #endregion
 
         #region Methods
-		public BinaryReaderBase CreateReader(IStreamAdapter stream)
+		public IBinaryReader CreateReader(IStreamAdapter stream)
         {
             switch (_formatType)
             {
@@ -58,7 +58,7 @@ namespace Sphinx.Client.IO
             throw new NotSupportedException(String.Format(Messages.Exception_BinaryFormatNotSupported, Enum.GetName(typeof(BinaryFormatType), _formatType)));
         }
 
-		public BinaryWriterBase CreateWriter(IStreamAdapter stream)
+		public IBinaryWriter CreateWriter(IStreamAdapter stream)
         {
             switch (_formatType)
             {

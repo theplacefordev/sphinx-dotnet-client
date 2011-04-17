@@ -84,7 +84,7 @@ namespace Sphinx.Client.Commands.Attributes.Update
 
         #region Abstract
         internal abstract IEnumerable<long> GetDocumentsIdSet();
-        internal abstract void Serialize(BinaryWriterBase writer, long id);
+        internal abstract void Serialize(IBinaryWriter writer, long id);
         
         #endregion
 

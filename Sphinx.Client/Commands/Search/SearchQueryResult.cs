@@ -116,7 +116,7 @@ namespace Sphinx.Client.Commands.Search
         #endregion
 
         #region Methods
-        internal void Deserialize(BinaryReaderBase reader)
+        internal void Deserialize(IBinaryReader reader)
         {
             // read query status
             _status = (QueryStatus)reader.ReadInt32();
