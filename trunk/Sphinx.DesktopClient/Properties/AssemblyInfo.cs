@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SearchDesktopClientTestApplication")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Sphinx Search Desktop Client")]
+[assembly: AssemblyDescription("Sphinx search-engine desktop client")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Miradasoftware")]
-[assembly: AssemblyProduct("SearchDesktopClientTestApplication")]
-[assembly: AssemblyCopyright("Copyright © Miradasoftware 2009")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Sphinx Search Desktop Client")]
+[assembly: AssemblyCopyright("Copyright (c) Rustam Babadajnov 2009-2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
