@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Sphinx.Client.UnitTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Mirada software")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Sphinx.Client.UnitTests")]
-[assembly: AssemblyCopyright("Copyright (©) Rustam Babadjanov 2009")]
+[assembly: AssemblyCopyright("Copyright (c) Rustam Babadjanov 2009-2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

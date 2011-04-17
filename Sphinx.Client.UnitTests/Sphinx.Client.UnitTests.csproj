@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Test\Commands\CommandResultBaseTest.cs" />
     <Compile Include="Test\Commands\CommandBase_UnitTest.cs" />
     <Compile Include="Test\Commands\BuildExcerpts\BuildExcerptsCommandResult_UnitTest.cs" />
     <Compile Include="Mock\Connections\ConnectionMock.cs" />

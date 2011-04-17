@@ -1,0 +1,10 @@
+<Moles xmlns="http://schemas.microsoft.com/moles/2010/">
+  <Assembly Name="Sphinx.Client" />
+  <MoleGeneration>
+    <Types>
+      <Clear/>
+      <Add FullName="Sphinx.Client.Commands.BuildExcerpts.BuildExcerptsCommandResult" />
+      <Add FullName="Sphinx.Client.Connections.TcpConnection" />
+    </Types>
+  </MoleGeneration>
+</Moles>
