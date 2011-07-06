@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Sphinx.Client.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -931,7 +932,7 @@ namespace Sphinx.Client.UnitTests.Test.Helpers
                 ArgumentAssert.IsDefinedInEnum(enumType, value, argumentName);
                 Assert.Fail("Assert method must throw ArgumentOutOfRangeException exception.");
             }
-            catch (ArgumentException)
+			catch (InvalidEnumArgumentException)
             {
                 // test passed
             }

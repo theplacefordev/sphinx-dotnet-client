@@ -47,8 +47,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Test\Commands\CommandBaseTest.cs" />
+    <Compile Include="Mock\Commands\CommandResultBaseMock.cs" />
+    <Compile Include="Mock\IO\ArrayListFormatterFactoryMock.cs" />
+    <Compile Include="Test\Commands\CommandInfoTest.cs" />
+    <Compile Include="Test\Commands\CommandWithResultBaseTest.cs" />
     <Compile Include="Test\Commands\CommandResultBaseTest.cs" />
-    <Compile Include="Test\Commands\CommandBase_UnitTest.cs" />
+    <Compile Include="Test\Commands\Collections\CommandBase_UnitTest.cs" />
     <Compile Include="Test\Commands\BuildExcerpts\BuildExcerptsCommandResult_UnitTest.cs" />
     <Compile Include="Mock\Connections\ConnectionMock.cs" />
     <Compile Include="Mock\IO\ArrayListReaderMock.cs" />

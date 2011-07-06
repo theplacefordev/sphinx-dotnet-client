@@ -54,6 +54,16 @@ namespace Sphinx.Client.UnitTests.Test.Commands
 		}
 
 		[TestMethod]
+		public void StatusTest()
+		{
+			CommandResultBase target = CreateCommandResultBase();
+
+			target.Status = CommandStatus.Error;
+
+			Assert.AreEqual(target.Status, CommandStatus.Error);
+		}
+
+		[TestMethod]
 		public void SuccessTest()
 		{
 			CommandResultBase target = CreateCommandResultBase();
@@ -63,16 +73,8 @@ namespace Sphinx.Client.UnitTests.Test.Commands
 			
 			target.Status = CommandStatus.Warning;
 			Assert.IsTrue(target.Success);
-		}
-
-		[TestMethod]
-		public void StatusTest()
-		{
-			CommandResultBase target = CreateCommandResultBase();
 
 			target.Status = CommandStatus.Error;
-
-			Assert.AreEqual(target.Status, CommandStatus.Error);
 			Assert.IsFalse(target.Success);
 		}
 

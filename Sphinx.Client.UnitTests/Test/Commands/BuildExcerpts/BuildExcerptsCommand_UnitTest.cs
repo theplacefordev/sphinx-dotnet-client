@@ -243,6 +243,21 @@ namespace Sphinx.Client.UnitTests.Test.Commands.BuildExcerpts
 		}
 
 		[TestMethod]
+		public void PassageBoundaryTest()
+		{
+			using (ConnectionBase connection = new ConnectionMock())
+			{
+				BuildExcerptsCommand target = new BuildExcerptsCommand(connection);
+				// default value
+				Assert.AreEqual(target.PassageBoundary, BuildExcerptsCommand_Accessor.DEFAULT_PASSAGE_BOUNDARY);
+				// valid value
+				PassageBoundary expected = PassageBoundary.Paragraph;
+				target.PassageBoundary = expected;
+				Assert.AreEqual(expected, target.PassageBoundary);
+			}
+		}
+
+		[TestMethod]
 		public void OptionsTest()
 		{
 			using (ConnectionBase connection = new ConnectionMock())
@@ -382,7 +397,7 @@ namespace Sphinx.Client.UnitTests.Test.Commands.BuildExcerpts
 				IBinaryWriter writer = new ArrayListWriterMock(values);
 				accessor.SerializeRequest(writer);
 
-				Assert.AreEqual(values.Count, 14);
+				Assert.AreEqual(values.Count, 15);
 				Assert.AreEqual(values[0], BuildExcerptsCommand_Accessor.MODE);
 				Assert.AreEqual(values[1], (int)target.Options);
 				Assert.AreEqual(values[2], target.Index);
@@ -396,6 +411,7 @@ namespace Sphinx.Client.UnitTests.Test.Commands.BuildExcerpts
 				Assert.AreEqual(values[10], target.WordsCountLimit);
 				Assert.AreEqual(values[11], target.StartPassageId);
 				Assert.AreEqual(values[12], target.HtmlStripMode.ToString().ToLowerInvariant());
+				Assert.AreEqual(values[13], target.PassageBoundary.ToString().ToLowerInvariant());
 				// Documents skipped, for same reason
 			}
 		}
@@ -411,9 +427,9 @@ namespace Sphinx.Client.UnitTests.Test.Commands.BuildExcerpts
 				var accessor = GetCommandAccessor(target);
 				IBinaryReader arrayReader = new ArrayListReaderMock(new ArrayList());
 				accessor.Result = new MBuildExcerptsCommandResult
-                  	{
-                  		DeserializeIBinaryReaderInt32 = (reader, count) => { deserializeCalled = (reader == arrayReader && count == 1); }
-                  	};
+              	{
+              		DeserializeIBinaryReaderInt32 = (reader, count) => { deserializeCalled = (reader == arrayReader && count == 1); }
+              	};
 				target.Documents.Add("test");
 
 				accessor.DeserializeResponse(arrayReader);
