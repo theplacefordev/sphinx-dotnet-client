@@ -10,7 +10,7 @@ namespace Sphinx.Client.UnitTests.Mock.Network
 	{
 		public int OperationTimeout
 		{
-			get { throw new NotImplementedException(); }
+			get { return 0; }
 			set { throw new NotImplementedException(); }
 		}
 

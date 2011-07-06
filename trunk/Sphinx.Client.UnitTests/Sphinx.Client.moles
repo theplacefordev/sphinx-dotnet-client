@@ -5,6 +5,8 @@
       <Clear/>
       <Add FullName="Sphinx.Client.Commands.BuildExcerpts.BuildExcerptsCommandResult" />
       <Add FullName="Sphinx.Client.Connections.TcpConnection" />
+      <Add FullName="Sphinx.Client.Commands.CommandInfo" />
+      <Add FullName="Sphinx.Client.Commands.CommandBase" />
     </Types>
   </MoleGeneration>
 </Moles>

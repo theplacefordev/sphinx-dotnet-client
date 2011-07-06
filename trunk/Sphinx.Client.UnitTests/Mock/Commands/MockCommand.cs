@@ -32,7 +32,11 @@ namespace Sphinx.Client.UnitTests.Mock.Commands
             get { return new CommandInfo(_id, _ver); }
         }
 
-        protected internal override void Serialize(IStreamAdapter stream)
+    	protected override void ValidateParameters()
+    	{
+    	}
+
+    	protected internal override void Serialize(IStreamAdapter stream)
         {
             IBinaryWriter writer = Connection.FormatterFactory.CreateWriter(stream);
             CommandInfo.Serialize(writer);
