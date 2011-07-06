@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using Sphinx.Client.Commands.Attributes.Filters;
+using Sphinx.Client.Commands.Attributes.Filters.Values;
 using Sphinx.Client.Commands.Collections;
 using Sphinx.Client.Helpers;
 using Sphinx.Client.IO;
@@ -28,8 +30,7 @@ namespace Sphinx.Client.Commands.Search
     public class SearchQuery
     {
         #region Contants
-        private const int ID64_MARKER = 1;// id64 range marker
-
+		private const IdSize DEFAULT_ID_SIZE = IdSize.Int64;
         private const int DEFAULT_OFFSET = 0;
         private const int DEFAULT_LIMIT = 20;
         private const int DEFAULT_MAX_MATCHES = 1000;
@@ -44,15 +45,25 @@ namespace Sphinx.Client.Commands.Search
         private const string DEFAULT_GROUP_BY = "";
         private const string DEFAULT_GROUP_SORT = "@group desc";
         private const string DEFAULT_GROUP_DISTINCT = "";
-        private const int DEFAULT_MAX_QUERY_TIME_MS = 0;
-        private const string DEFAULT_SELECT = "*";
+        private const int DEFAULT_MAX_QUERY_TIME_MS = 0; // 0 = disabled
+        private const string DEFAULT_SELECT = "*"; // * = all
         private const int DEFAULT_RETRY_COUNT = 0; // 0 = disabled
-        private const int DEFAULT_RETRY_DELAY_MS = 0;
+		private const int DEFAULT_RETRY_DELAY_MS = 0; // 0 = disabled
+		private const int DEFAULT_MAX_FILTERS_COUNT = 256;
+		private const int DEFAULT_MAX_FILTER_VALUES_COUNT = 4096;
 
-        private const int LIMIT_COMMENT_LENGTH = 128;
+        private const int MAX_COMMENT_LENGTH = 128;
         #endregion
 
         #region Fields
+		// document id size (int32 or int64)
+		private static IdSize _idSize = DEFAULT_ID_SIZE;
+
+		// max. filters per query
+		private static int _maxFiltersCount = DEFAULT_MAX_FILTERS_COUNT;
+
+		// max. filter values per filter
+    	private static int _maxFilterValuesCount = DEFAULT_MAX_FILTER_VALUES_COUNT;
 
         // query string
         private string _query;
@@ -112,7 +123,7 @@ namespace Sphinx.Client.Commands.Search
         private readonly AttributeOverrideList _attributeOverrides = new AttributeOverrideList();
         
         // attribute filters
-        private readonly AttributeFilterList _attributeFilters = new AttributeFilterList();
+        private readonly AttributeFilterList _attributeFilters = new AttributeFilterList(MaxFiltersCount, MaxFilterValuesCount);
 
         // anchor point for and geodistance 
         private GeoAnchor _geoAnchor = new GeoAnchor();
@@ -130,6 +141,7 @@ namespace Sphinx.Client.Commands.Search
 
         public SearchQuery(string query, IEnumerable<string> indexes) : this(query)
         {
+			ArgumentAssert.IsNotNull(indexes, "indexes");
             Indexes.UnionWith(indexes);
         }
         
@@ -140,17 +152,48 @@ namespace Sphinx.Client.Commands.Search
         #endregion
 
         #region Properties
+		/// <summary>
+		/// Document ID size. Default value Int32.
+		/// </summary>
+		public static IdSize IdSize
+		{
+			get { return _idSize; }
+			set { _idSize = value; }
+		}
+
+		/// <summary>
+		/// Maximum filters count per query
+		/// </summary>
+    	public static int MaxFiltersCount
+    	{
+			get { return _maxFiltersCount; }
+			set
+			{
+				ArgumentAssert.IsInRange(value, 0, int.MaxValue, "MaxFiltersCount");
+				_maxFiltersCount = value;
+			}
+    	}
+
+		/// <summary>
+		/// Maximum filter values per filter
+		/// </summary>
+		public static int MaxFilterValuesCount
+		{
+			get { return _maxFilterValuesCount; }
+			set
+			{
+				ArgumentAssert.IsInRange(value, 0, int.MaxValue, "MaxFilterValuesCount");
+				_maxFilterValuesCount = value;
+			}
+		}
+
         /// <summary>
         /// Query string
         /// </summary>
         public string Query
         {
             get { return _query; }
-            set
-            {
-                ArgumentAssert.IsNotNull(value, "Query");
-                _query = value;
-            }
+            set { _query = value; }
         }
 
         /// <summary>
@@ -159,10 +202,7 @@ namespace Sphinx.Client.Commands.Search
         public int Offset
         {
             get { return _offset; }
-            set
-            {
-                _offset = value;
-            }
+            set { _offset = value; }
         }
 
         /// <summary>
@@ -171,11 +211,7 @@ namespace Sphinx.Client.Commands.Search
         public int Limit
         {
             get { return _limit; }
-            set
-            {
-                ArgumentAssert.IsNotEmpty(value, "Limit");
-                _limit = value;
-            }
+            set { _limit = value; }
         }
 
         /// <summary>
@@ -184,11 +220,7 @@ namespace Sphinx.Client.Commands.Search
         public int MaxMatches
         {
             get { return _maxMatches; }
-            set
-            {
-                ArgumentAssert.IsNotEmpty(value, "MaxMatches");
-                _maxMatches = value;
-            }
+            set { _maxMatches = value; }
         }
 
         /// <summary>
@@ -197,11 +229,7 @@ namespace Sphinx.Client.Commands.Search
         public int Cutoff
         {
             get { return _cutoff; }
-            set
-            {
-                ArgumentAssert.IsNotEmpty(value, "Cutoff");
-                _cutoff = value;
-            }
+            set { _cutoff = value; }
         }
 
         /// <summary>
@@ -210,11 +238,7 @@ namespace Sphinx.Client.Commands.Search
         public MatchMode MatchMode
         {
             get { return _matchMode; }
-            set
-            {
-                ArgumentAssert.IsDefinedInEnum(typeof (MatchMode), value, "MatchMode");
-                _matchMode = value;
-            }
+            set { _matchMode = value; }
         }
 
         /// <summary>
@@ -223,11 +247,7 @@ namespace Sphinx.Client.Commands.Search
         public MatchRankMode RankingMode
         {
             get { return _rankMode; }
-            set
-            {
-                ArgumentAssert.IsDefinedInEnum(typeof(MatchRankMode), value, "RankingMode");
-                _rankMode = value;
-            }
+            set { _rankMode = value; }
         }
 
         /// <summary>
@@ -260,11 +280,7 @@ namespace Sphinx.Client.Commands.Search
         public ResultsSortMode SortMode
         {
             get { return _sortMode; }
-            set
-            {
-                ArgumentAssert.IsDefinedInEnum(typeof(ResultsSortMode), value, "SortMode");
-                _sortMode = value;
-            }
+            set { _sortMode = value; }
         }
 
         /// <summary>
@@ -273,11 +289,7 @@ namespace Sphinx.Client.Commands.Search
         public string SortBy
         {
             get { return _sortBy; }
-            set
-            {
-                ArgumentAssert.IsNotNull(value, "SortBy");
-                _sortBy = value;
-            }
+            set { _sortBy = value; }
         }
 
         /// <summary>
@@ -286,11 +298,7 @@ namespace Sphinx.Client.Commands.Search
         public int MaxQueryTime
         {
             get { return _maxQueryTime; }
-            set
-            {
-                ArgumentAssert.IsNotEmpty(value, "MaxQueryTime");
-                _maxQueryTime = value;
-            }
+            set { _maxQueryTime = value; }
         }
 
         /// <summary>
@@ -396,11 +404,7 @@ namespace Sphinx.Client.Commands.Search
         public int RetryCount
         {
             get { return _retryCount; }
-            set
-            {
-                ArgumentAssert.IsNotEmpty(value, "RetryCount");
-                _retryCount = value;
-            }
+            set { _retryCount = value; }
         }
 
         /// <summary>
@@ -409,11 +413,7 @@ namespace Sphinx.Client.Commands.Search
         public int RetryDelay
         {
             get { return _retryDelay; }
-            set
-            {
-                ArgumentAssert.IsNotEmpty(value, "RetryDelay");
-                _retryDelay = value;
-            }
+            set { _retryDelay = value; }
         }
 
         /// <summary>
@@ -422,23 +422,54 @@ namespace Sphinx.Client.Commands.Search
         public string Comment
         {
             get { return _comment; }
-            set
-            {
-                if (!String.IsNullOrEmpty(value))
-                    ArgumentAssert.IsLessOrEqual(value.Length, LIMIT_COMMENT_LENGTH, "Comment");
-                _comment = value;
-            }
+            set { _comment = value; }
         }
 
-
-        #endregion
+    	#endregion
 
         #region Methods
+		/// <summary>
+		/// Validate parameters
+		/// </summary>
+		internal void ValidateParameters()
+		{
+			ArgumentAssert.IsNotNull(Query, "Query");
+			ArgumentAssert.IsInRange(Offset, 0, int.MaxValue, "Offset");
+			ArgumentAssert.IsInRange(Limit, 1, int.MaxValue, "Limit");
+			ArgumentAssert.IsInRange(MaxMatches, 1, int.MaxValue, "MaxMatches");
+			ArgumentAssert.IsInRange(Cutoff, 0, int.MaxValue, "Cutoff");
+			ArgumentAssert.IsDefinedInEnum(typeof(MatchMode), MatchMode, "MatchMode");
+			ArgumentAssert.IsDefinedInEnum(typeof(ResultsSortMode), SortMode, "SortMode");
+			ArgumentAssert.IsDefinedInEnum(typeof(MatchRankMode), RankingMode, "RankingMode");
+			ArgumentAssert.IsNotNull(SortBy, "SortBy");
+			ArgumentAssert.IsInRange(MaxQueryTime, 0, int.MaxValue, "MaxQueryTime");
+			ArgumentAssert.IsInRange(RetryCount, 0, int.MaxValue, "RetryCount");
+			ArgumentAssert.IsInRange(RetryDelay, 0, int.MaxValue, "RetryDelay");
+			if (!String.IsNullOrEmpty(Comment))
+			{
+				ArgumentAssert.IsLessOrEqual(Comment, MAX_COMMENT_LENGTH, "Comment");
+			}
+
+			if (SortMode != ResultsSortMode.Relevance && String.IsNullOrEmpty(SortBy)) 
+			{
+				throw new ArgumentException(String.Format(Messages.Exception_ArgumentResultsSortModeNotValid, Enum.GetName(typeof(ResultsSortMode), SortMode)));
+			}
+			if (IdSize == IdSize.Int32)
+			{
+				ArgumentAssert.IsLessOrEqual(MinDocumentId, int.MaxValue, "MinDocumentId");
+				ArgumentAssert.IsLessOrEqual(MaxDocumentId, int.MaxValue, "MaxDocumentId");
+			}
+			if (MinDocumentId > MaxDocumentId){
+				throw new ArgumentException(Messages.Exception_ArgumentMinIdGreaterThanMaxId);
+			}
+		}
+
+		/// <summary>
+		/// Serialize query parameters to specified writer
+		/// </summary>
+		/// <param name="writer"><see cref="IBinaryWriter"/> writer used to serialize data to underlying stream.</param>
         internal void Serialize(IBinaryWriter writer)
         {
-            ArgumentAssert.IsTrue(SortMode == ResultsSortMode.Relevance || (!String.IsNullOrEmpty(SortBy)), String.Format(Messages.Exception_ArgumentResultsSortModeNotValid, Enum.GetName(typeof(ResultsSortMode), SortMode)));
-            ArgumentAssert.IsTrue(MinDocumentId <= MaxDocumentId, Messages.Exception_ArgumentMinIdGreaterThanMaxId);
-
             // offset, limits and match mode
             writer.Write(Offset);
             writer.Write(Limit);
@@ -457,7 +488,7 @@ namespace Sphinx.Client.Commands.Search
             Indexes.Serialize(writer);
 
             // documents id range
-            writer.Write(ID64_MARKER);
+			writer.Write((int)IdSize);
             writer.Write(MinDocumentId);
             writer.Write(MaxDocumentId);
 

@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -34,12 +34,22 @@ namespace Sphinx.Client.Commands
     public abstract class CommandWithResultBase<TResult> : CommandBase, ICommandResult<TResult>
                     where TResult : CommandResultBase, new()
     {
-        #region Fields
+        #region Constants
+		private const int MAX_COMMAND_BODY_LENGTH = 8 * 1024 * 1024;
+		#endregion
 
-    	#endregion
+		#region Fields
+		private TResult _result;
 
-        #region Constructors
-        protected CommandWithResultBase(ConnectionBase connection) : base(connection)
+		/// <summary>
+		/// Command body size limit. Default value is 8 MBytes (hardcoded in sphinxd).
+		/// </summary>
+		public static int MaxCommandBodyLength = MAX_COMMAND_BODY_LENGTH;
+
+		#endregion
+		
+		#region Constructors
+		protected CommandWithResultBase(ConnectionBase connection) : base(connection)
         {
         }
         
@@ -48,10 +58,14 @@ namespace Sphinx.Client.Commands
         #region Properties
         #region Implemented
 
-    	/// <summary>
+		/// <summary>
     	/// Command execution result object. Holds all information returned by server, including command execution state and Sphinx server warnings.
     	/// </summary>
-    	public virtual TResult Result { get; protected set; }
+    	public virtual TResult Result
+    	{
+    		get { return _result; }
+    		protected set { _result = value; }
+    	}
 
     	#endregion
 
@@ -66,10 +80,11 @@ namespace Sphinx.Client.Commands
         /// <exception cref="ServerErrorException"/>
         /// <exception cref="SphinxException"/>
         /// <exception cref="IOException"/>
+		/// <exception cref="ArgumentException"/>
         public override void Execute()
         {
             Result = new TResult();
-            Connection.PerformCommand(this);
+            base.Execute();
         }
 
         /// <summary>
@@ -111,10 +126,12 @@ namespace Sphinx.Client.Commands
 
             // read response body length
             int length = reader.ReadInt32();
-            if (length <= 0)
-                throw new SphinxException(String.Format(Messages.Exception_InvalidServerResponseLength, length));
+			if (length <= 0 || length > MaxCommandBodyLength)
+			{
+				throw new SphinxException(String.Format(Messages.Exception_InvalidServerResponseLength, length));
+			}
 
-            // read server response body
+        	// read server response body
 			byte[] buffer = new byte[length];
 			stream.ReadBytes(buffer, length);
         	MemoryStream bodyStream = new MemoryStream(buffer);

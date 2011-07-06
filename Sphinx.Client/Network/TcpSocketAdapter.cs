@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -30,7 +30,10 @@ namespace Sphinx.Client.Network
 
 		#region Fields
 		private int _connectionTimeout = DEFAULT_TIMEOUT_VALUE;
+		private string _host;
+		private int _port;
 		private IStreamAdapter _streamAdapter;
+		private TcpClient _socket;
 
 		#endregion
 
@@ -59,9 +62,17 @@ namespace Sphinx.Client.Network
     		set { _connectionTimeout = value; }
     	}
 
-    	public string Host { get; set; }
+		public string Host
+		{
+			get { return _host; }
+			set { _host = value; }
+		}
 
-		public int Port { get; set; }
+		public int Port
+		{
+			get { return _port; }
+			set { _port = value; }
+		}
 
 		public bool Connected
         {
@@ -86,9 +97,13 @@ namespace Sphinx.Client.Network
 			}
         }
 
-        protected TcpClient Socket { get; set; }
+		protected TcpClient Socket
+		{
+			get { return _socket; }
+			set { _socket = value; }
+		}
 
-        #endregion
+		#endregion
 
         #region Methods
 		public void Open()
@@ -118,7 +133,7 @@ namespace Sphinx.Client.Network
 
 		protected TcpClient CreateSocket()
 		{
-			var socket = new TcpClient();
+			TcpClient socket = new TcpClient();
 			if (ConnectionTimeout != DEFAULT_TIMEOUT_VALUE)
 			{
 				socket.ReceiveTimeout = socket.SendTimeout = ConnectionTimeout;

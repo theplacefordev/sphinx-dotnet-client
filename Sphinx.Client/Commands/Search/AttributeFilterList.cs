@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -19,20 +19,34 @@ using System.Collections.Generic;
 using Sphinx.Client.Commands.Attributes.Filters;
 using Sphinx.Client.Commands.Attributes.Filters.Range;
 using Sphinx.Client.Commands.Attributes.Filters.Values;
+using Sphinx.Client.Helpers;
 using Sphinx.Client.IO;
 
 #endregion
 
-namespace Sphinx.Client.Commands.Collections
+namespace Sphinx.Client.Commands.Search
 {
     /// <summary>
     /// Represents attribute filters list.
     /// </summary>
     public class AttributeFilterList : List<AttributeFilterBase>
-    {
-        #region Methods
-        #region Add methods overloads
-        /// <summary>
+	{
+		#region Fields 
+    	private int _maxFiltersCount;
+    	private int _maxValuesCount;
+		#endregion
+
+		#region Constructors
+		internal AttributeFilterList(int maxFiltersCount, int maxValuesCount)
+		{
+			_maxFiltersCount = maxFiltersCount;
+			_maxValuesCount = maxValuesCount;
+		}
+		#endregion
+
+		#region Methods
+		#region Add methods overloads
+		/// <summary>
         /// Add new values filter with a long values array
         /// </summary>
         /// <param name="name">Attribute name</param>
@@ -201,12 +215,14 @@ namespace Sphinx.Client.Commands.Collections
         /// <param name="writer">Binary writer (output formatter) object</param>
         internal void Serialize(IBinaryWriter writer)
         {
+			ArgumentAssert.IsInRange(Count, 0, _maxFiltersCount, "Count");
+
             // filters count
             writer.Write(Count);
             // serialize all filters
             foreach (AttributeFilterBase filter in this)
             {
-                filter.Serialize(writer);
+                filter.Serialize(writer, _maxValuesCount);
             }
         }
 

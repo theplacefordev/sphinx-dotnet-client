@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -29,9 +29,13 @@ namespace Sphinx.Client.IO
     /// Reads primitive data types as binary values represented in big endian byte order with specific character encoding. Unicode (UTF-8) encoding used by default to decode strings.
     /// </summary>
     public class BigEndianBinaryReader : BinaryReaderBase
-    {
-        #region Constructors
-        /// <summary>
+	{
+		#region Constants 
+		private const int MAX_LENGTH = 8 * 1024 * 1024; // 8MB (hardcoded in sphinxd)
+		#endregion
+
+		#region Constructors
+		/// <summary>
         /// Initializes a new instance of the <see cref="BigEndianBinaryReader"/> class based on the supplied stream and using default encoding <see cref="UTF8Encoding"/>.
         /// </summary>
         /// <param name="input">Input stream</param>
@@ -59,10 +63,10 @@ namespace Sphinx.Client.IO
         /// <exception cref="ObjectDisposedException">The stream is closed.</exception>
         /// <exception cref="IOException">An I/O error occurs.</exception>
         /// <exception cref="EndOfStreamException">Could not read specified count of bytes from stream (reading is attempted past the end of a stream).</exception>
-        /// <exception cref="ArgumentException">Count is zero or negative.</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Count is out of range.</exception>
         public override byte[] ReadBytes(int count)
         {
-            ArgumentAssert.IsGreaterThan(count, 0, "count");
+            ArgumentAssert.IsInRange(count, 0, MAX_LENGTH, "count");
             if (InputStream == null)
             {
                 throw new ObjectDisposedException(null, Messages.Exception_IOStreamDisposed);

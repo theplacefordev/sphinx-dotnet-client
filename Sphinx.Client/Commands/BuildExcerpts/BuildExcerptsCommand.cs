@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -14,6 +14,7 @@
 #endregion
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using Sphinx.Client.Commands.Collections;
 using Sphinx.Client.Connections;
@@ -31,7 +32,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
     public class BuildExcerptsCommand : CommandWithResultBase<BuildExcerptsCommandResult>
     {
         #region Constants
-        internal const short COMMAND_VERSION = 0x102;
+        internal const short COMMAND_VERSION = 0x103;
         private const int MODE = 0; // reserved for future, ignored by server
 
         private const string DEFAULT_BEFORE_MATCH = "<strong>";
@@ -43,6 +44,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
 		private const int DEFAULT_WORDS_COUNT_LIMIT = 0;
     	private const int DEFAULT_START_PASSAGE_ID = 1;
     	private const HtmlStripMode DEFAULT_HTML_STRIP_MODE = HtmlStripMode.Index;
+    	private const PassageBoundary DEFAULT_PASSAGE_BOUNDARY = PassageBoundary.None;
     	private const BuildExcerptsOptions DEFAULT_OPTIONS = BuildExcerptsOptions.RemoveSpaces;
 
         #endregion
@@ -60,6 +62,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
     	private int _wordsCountLimit = DEFAULT_WORDS_COUNT_LIMIT;
     	private int _startPassageId = DEFAULT_START_PASSAGE_ID;
     	private HtmlStripMode _htmlStripMode = DEFAULT_HTML_STRIP_MODE;
+    	private PassageBoundary _passageBoundary = DEFAULT_PASSAGE_BOUNDARY;
 		private BuildExcerptsOptions _options = DEFAULT_OPTIONS;
 
         // params
@@ -110,11 +113,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         public string Index
         {
             get { return _indexName; }
-            set
-            {
-                ArgumentAssert.IsNotEmpty(value, "Index");
-                _indexName = value;
-            }
+            set { _indexName = value; }
         }
 
         /// <summary>
@@ -135,11 +134,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         public string BeforeMatch
         {
             get { return _beforeMatch; }
-            set
-            {
-                ArgumentAssert.IsNotNull(value, "BeforeMatch");
-                _beforeMatch = value;
-            }
+            set { _beforeMatch = value; }
         }
 
         /// <summary>
@@ -149,11 +144,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         public string AfterMatch
         {
             get { return _afterMatch; }
-            set
-            {
-                ArgumentAssert.IsNotNull(value, "AfterMatch");
-                _afterMatch = value;
-            }
+            set { _afterMatch = value; }
         }
 
         /// <summary>
@@ -162,11 +153,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         public string SnippetsDelimiter
         {
             get { return _snippetsDelimiter; }
-            set
-            {
-                ArgumentAssert.IsNotNull(value, "SnippetsDelimiter");
-                _snippetsDelimiter = value;
-            }
+            set { _snippetsDelimiter = value; }
         }
 
         /// <summary>
@@ -175,11 +162,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         public int SnippetSizeLimit
         {
             get { return _snippetSizeLimit; }
-            set
-            {
-                ArgumentAssert.IsGreaterThan(value, 0, "SnippetSizeLimit");
-                _snippetSizeLimit = value;
-            }
+            set { _snippetSizeLimit = value; }
         }
 
 		/// <summary>
@@ -188,11 +171,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
     	public int SnippetsCountLimit
     	{
 			get { return _snippetsCountLimit; }
-			set
-			{
-				ArgumentAssert.IsGreaterOrEqual(value, 0, "SnippetsCountLimit");
-				_snippetsCountLimit = value;
-			}
+			set { _snippetsCountLimit = value; }
     	}
 
         /// <summary>
@@ -201,11 +180,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         public int WordsAroundKeyword
         {
             get { return _wordsAroundKeyword; }
-            set
-            {
-				ArgumentAssert.IsGreaterOrEqual(value, 0, "WordsAroundKeyword");
-                _wordsAroundKeyword = value;
-            }
+            set { _wordsAroundKeyword = value; }
         }
 
 		/// <summary>
@@ -214,11 +189,7 @@ namespace Sphinx.Client.Commands.BuildExcerpts
 		public int WordsCountLimit
 		{
 			get { return _wordsCountLimit; }
-			set
-			{
-				ArgumentAssert.IsGreaterOrEqual(value, 0, "WordsCountLimit");
-				_wordsCountLimit = value;
-			}
+			set { _wordsCountLimit = value; }
 		}
 
 		/// <summary>
@@ -238,6 +209,15 @@ namespace Sphinx.Client.Commands.BuildExcerpts
 		{
 			get { return _htmlStripMode; }
 			set { _htmlStripMode = value; }
+		}
+
+		/// <summary>
+		/// Added in version 2.0.1-beta. Ensures that passages do not cross a sentence, paragraph, or zone boundary (when used with an index that has the respective indexing settings enabled).
+		/// </summary>
+		public PassageBoundary PassageBoundary
+		{
+			get { return _passageBoundary; }
+			set { _passageBoundary = value; }
 		}
 
         /// <summary>
@@ -264,17 +244,26 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         #region Methods
 
         #region Overrides of CommandWithResultBase
-        /// <summary>
-        /// Execute command against specified <see cref=".Connection"/>
-        /// </summary>
-        public override void Execute()
-        {
-			ArgumentAssert.IsNotEmpty<string>(Documents, "Documents");
-            ArgumentAssert.IsNotEmpty<string>(Keywords, "Keywords");
-            ArgumentAssert.IsNotEmpty(Index, "Index");
 
-            base.Execute();
-        }
+		/// <summary>
+		/// Validate all command parameters.
+		/// </summary>
+    	protected override void ValidateParameters()
+    	{
+			ArgumentAssert.IsNotEmpty<string>(Documents, "Documents");
+			ArgumentAssert.IsNotEmpty<string>(Keywords, "Keywords");
+			ArgumentAssert.IsNotEmpty(Index, "Index");
+			ArgumentAssert.IsNotNull(BeforeMatch, "BeforeMatch");
+			ArgumentAssert.IsNotNull(AfterMatch, "AfterMatch");
+			ArgumentAssert.IsNotNull(SnippetsDelimiter, "SnippetsDelimiter");
+			ArgumentAssert.IsGreaterThan(SnippetSizeLimit, 0, "SnippetSizeLimit");
+			ArgumentAssert.IsGreaterOrEqual(SnippetsCountLimit, 0, "SnippetsCountLimit");
+			ArgumentAssert.IsGreaterOrEqual(WordsAroundKeyword, 0, "WordsAroundKeyword");
+			ArgumentAssert.IsGreaterOrEqual(WordsCountLimit, 0, "WordsCountLimit");
+			ArgumentAssert.IsDefinedInEnum(typeof(HtmlStripMode), HtmlStripMode, "HtmlStripMode");
+			ArgumentAssert.IsDefinedInEnum(typeof(PassageBoundary), PassageBoundary, "PassageBoundary");
+			ArgumentAssert.IsDefinedInEnum(typeof(BuildExcerptsOptions), Options, "Options");
+    	}
 
         /// <summary>
         /// Serialize command parameters using specified binary stream writer.
@@ -301,6 +290,8 @@ namespace Sphinx.Client.Commands.BuildExcerpts
         	writer.Write(WordsCountLimit);
 			writer.Write(StartPassageId);
 			writer.Write(HtmlStripMode.ToString().ToLowerInvariant());
+			// added since 2.0.1-beta
+			writer.Write(PassageBoundary.ToString().ToLowerInvariant());
 
             // serialize documents list
 			_documents.Serialize(writer);

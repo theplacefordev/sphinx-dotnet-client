@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -14,6 +14,7 @@
 #endregion
 #region Usings
 
+using System;
 using System.IO;
 using Sphinx.Client.Common;
 using Sphinx.Client.Connections;
@@ -63,6 +64,7 @@ namespace Sphinx.Client.Commands
         /// An abstract property, must be overriden in derived class.
         /// </summary>
         protected abstract CommandInfo CommandInfo { get; }
+
         #endregion
         
         #endregion
@@ -76,8 +78,10 @@ namespace Sphinx.Client.Commands
         /// <exception cref="ServerErrorException"/>
         /// <exception cref="SphinxException"/>
         /// <exception cref="IOException"/>
-        public virtual void Execute()
+		/// <exception cref="ArgumentException"/>
+		public virtual void Execute()
         {
+        	ValidateParameters();
             Connection.PerformCommand(this);
         }
         #endregion
@@ -94,7 +98,12 @@ namespace Sphinx.Client.Commands
         /// </summary>
         /// <param name="stream">The stream that contains the data to deserialize.</param>
 		internal protected abstract void Deserialize(IStreamAdapter stream);
-        
+
+		/// <summary>
+		/// Validates all actual command parameters. Throws <see cref="ArgumentException"/> based exception if some of parameters have invalid value(s).
+		/// </summary>
+		/// <exception cref="ArgumentException"/>
+		protected abstract void ValidateParameters();
         
         #endregion
 

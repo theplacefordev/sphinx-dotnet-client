@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -70,7 +70,7 @@ namespace Sphinx.Client.Commands.Attributes.Filters
         #endregion
         
         #region Abstract
-        protected abstract AttributeFilterType FilterType
+        public abstract AttributeFilterType FilterType
         {
             get;
         }
@@ -82,7 +82,7 @@ namespace Sphinx.Client.Commands.Attributes.Filters
         #region Methods
         
         #region Abstract
-        protected abstract void WriteBody(IBinaryWriter writer);
+		protected abstract void WriteBody(IBinaryWriter writer, int maxCount);
         
         #endregion
 
@@ -98,10 +98,10 @@ namespace Sphinx.Client.Commands.Attributes.Filters
             writer.Write(Exclude);
         }
 
-        internal protected virtual void Serialize(IBinaryWriter writer)
+        internal protected virtual void Serialize(IBinaryWriter writer, int maxCount)
         {
             WriteHead(writer);
-            WriteBody(writer);
+			WriteBody(writer, maxCount);
             WriteTail(writer);
         }
         

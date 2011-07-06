@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -28,13 +28,22 @@ namespace Sphinx.Client.Commands.UpdateAttributes
     /// </summary>
     public class UpdateAttributesCommandResult : CommandResultBase
     {
+		#region Fields
+		private int _documentsUpdated;
+		
+		#endregion
+
         #region Properties
-        /// <summary>
+		/// <summary>
         /// The number of documents updated by <see cref="UpdateAttributesCommand"/> command.
         /// </summary>
-        public int DocumentsUpdated { get; set; }
-        
-        #endregion
+        public int DocumentsUpdated
+    	{
+    		get { return _documentsUpdated; }
+    		set { _documentsUpdated = value; }
+    	}
+
+    	#endregion
 
         #region Methods
 		internal void Deserialize(IBinaryReader reader)

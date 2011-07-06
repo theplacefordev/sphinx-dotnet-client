@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -14,6 +14,7 @@
 #endregion
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using Sphinx.Client.Commands.Collections;
 using Sphinx.Client.Connections;
@@ -30,7 +31,7 @@ namespace Sphinx.Client.Commands.Search
     public class SearchCommand : CommandWithResultBase<SearchCommandResult>
     {
         #region Constants
-        internal const short COMMAND_VERSION = 0x117;
+        internal const short COMMAND_VERSION = 0x118;
         private const int MAX_QUERIES = 32;
         
         #endregion
@@ -49,12 +50,14 @@ namespace Sphinx.Client.Commands.Search
 
         public SearchCommand(ConnectionBase connection, IEnumerable<SearchQuery> queryList): base(connection)
         {
+			ArgumentAssert.IsNotNull(queryList, "queryList");
             QueryList.AddRange(queryList);
         }
 
         public SearchCommand(ConnectionBase connection, SearchQuery query): base(connection)
         {
-            QueryList.Add(query);
+			ArgumentAssert.IsNotNull(query, "query");
+			QueryList.Add(query);
         }
         #endregion
 
@@ -84,15 +87,17 @@ namespace Sphinx.Client.Commands.Search
         #region Methods
 
         #region Overrides of CommandWithResultBase
-        public override void Execute()
-        {
-            ArgumentAssert.IsInRange(QueryList.Count, 1, MAX_QUERIES, "QueryList.Count");
 
-            base.Execute();
-        }
+    	protected override void ValidateParameters()
+    	{
+			ArgumentAssert.IsNotEmpty<SearchQuery>(QueryList, "QueryList");
+			ArgumentAssert.IsInRange(QueryList, 1, MAX_QUERIES, "QueryList");
+			QueryList.ValidateParameters();
+		}
 
         protected override void SerializeRequest(IBinaryWriter writer)
         {
+			writer.Write(0); // its a client
             QueryList.Serialize(writer);
         }
 

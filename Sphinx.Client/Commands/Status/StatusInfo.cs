@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -25,26 +25,32 @@ namespace Sphinx.Client.Commands.Status
     /// </summary>
     public class StatusInfo
     {
-        #region Properties
-        /// <summary>
+		#region Fields
+		private string _name;
+		private string _value;
+		
+		#endregion
+
+		#region Properties
+		/// <summary>
         /// Sphinx server status variable name
         /// </summary>
         public string Name
-        {
-            get;
-            private set;
-        }
+    	{
+    		get { return _name; }
+    		private set { _name = value; }
+    	}
 
-        /// <summary>
+    	/// <summary>
         /// Sphinx server status variable value
         /// </summary>
         public string Value
-        {
-            get;
-            private set;
-        }
-        
-        #endregion
+    	{
+    		get { return _value; }
+    		private set { _value = value; }
+    	}
+
+    	#endregion
 
         #region Methods
         internal void Deserialize(IBinaryReader reader, int count)

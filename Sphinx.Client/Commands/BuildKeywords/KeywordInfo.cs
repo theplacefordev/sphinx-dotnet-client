@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -25,45 +25,53 @@ namespace Sphinx.Client.Commands.BuildKeywords
     /// </summary>
     public class KeywordInfo
     {
+		#region Fields
+		private string _tokenizedForm;
+		private string _normalizedForm;
+		private long _documentsCount;
+		private long _hitsCount;		
+		#endregion
+
         #region Properties
-        /// <summary>
+    	/// <summary>
         /// Tokenized keyword form.
         /// </summary>
         public string TokenizedForm
-        {
-            get; 
-            protected set;
-        }
+    	{
+    		get { return _tokenizedForm; }
+    		protected set { _tokenizedForm = value; }
+    	}
 
-        /// <summary>
+    	/// <summary>
         /// Normalized keyword form.
         /// </summary>
         public string NormalizedForm
-        {
-            get; 
-            protected set;
-        }
+    	{
+    		get { return _normalizedForm; }
+    		protected set { _normalizedForm = value; }
+    	}
 
-        /// <summary>
+    	/// <summary>
         /// How much documents with specifed keyword is found.
         /// <remarks>Contains zero value, if keyword occurrence statistics calculation is not requested by command</remarks>
         /// </summary>
         public long DocumentsCount
-        {
-            get; 
-            protected set;
-        }
+    	{
+    		get { return _documentsCount; }
+    		protected set { _documentsCount = value; }
+    	}
 
-        /// <summary>
+    	/// <summary>
         /// Total keyword hits.
         /// <remarks>Contains zero value, if keyword occurrence statistics calculation is not requested by command</remarks>
         /// </summary>
         public long HitsCount
-        {
-            get; 
-            private set;
-        } 
-        #endregion
+    	{
+    		get { return _hitsCount; }
+    		private set { _hitsCount = value; }
+    	}
+
+    	#endregion
 
         #region Methods
         internal void Deserialize(IBinaryReader reader, bool deserializeAdditionalStatistics)
