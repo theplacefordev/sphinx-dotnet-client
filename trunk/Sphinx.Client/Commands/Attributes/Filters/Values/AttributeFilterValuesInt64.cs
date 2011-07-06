@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -15,6 +15,7 @@
 #region Usings
 
 using System.Collections.Generic;
+using Sphinx.Client.Commands.Search;
 
 #endregion
 
@@ -35,6 +36,17 @@ namespace Sphinx.Client.Commands.Attributes.Filters.Values
         }
 
         #endregion
+
+		#region Properties
+		/// <summary>
+		/// Attribute filter type.
+		/// </summary>
+		public override AttributeFilterType FilterType
+		{
+			get { return AttributeFilterType.ValuesInt64; }
+		}
+
+		#endregion
 
         #region Methods
         protected override long ConvertToInt64(long value)

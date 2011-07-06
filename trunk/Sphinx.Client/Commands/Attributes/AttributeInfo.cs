@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -25,14 +25,6 @@ namespace Sphinx.Client.Commands.Attributes
     /// </summary>
     public class AttributeInfo : AttributeBase
     {
-        #region Properties
-        /// <summary>
-        /// Attribute type
-        /// </summary>
-        public override AttributeType AttributeType { get; protected set; }
-
-        #endregion
-
         #region Methods
         internal void Deserialize(IBinaryReader reader)
         {

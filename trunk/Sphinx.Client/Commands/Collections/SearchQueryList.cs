@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -18,13 +18,14 @@ using System;
 using System.Collections.Generic;
 using Sphinx.Client.Commands.Search;
 using Sphinx.Client.Common;
+using Sphinx.Client.Helpers;
 using Sphinx.Client.IO;
 
 #endregion
 
 namespace Sphinx.Client.Commands.Collections
 {
-    public class SearchQueryList : List<SearchQuery>
+	public class SearchQueryList : List<SearchQuery>
     {
 
         #region Methods
@@ -69,6 +70,18 @@ namespace Sphinx.Client.Commands.Collections
             Add(q);
             return q;
         }
+
+		/// <summary>
+		/// Validate parameters
+		/// </summary>
+		internal void ValidateParameters()
+		{
+			foreach (SearchQuery query in this)
+			{
+				ArgumentAssert.IsNotNull(query, "query");
+				query.ValidateParameters();
+			}
+		}
 
         /// <summary>
         /// Serialize object to stream using specified binary writer.

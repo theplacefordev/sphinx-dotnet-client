@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Sphinx.Client.Resources;
 
 #endregion
@@ -74,7 +75,8 @@ namespace Sphinx.Client.Helpers
 				throw new ArgumentException(Messages.Exception_ArgumentCollectionIsEmpty, argumentName);
         }
 
-        public static void IsNotEmpty<TKey,TValue>(IDictionary<TKey,TValue> argumentValue, string argumentName)
+		/// <exception cref="System.ArgumentException"/>
+		public static void IsNotEmpty<TKey, TValue>(IDictionary<TKey, TValue> argumentValue, string argumentName)
         {
             if (argumentValue == null || argumentValue.Count == 0)
 				throw new ArgumentException(Messages.Exception_ArgumentDictionaryIsEmpty, argumentName);
@@ -102,7 +104,20 @@ namespace Sphinx.Client.Helpers
             if (argumentValue < borderValue)
                 throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeGreaterOrEqual, borderValue));
         }
-        
+
+		/// <exception cref="System.ArgumentOutOfRangeException"/>
+		public static void IsGreaterOrEqual(string argumentValue, int length, string argumentName)
+		{
+			if (argumentValue.Length < length)
+				throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeGreaterOrEqual, length));
+		}
+
+		/// <exception cref="System.ArgumentOutOfRangeException"/>
+		public static void IsGreaterOrEqual<T>(ICollection<T> argumentValue, int borderValue, string argumentName)
+		{
+			if (argumentValue.Count < borderValue)
+				throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeGreaterOrEqual, borderValue));
+		}
         #endregion
 
         #region IsGreaterThan
@@ -126,7 +141,21 @@ namespace Sphinx.Client.Helpers
             if (argumentValue <= borderValue)
                 throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeGreaterThan, borderValue));
         }
-        
+
+		/// <exception cref="System.ArgumentOutOfRangeException"/>
+		public static void IsGreaterThan(string argumentValue, int length, string argumentName)
+		{
+			if (argumentValue.Length <= length)
+				throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeGreaterThan, length));
+		}
+
+		/// <exception cref="System.ArgumentOutOfRangeException"/>
+		public static void IsGreaterThan<T>(ICollection<T> argumentValue, int borderValue, string argumentName)
+		{
+			if (argumentValue.Count <= borderValue)
+				throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeGreaterThan, borderValue));
+		}
+
         #endregion
 
         #region IsLessOrEqual
@@ -150,6 +179,20 @@ namespace Sphinx.Client.Helpers
             if (argumentValue > borderValue)
                 throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeLessOrEqual, borderValue));
         }
+
+		/// <exception cref="System.ArgumentOutOfRangeException"/>
+		public static void IsLessOrEqual(string argumentValue, int length, string argumentName)
+		{
+			if (argumentValue.Length > length)
+				throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeLessOrEqual, length));
+		}
+
+		/// <exception cref="System.ArgumentOutOfRangeException"/>
+		public static void IsLessOrEqual<T>(ICollection<T> argumentValue, int borderValue, string argumentName)
+		{
+			if (argumentValue.Count > borderValue)
+				throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeLessOrEqual, borderValue));
+		}
 
         #endregion
 
@@ -175,6 +218,20 @@ namespace Sphinx.Client.Helpers
                 throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeLessThan, borderValue));
         }
 
+		/// <exception cref="System.ArgumentOutOfRangeException"/>
+		public static void IsLessThan(string argumentValue, int length, string argumentName)
+		{
+			if (argumentValue.Length >= length)
+				throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeLessThan, length));
+		}
+
+		/// <exception cref="System.ArgumentOutOfRangeException"/>
+		public static void IsLessThan<T>(ICollection<T> argumentValue, int borderValue, string argumentName)
+		{
+			if (argumentValue.Count >= borderValue)
+				throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeLessThan, borderValue));
+		}
+
         #endregion
 
         #region IsInRange
@@ -198,7 +255,21 @@ namespace Sphinx.Client.Helpers
             if (argumentValue < min || argumentValue > max)
                 throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeInRange, min, max));
         }
- 
+
+		/// <exception cref="System.ArgumentOutOfRangeException"/>
+		public static void IsLessThan(string argumentValue, int min, int max, string argumentName)
+		{
+			if (argumentValue.Length < min || argumentValue.Length > max)
+				throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeInRange, min, max));
+		}
+
+		/// <exception cref="System.ArgumentOutOfRangeException"/>
+		public static void IsInRange<T>(ICollection<T> argumentValue, int min, int max, string argumentName)
+		{
+			if (argumentValue.Count < min || argumentValue.Count > max)
+				throw new ArgumentOutOfRangeException(argumentName, String.Format(Messages.Exception_ArgumentMustBeInRange, min, max));
+		}
+
 	    #endregion    
 
         #region Enums
@@ -206,7 +277,7 @@ namespace Sphinx.Client.Helpers
         public static void IsDefinedInEnum(Type enumType, object value, string argumentName)
         {
             if (!Enum.IsDefined(enumType, value))
-                throw new ArgumentException(String.Format(Messages.Exception_ArgumentIsNotDefinedInEnum, value, enumType.Name), argumentName);
+				throw new InvalidEnumArgumentException(argumentName, Convert.ToInt32(value), enumType);
         }
         
         #endregion

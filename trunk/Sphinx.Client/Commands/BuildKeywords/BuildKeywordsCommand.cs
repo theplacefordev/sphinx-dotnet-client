@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -14,6 +14,7 @@
 #endregion
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using Sphinx.Client.Commands.Collections;
 using Sphinx.Client.Connections;
@@ -50,6 +51,8 @@ namespace Sphinx.Client.Commands.BuildKeywords
 
         public BuildKeywordsCommand(ConnectionBase connection, IEnumerable<string> indexes, string query): base(connection)
         {
+			ArgumentAssert.IsNotNull(indexes, "indexes");
+
 			_indexNames.UnionWith(indexes);
 			_queryText = query;
         }
@@ -104,13 +107,12 @@ namespace Sphinx.Client.Commands.BuildKeywords
         #region Methods
 
         #region Overrides of CommandWithResultBase
-        public override void Execute()
-        {
-            ArgumentAssert.IsNotEmpty<string>(Indexes, "Indexes");
-            ArgumentAssert.IsNotEmpty(Query, "Query");
 
-            base.Execute();
-        }
+    	protected override void ValidateParameters()
+    	{
+			ArgumentAssert.IsNotEmpty<string>(Indexes, "Indexes");
+			ArgumentAssert.IsNotEmpty(Query, "Query");
+		}
 
         protected override void SerializeRequest(IBinaryWriter writer)
         {

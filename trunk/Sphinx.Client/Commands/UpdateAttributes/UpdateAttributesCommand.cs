@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -14,6 +14,7 @@
 #endregion
 #region Usings
 
+using System;
 using System.Collections.Generic;
 using Sphinx.Client.Commands.Attributes.Update;
 using Sphinx.Client.Commands.Collections;
@@ -50,7 +51,10 @@ namespace Sphinx.Client.Commands.UpdateAttributes
 
         public UpdateAttributesCommand(ConnectionBase connection, IEnumerable<string> indexes, IEnumerable<AttributeUpdateBase> attributesValues): base(connection)
         {
-            _indexNames.UnionWith(indexes);
+			ArgumentAssert.IsNotNull(indexes, "indexes");
+			ArgumentAssert.IsNotNull(attributesValues, "attributesValues");
+
+			_indexNames.UnionWith(indexes);
 			_attributesValues.UnionWith(attributesValues);
         }
         #endregion
@@ -89,16 +93,15 @@ namespace Sphinx.Client.Commands.UpdateAttributes
         #region Methods
 
         #region Overrides of CommandWithResultBase
-        /// <summary>
-        /// Execute command against specified <see cref=".Connection"/>
-        /// </summary>
-        public override void Execute()
-        {
+
+		/// <summary>
+		/// Validate all command parametrs.
+		/// </summary>
+    	protected override void ValidateParameters()
+    	{
 			ArgumentAssert.IsNotEmpty<string>(Indexes, "Indexes");
 			ArgumentAssert.IsNotEmpty<AttributeUpdateBase>(AttributesValues, "AttributesValues");
-
-            base.Execute();
-        }
+		}
 
         /// <summary>
         /// Serialize command parameters using specified binary stream writer.

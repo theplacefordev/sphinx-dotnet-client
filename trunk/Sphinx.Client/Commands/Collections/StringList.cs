@@ -1,6 +1,6 @@
 ﻿#region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -63,11 +63,10 @@ namespace Sphinx.Client.Commands.Collections
         /// <returns>A String consisting of the elements of value interspersed with the <see cref="Separator"/> string.</returns>
         public override string ToString()
         {
-            if (Count == 0) return String.Empty;
-            return String.Join(Separator, ToArray());
+        	return Count == 0 ? String.Empty : String.Join(Separator, ToArray());
         }
 
-        /// <summary>
+    	/// <summary>
         /// Serialize object to stream using specified binary writer.
         /// </summary>
         /// <param name="writer">Binary writer (output formatter) object</param>

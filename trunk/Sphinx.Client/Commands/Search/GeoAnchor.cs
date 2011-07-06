@@ -1,6 +1,6 @@
 #region Copyright
 // 
-// Copyright (c) 2009, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
+// Copyright (c) 2009-2011, Rustam Babadjanov <theplacefordev [at] gmail [dot] com>
 // 
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License version 2.1 as published
@@ -14,6 +14,7 @@
 #endregion
 #region Usings
 
+using System;
 using Sphinx.Client.Helpers;
 using Sphinx.Client.IO;
 
@@ -55,7 +56,6 @@ namespace Sphinx.Client.Commands.Search
             LongitudeAttributeName = longitudeAttr;
             LatitudeValue = latitudeVal;
             LongitudeValue = longitudeVal;
-            IsNotEmpty = true;
         }
         
         #endregion
@@ -71,7 +71,6 @@ namespace Sphinx.Client.Commands.Search
             {
                 ArgumentAssert.IsNotEmpty(value, "LatitudeAttributeName");
                 _latitudeAttr = value;
-                IsNotEmpty = true;
             }
         }
 
@@ -85,7 +84,6 @@ namespace Sphinx.Client.Commands.Search
             {
                 ArgumentAssert.IsNotEmpty(value, "LongitudeAttributeName");
                 _longitudeAttr = value;
-                IsNotEmpty = true;
             }
         }
 
@@ -95,11 +93,7 @@ namespace Sphinx.Client.Commands.Search
         public float LatitudeValue
         {
             get { return _latitudeVal; }
-            set
-            {
-                _latitudeVal = value;
-                IsNotEmpty = true;
-            }
+            set { _latitudeVal = value; }
         }
 
         /// <summary>
@@ -108,16 +102,18 @@ namespace Sphinx.Client.Commands.Search
         public float LongitudeValue
         {
             get { return _longitudeVal; }
-            set
-            {
-                _longitudeVal = value;
-                IsNotEmpty = false;
-            }
+            set { _longitudeVal = value; }
         }
 
-        protected bool IsNotEmpty { get; set; }
+		private bool IsNotEmpty
+		{
+			get
+			{
+				return String.IsNullOrEmpty(_latitudeAttr) && String.IsNullOrEmpty(_longitudeAttr);
+			}
+		}
 
-        #endregion
+    	#endregion
 
         #region Methods
         internal void Serialize(IBinaryWriter writer)

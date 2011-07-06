@@ -10,16 +10,16 @@ namespace Sphinx.Client.Network
 {
 	public class TcpStreamAdapter : StreamAdapter
 	{
+		#region Fields
+		private ManualResetEvent _resetEvent;
+
+		#endregion
+
 		#region Constructor
 		public TcpStreamAdapter(Stream stream): base(stream)
 		{
 		}
-		
-		#endregion
 
-		#region Properties
-		private ManualResetEvent ResetEvent { get; set; }
-		
 		#endregion
 
 		#region Methods
@@ -34,13 +34,16 @@ namespace Sphinx.Client.Network
 			ArgumentAssert.IsNotNull(buffer, "buffer");
 			ArgumentAssert.IsGreaterThan(length, 0, "length");
 
-			NetworkReadState state = new NetworkReadState { DataStream = Stream, BytesLeft = length };
-			ResetEvent = new ManualResetEvent(false);
+			NetworkReadState state = new NetworkReadState();
+			state.DataStream = Stream;
+			state.BytesLeft = length;
+			_resetEvent = new ManualResetEvent(false);
+
 			while (state.BytesLeft > 0)
 			{
-				ResetEvent.Reset();
+				_resetEvent.Reset();
 				Stream.BeginRead(buffer, length - state.BytesLeft, state.BytesLeft, ReadDataCallback, state);
-				if (!ResetEvent.WaitOne(OperationTimeout, true))
+				if (!_resetEvent.WaitOne(OperationTimeout, true))
 				{
 					throw new TimeoutException(Messages.Exception_ReadTimeoutExpired);
 				}
@@ -57,7 +60,7 @@ namespace Sphinx.Client.Network
 			if (actualBytes == 0)
 				throw new IOException(String.Format(Messages.Exception_CouldNotReadFromStream, state.BytesLeft, actualBytes));
 			state.BytesLeft -= actualBytes;
-			ResetEvent.Set();
+			_resetEvent.Set();
 		}
 
 		private class NetworkReadState
