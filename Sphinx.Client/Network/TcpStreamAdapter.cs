@@ -43,12 +43,24 @@ namespace Sphinx.Client.Network
 			{
 				_resetEvent.Reset();
 				Stream.BeginRead(buffer, length - state.BytesLeft, state.BytesLeft, ReadDataCallback, state);
+				WaitForNetworkData();
+			}
+			return length;
+		}
+
+		private void WaitForNetworkData()
+		{
+			if (OperationTimeout > 0)
+			{
 				if (!_resetEvent.WaitOne(OperationTimeout, true))
 				{
 					throw new TimeoutException(Messages.Exception_ReadTimeoutExpired);
 				}
 			}
-			return length;
+			else
+			{
+				_resetEvent.WaitOne();
+			}
 		}
 
 		private void ReadDataCallback(IAsyncResult asyncResult)
