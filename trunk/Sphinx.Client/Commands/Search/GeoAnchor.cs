@@ -69,7 +69,6 @@ namespace Sphinx.Client.Commands.Search
             get { return _latitudeAttr; }
             set
             {
-                ArgumentAssert.IsNotEmpty(value, "LatitudeAttributeName");
                 _latitudeAttr = value;
             }
         }
@@ -82,7 +81,6 @@ namespace Sphinx.Client.Commands.Search
             get { return _longitudeAttr; }
             set
             {
-                ArgumentAssert.IsNotEmpty(value, "LongitudeAttributeName");
                 _longitudeAttr = value;
             }
         }
@@ -109,7 +107,7 @@ namespace Sphinx.Client.Commands.Search
 		{
 			get
 			{
-				return String.IsNullOrEmpty(_latitudeAttr) && String.IsNullOrEmpty(_longitudeAttr);
+				return !String.IsNullOrEmpty(_latitudeAttr) || !String.IsNullOrEmpty(_longitudeAttr);
 			}
 		}
 
