@@ -214,7 +214,7 @@ namespace Sphinx.Client.Commands.Search
 		/// <summary>
 		/// filter by timestamp range
 		/// </summary>
-		RangeTimestamp = RangeInt32,
+		RangeTimestamp = RangeInt64,
     }
 
 	/// <summary>
