@@ -174,7 +174,8 @@ namespace Sphinx.Client.Connections
         {
             if (IsConnected) {
                 Socket.Close();
-				_formatterFactory = null;
+				// NOTE: Formatter factory should be reinitialized only after current connection is closed
+				_formatterFactory = null; 
 			}
         }
 

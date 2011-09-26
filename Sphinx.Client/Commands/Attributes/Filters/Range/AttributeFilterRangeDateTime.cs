@@ -48,8 +48,10 @@ namespace Sphinx.Client.Commands.Attributes.Filters.Range
         #region Methods
         protected override void WriteBody(IBinaryWriter writer)
         {
-            writer.Write(MinValue);
-            writer.Write(MaxValue);
+			writer.Write(0);
+			writer.Write(MinValue);
+			writer.Write(0);
+			writer.Write(MaxValue);
         }
 
         #endregion
