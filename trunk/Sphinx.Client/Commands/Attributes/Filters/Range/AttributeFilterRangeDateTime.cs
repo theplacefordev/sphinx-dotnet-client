@@ -48,6 +48,7 @@ namespace Sphinx.Client.Commands.Attributes.Filters.Range
         #region Methods
         protected override void WriteBody(IBinaryWriter writer)
         {
+			// NOTE: padding to long, because timestamps sent as Int64
 			writer.Write(0);
 			writer.Write(MinValue);
 			writer.Write(0);
