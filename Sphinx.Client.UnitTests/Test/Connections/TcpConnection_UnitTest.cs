@@ -68,7 +68,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         {
             // valid value using constructor argument
             string expected = "localhost";
-            TcpConnection target = CreateConnection(expected);
+            ConnectionBase target = CreateConnection(expected);
             Assert.AreEqual(expected, target.Host);
             // invalid value by constructor
             try
@@ -112,7 +112,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
             string host = "test";
             int expected = 123;
             // valid value by constructor
-            TcpConnection target = CreateConnection(host, expected);
+            ConnectionBase target = CreateConnection(host, expected);
             Assert.AreEqual(host, target.Host);
             Assert.AreEqual(expected, target.Port);
             expected = 321;
@@ -141,7 +141,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
             string host = "1.2.3.4";
             int expected = 123;
             // valid value by constructor
-            TcpConnection target = CreateConnection(new IPEndPoint(new IPAddress(new byte[] {1,2,3,4}), expected));
+            ConnectionBase target = CreateConnection(new IPEndPoint(new IPAddress(new byte[] {1,2,3,4}), expected));
             Assert.AreEqual(host, target.Host);
             Assert.AreEqual(expected, target.Port);
             expected = 321;
@@ -168,7 +168,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         [TestMethod]
         public virtual void HostTest()
         {
-            TcpConnection target = CreateConnection();
+            ConnectionBase target = CreateConnection();
             // valid value
 		    string expected = "test host name";
             target.Host = expected;
@@ -198,7 +198,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
             string host = "test"; 
             int expected = 123; 
             // valid value by constructor
-            TcpConnection target = CreateConnection(host, expected);
+            ConnectionBase target = CreateConnection(host, expected);
             Assert.AreEqual(expected, target.Port);
             expected = 321;
             // valid value by property
@@ -227,7 +227,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         [DeploymentItem("Sphinx.Client.dll")]
         public virtual void IsConnectedTest()
         {
-            TcpConnection conn = CreateConnection("test");
+            ConnectionBase conn = CreateConnection("test");
             try
             {
                 GetConnectionAccessor(conn).Socket = new ClientSocketMock();
@@ -249,7 +249,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         [DeploymentItem("Sphinx.Client.dll")]
         public virtual void DataStreamTest()
         {
-            TcpConnection conn = CreateConnection("test");
+            ConnectionBase conn = CreateConnection("test");
             try
             {
                 TcpConnection_Accessor accessor = GetConnectionAccessor(conn);
@@ -270,7 +270,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         [TestMethod]
         public virtual void ConnectionTimeoutTest()
         {
-            TcpConnection conn = CreateConnection("test");
+            ConnectionBase conn = CreateConnection("test");
             try
             {
                 TcpConnection_Accessor accessor = GetConnectionAccessor(conn);
@@ -296,7 +296,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         [DeploymentItem("Sphinx.Client.dll")]
         public virtual void SendHandshakeTest()
         {
-            TcpConnection conn = CreateConnection("test");
+            ConnectionBase conn = CreateConnection("test");
             try
             {
                 TcpConnection_Accessor accessor = GetConnectionAccessor(conn);
@@ -337,7 +337,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         [TestMethod]
         public virtual void PerformCommandTest()
         {
-            TcpConnection conn = CreateConnection("test");
+            ConnectionBase conn = CreateConnection("test");
             try
             {
                 TcpConnection_Accessor accessor = GetConnectionAccessor(conn);
@@ -346,7 +346,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
                 accessor.Socket.Open();
 
                 XmlFormatterFactoryMock factory = new XmlFormatterFactoryMock();
-                accessor._formatterFactory = factory;
+                accessor.FormatterFactory = factory;
                 IBinaryWriter writer = factory.CreateWriter(accessor.DataStream);
 
                 // preserialize server protocol version and rewind to start pos. (emulate first stage of handshake procedure)
@@ -386,7 +386,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         [TestMethod]
         public virtual void OpenTest()
         {
-            TcpConnection conn = CreateConnection("test");
+            ConnectionBase conn = CreateConnection("test");
             try
             {
                 GetConnectionAccessor(conn).Socket = new ClientSocketMock();
@@ -407,7 +407,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         [TestMethod]
         public virtual void DisposeTest()
         {
-            TcpConnection conn = CreateConnection("test");
+            ConnectionBase conn = CreateConnection("test");
             try
             {
                 GetConnectionAccessor(conn).Socket = new ClientSocketMock();
@@ -429,7 +429,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         [DeploymentItem("SphinxSearch.dll")]
         public virtual void ProtectedDisposeTest()
         {
-            TcpConnection conn = CreateConnection("test");
+            ConnectionBase conn = CreateConnection("test");
             try
             {
                 TcpConnection_Accessor accessor = GetConnectionAccessor(conn);
@@ -453,7 +453,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         [TestMethod]
         public virtual void CloseTest()
         {
-            TcpConnection conn = CreateConnection("test");
+            ConnectionBase conn = CreateConnection("test");
             try
             {
                 GetConnectionAccessor(conn).Socket = new ClientSocketMock();
@@ -473,22 +473,22 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         #endregion 
 
         #region Helper methods
-        protected TcpConnection CreateConnection()
+        protected ConnectionBase CreateConnection()
         {
             return new TcpConnection();
         }
 
-        protected TcpConnection CreateConnection(string host)
+        protected ConnectionBase CreateConnection(string host)
         {
             return new TcpConnection(host);
         }
 
-        protected TcpConnection CreateConnection(string host, int port)
+        protected ConnectionBase CreateConnection(string host, int port)
         {
             return new TcpConnection(host, port);
         }
 
-        protected TcpConnection CreateConnection(IPEndPoint ipEndPoint)
+        protected ConnectionBase CreateConnection(IPEndPoint ipEndPoint)
         {
             return new TcpConnection(ipEndPoint);
         }
@@ -498,7 +498,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
         /// </summary>
         /// <param name="connection"><see cref="TcpConnection"/> object</param>
         /// <returns><see cref="TcpConnection_Accessor"/> object</returns>
-        protected TcpConnection_Accessor GetConnectionAccessor(TcpConnection connection)
+        protected TcpConnection_Accessor GetConnectionAccessor(ConnectionBase connection)
         {
             PrivateObject po = new PrivateObject(connection);
             TcpConnection_Accessor accessor = new TcpConnection_Accessor(po);

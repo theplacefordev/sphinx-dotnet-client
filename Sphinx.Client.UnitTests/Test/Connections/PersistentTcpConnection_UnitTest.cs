@@ -308,7 +308,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
                 accessor.Socket.Open();
                 // assign mock binary formatter factory
                 XmlFormatterFactoryMock factory = new XmlFormatterFactoryMock();
-                accessor._formatterFactory = factory;
+                accessor.FormatterFactory = factory;
                 IBinaryWriter writer = factory.CreateWriter(accessor.DataStream);
 
                 // preserialize server protocol version and rewind to start pos. (emulate first stage of handshake procedure)
@@ -358,7 +358,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
                 accessor.Socket.Open();
 
                 XmlFormatterFactoryMock factory = new XmlFormatterFactoryMock();
-                accessor._formatterFactory = factory;
+				accessor.FormatterFactory = factory;
                 IBinaryWriter writer = factory.CreateWriter(accessor.DataStream);
 
                 // command id and version
@@ -504,7 +504,7 @@ namespace Sphinx.Client.UnitTests.Test.Connections
             return accessor;
         }
 
-        protected TcpConnection_Accessor GetTcpConnectionAccessor(TcpConnection connection)
+        protected TcpConnection_Accessor GetTcpConnectionAccessor(ConnectionBase connection)
         {
             PrivateObject po = new PrivateObject(connection);
             TcpConnection_Accessor accessor = new TcpConnection_Accessor(po);

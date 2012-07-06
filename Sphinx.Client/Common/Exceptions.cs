@@ -21,73 +21,73 @@ using System.Runtime.Serialization;
 
 namespace Sphinx.Client.Common
 {
-    /// <summary>
-    /// Base exception class for Sphinx errors
-    /// </summary>
-    [Serializable]
-    public class SphinxException : Exception
-    {
-        public SphinxException()
-        {
-        }
+	/// <summary>
+	/// Base exception class for Sphinx errors
+	/// </summary>
+	[Serializable]
+	public class SphinxException : Exception
+	{
+		public SphinxException()
+		{
+		}
 
-        public SphinxException(string message) : base(message)
-        {
-        }
+		public SphinxException(string message) : base(message)
+		{
+		}
 
-        public SphinxException(string message, Exception innerEx): base(message, innerEx)
-        {
-        }
+		public SphinxException(string message, Exception innerEx): base(message, innerEx)
+		{
+		}
 
-        protected SphinxException(SerializationInfo info, StreamingContext context): base(info, context)
-        {
-        }
-    }
+		protected SphinxException(SerializationInfo info, StreamingContext context): base(info, context)
+		{
+		}
+	}
 
-    /// <summary>
-    /// The exception that is thrown when the Sphinx service cannot fulfill a request.
-    /// </summary>
-    [Serializable]
-    public class ServerErrorException : SphinxException
-    {
-        public ServerErrorException()
-        {
-        }
+	/// <summary>
+	/// The exception that is thrown when the Sphinx service cannot fulfill a request.
+	/// </summary>
+	[Serializable]
+	public class ServerErrorException : SphinxException
+	{
+		public ServerErrorException()
+		{
+		}
 
-        public ServerErrorException(string message): base(message)
-        {
-        }
+		public ServerErrorException(string message): base(message)
+		{
+		}
 
-        public ServerErrorException(string message, Exception innerEx): base(message, innerEx)
-        {
-        }
+		public ServerErrorException(string message, Exception innerEx): base(message, innerEx)
+		{
+		}
 
-        protected ServerErrorException(SerializationInfo info, StreamingContext context): base(info, context)
-        {
-        }
-    }
+		protected ServerErrorException(SerializationInfo info, StreamingContext context): base(info, context)
+		{
+		}
+	}
 
-    /// <summary>
-    /// The exception that is thrown when the Sphinx service cannot fulfill a search request.
-    /// </summary>
-    [Serializable]
-    public class QueryErrorException : SphinxException
-    {
-        public QueryErrorException()
-        {
-        }
+	/// <summary>
+	/// The exception that is thrown when the Sphinx service cannot fulfill a search request.
+	/// </summary>
+	[Serializable]
+	public class QueryErrorException : SphinxException
+	{
+		public QueryErrorException()
+		{
+		}
 
-        public QueryErrorException(string message): base(message)
-        {
-        }
+		public QueryErrorException(string message): base(message)
+		{
+		}
 
-        public QueryErrorException(string message, Exception innerEx): base(message, innerEx)
-        {
-        }
+		public QueryErrorException(string message, Exception innerEx): base(message, innerEx)
+		{
+		}
 
-        protected QueryErrorException(SerializationInfo info, StreamingContext context): base(info, context)
-        {
-        }
-    }
+		protected QueryErrorException(SerializationInfo info, StreamingContext context): base(info, context)
+		{
+		}
+	}
 
 }
