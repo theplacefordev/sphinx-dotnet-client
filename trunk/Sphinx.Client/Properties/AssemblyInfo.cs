@@ -30,7 +30,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Sphinx.Client")]
-[assembly: AssemblyCopyright("Copyright Rustam Babadjanov 2009-2011")]
+[assembly: AssemblyCopyright("Copyright Rustam Babadjanov 2009-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

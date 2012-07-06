@@ -95,7 +95,8 @@ namespace Sphinx.Client.UnitTests.Test.Commands.BuildExcerpts
 				// valid value
 				string expected = "<pre>";
 				target.BeforeMatch = expected;
-				Assert.AreEqual(expected, target.BeforeMatch);
+
+				target.BeforeMatch.Should().Be.EqualTo(expected);
 				// invalid value
 				target.BeforeMatch = null;
 			}

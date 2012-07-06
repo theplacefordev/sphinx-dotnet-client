@@ -17,7 +17,7 @@ namespace Sphinx.Client.UnitTests.Mock.IO
 		public ArrayListWriterMock(ArrayList list)
 		{
 			_list = list;
-			_index = 0;
+			Reset();
 		}
         #endregion
 
@@ -107,6 +107,12 @@ namespace Sphinx.Client.UnitTests.Mock.IO
 		{
 			_list.Insert(_index++, value);
 		}
-		#endregion    
+		#endregion
+
+		public void Reset()
+		{
+			_list.Clear();
+			_index = 0;
+		}
 	}
 }

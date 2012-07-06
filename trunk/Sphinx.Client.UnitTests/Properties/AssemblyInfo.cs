@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Sphinx.Client.UnitTests")]
-[assembly: AssemblyCopyright("Copyright (c) Rustam Babadjanov 2009-2011")]
+[assembly: AssemblyCopyright("Copyright (c) Rustam Babadjanov 2009-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
