@@ -84,8 +84,10 @@ namespace Sphinx.Client.Commands.Search
         
         // query match type
         private MatchMode _matchMode = DEFAULT_MATCH_TYPE;
-        // query results raking mode
+        // query results ranking mode
         private MatchRankMode _rankMode = DEFAULT_RANK_MODE;
+		// query results ranking expression
+		private string _rankExpression;
         // results sort mode
         private ResultsSortMode _sortMode = DEFAULT_RESULTS_SORT_MODE;
         // sort column
@@ -249,6 +251,15 @@ namespace Sphinx.Client.Commands.Search
             get { return _rankMode; }
             set { _rankMode = value; }
         }
+
+		/// <summary>
+		/// Set or get ranking expression (applicable only for <see cref="MatchRankMode.Expression" /> ranking mode)
+		/// </summary>
+    	public string RankingExpression
+    	{
+			get { return _rankExpression; }
+			set { _rankExpression = value; }
+    	}
 
         /// <summary>
         /// Min. document ID to match
@@ -450,6 +461,10 @@ namespace Sphinx.Client.Commands.Search
 				ArgumentAssert.IsLessOrEqual(Comment, MAX_COMMENT_LENGTH, "Comment");
 			}
 
+			if (RankingMode == MatchRankMode.Expression && String.IsNullOrEmpty(RankingExpression))
+			{
+				throw new ArgumentException(String.Format(Messages.Exception_ArgumentRankingExpressionIsEmpty));
+			}
 			if (SortMode != ResultsSortMode.Relevance && String.IsNullOrEmpty(SortBy)) 
 			{
 				throw new ArgumentException(String.Format(Messages.Exception_ArgumentResultsSortModeNotValid, Enum.GetName(typeof(ResultsSortMode), SortMode)));
@@ -476,6 +491,10 @@ namespace Sphinx.Client.Commands.Search
             writer.Write((int)MatchMode);
 
             writer.Write((int)RankingMode);
+			if (RankingMode == MatchRankMode.Expression)
+			{
+				writer.Write(RankingExpression);
+			}
 
             // sorting
             writer.Write((int)SortMode);
