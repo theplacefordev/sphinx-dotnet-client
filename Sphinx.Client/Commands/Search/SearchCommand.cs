@@ -32,7 +32,7 @@ namespace Sphinx.Client.Commands.Search
     {
         #region Constants
         internal const short COMMAND_VERSION = 0x119;
-        private const int MAX_QUERIES = 32;
+        private const int DEFAULT_MAX_QUERIES = 32;
         
         #endregion
 
@@ -40,7 +40,7 @@ namespace Sphinx.Client.Commands.Search
         private static readonly CommandInfo _commandInfo = new CommandInfo(ServerCommand.Search, COMMAND_VERSION);
 
         private readonly SearchQueryList _queryList = new SearchQueryList();
-
+        private int _maxQueries = DEFAULT_MAX_QUERIES;
         #endregion
 
         #region Constructors
@@ -72,6 +72,11 @@ namespace Sphinx.Client.Commands.Search
             get { return _queryList; }
         }
         
+        public int MaxQueries
+        {
+            get { return _maxQueries; }
+            set { _maxQueries = value; }
+        }
         #endregion
 
         #region Overrides of CommandWithResultBase
@@ -91,8 +96,11 @@ namespace Sphinx.Client.Commands.Search
     	protected override void ValidateParameters()
     	{
 			ArgumentAssert.IsNotEmpty<SearchQuery>(QueryList, "QueryList");
-			ArgumentAssert.IsInRange(QueryList, 1, MAX_QUERIES, "QueryList");
-			QueryList.ValidateParameters();
+    	    if (MaxQueries > 0)
+    	    {
+    	        ArgumentAssert.IsInRange(QueryList, 1, MaxQueries, "QueryList");
+    	    }
+    	    QueryList.ValidateParameters();
 		}
 
         protected override void SerializeRequest(IBinaryWriter writer)
