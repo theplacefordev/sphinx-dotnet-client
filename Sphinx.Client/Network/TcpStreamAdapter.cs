@@ -12,7 +12,7 @@ namespace Sphinx.Client.Network
 	{
 		#region Fields
 		private ManualResetEvent _resetEvent;
-
+        private Exception _exception;
 		#endregion
 
 		#region Constructor
@@ -38,11 +38,16 @@ namespace Sphinx.Client.Network
 			state.DataStream = Stream;
 			state.BytesLeft = length;
 			_resetEvent = new ManualResetEvent(false);
+            _exception = null;
 
 			while (state.BytesLeft > 0)
 			{
+                if (_exception != null) {
+                    throw _exception;
+                }
+
 				_resetEvent.Reset();
-				Stream.BeginRead(buffer, length - state.BytesLeft, state.BytesLeft, ReadDataCallback, state);
+				Stream.BeginRead(buffer, length - state.BytesLeft, state.BytesLeft, Guard(ReadDataCallback), state);
 				WaitForNetworkData();
 			}
 			return length;
@@ -74,6 +79,17 @@ namespace Sphinx.Client.Network
 			state.BytesLeft -= actualBytes;
 			_resetEvent.Set();
 		}
+
+        private AsyncCallback Guard(AsyncCallback callback) {
+            return asyncResult => {
+                try {
+                    callback(asyncResult);
+                } catch (Exception ex) {
+                    _exception = ex;
+                    _resetEvent.Set();
+                }
+            };
+        } 
 
 		private class NetworkReadState
 		{
